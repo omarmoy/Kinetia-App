@@ -1,3 +1,33 @@
 <resources>
     <string name="app_name">proyectoCliente</string>
+
+
+    /*texto para actividades de prueba*/
+    <string name="t1">En el contexto de la comunicación, una conversación típicamente implica la participación de al menos dos partes: un emisor y un receptor. Aquí hay una descripción de cada uno:
+
+Emisor: El emisor es la parte que inicia o envía un mensaje en la conversación. Es la persona que está compartiendo información, haciendo preguntas, expresando opiniones o llevando a cabo cualquier otra acción comunicativa.
+
+Receptor: El receptor es la parte que recibe y procesa el mensaje enviado por el emisor. Es la persona que está escuchando, leyendo o de alguna manera recibiendo la información transmitida por el emisor. El receptor puede responder al mensaje del emisor, lo que puede llevar a una interacción bidireccional.
+
+En una conversación más amplia o en un entorno grupal, puede haber múltiples emisores y receptores involucrados, lo que crea una dinámica más compleja en la comunicación. Además, factores como el contexto, los roles sociales, las normas culturales y el medio de comunicación utilizado pueden influir en cómo se desarrolla la conversación y quién participa en ella.</string>
+    <string name="t2">En el contexto de la comunicación, una conversación típicamente implica la participación de al menos dos partes: un emisor y un receptor. Aquí hay una descripción de cada uno:
+
+Emisor: El emisor es la parte que inicia o envía un mensaje en la conversación. Es la persona que está compartiendo información, haciendo preguntas, expresando opiniones o llevando a cabo cualquier otra acción comunicativa.
+
+Receptor: El receptor es la parte que recibe y procesa el mensaje enviado por el emisor. Es la persona que está escuchando, leyendo o de alguna manera recibiendo la información transmitida por el emisor. El receptor puede responder al mensaje del emisor, lo que puede llevar a una interacción bidireccional.</string>
+    <string name="t3">En el contexto de la comunicación, una conversación típicamente implica la participación de al menos dos partes: un emisor y un receptor. Aquí hay una descripción de cada uno:
+
+Emisor: El emisor es la parte que inicia o envía un mensaje en la conversación. Es la persona que está compartiendo información, haciendo preguntas, expresando opiniones o llevando a cabo cualquier otra acción comunicativa</string>
+    <string name="t4">En el contexto de la comunicación, una conversación típicamente implica la participación de al menos dos partes: un emisor y un receptor.</string>
+    <string name="t5">proyectoCliente</string>
+    <string name="t6">proyectoCliente</string>
+    <string name="t7">proyectoCliente</string>
+    <string name="t8">proyectoCliente</string>
+    <string name="t9">proyectoCliente</string>
+    <string name="t10">proyectoCliente</string>
+    <string name="t11">proyectoCliente</string>
+    <string name="t12">proyectoCliente</string>
+    <string name="t13">proyectoCliente</string>
+    <string name="t14">proyectoCliente</string>
+
 </resources>

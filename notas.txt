@@ -5,3 +5,8 @@ https://www.youtube.com/watch?v=h5YW-_xgmlo
 
 javaFX:
 https://openwebinars.net/academia/aprende/apps-escritorio-javafx/?enroll=1&from_list=java-desarrollo-interfaces-graficas#
+
+
+
+
+evento de navegación para cambiar entre las pantallas

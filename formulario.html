@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Registro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            max-width: 300px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            margin-top: 15px;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 15px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Nuevo registro</h1>
+
+    <form method="post" action="insertar_datos.php">
+        <label for="nombre">Nombre:</label>
+        <input type="text" name="nombre" required>
+
+        <label for="apellidos">Apellidos:</label>
+        <input type="text" name="apellidos">
+
+        <label for="fecha_nac">Fecha de Nacimiento:</label>
+        <input type="text" name="fecha_nac">
+
+        <label for="estudios">Estudios:</label>
+        <input type="text" name="estudios">
+
+        <label for="telefono">Teléfono:</label>
+        <input type="number" name="telefono" required>
+        <div>
+            <button type="submit">Enviar</button>
+        </div>
+    </form>
+
+</body>
+
+</html>

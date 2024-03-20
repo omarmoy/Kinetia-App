@@ -18,12 +18,14 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
@@ -33,11 +35,13 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -49,24 +53,26 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.Data.DatosPrueba
 import com.dam2.proyectocliente.model.Actividad
+import com.dam2.proyectocliente.ui.Pantallas
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulFondo
 import com.example.proyectocliente.ui.theme.AzulLogo
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.NegroClaro
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuPrincipal(navController: NavHostController) {
+fun MenuPrincipal0(navController: NavHostController) {
     Scaffold(
-        topBar = { BarraSuperiorMPrincipal(navController = navController) },
-        content = { innerPadding -> ContenidoInicio(innerPadding) }
+        topBar = { BarraSuperior0(navController = navController) },
+        content = { innerPadding -> Contenido0(innerPadding) },
+        bottomBar = { BarraInferior0(navController = navController) }
     )
 }
 
-
 @Composable
-fun BarraSuperiorMPrincipal(navController: NavHostController) {
+fun BarraSuperior0(navController: NavHostController) {
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -105,67 +111,48 @@ fun BarraSuperiorMPrincipal(navController: NavHostController) {
 
 
 @Composable
-fun Categorias(){
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(70.dp)
-            .padding(top = 12.dp)
-    ) {
-
-        LazyRow {
-            items(DatosPrueba.categorias) { c ->
-
-                Spacer(modifier = Modifier.width(12.dp))
-                Button(
-                    onClick = { /*TODO*/ },
-                    shape = RoundedCornerShape(4.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = AzulLogo),
-                    contentPadding = PaddingValues(8.dp, 0.dp)
-                ) {
-                    Text(text = c)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun Destacados() {
-    Column {
-
-        Text(text = "Destacado")
-        LazyRow{
-            items(DatosPrueba.actividades){a-> MiniaturaActividad(a = a)}
-        }
-        Text(text = "Recientes")
-        LazyRow{
-            items(DatosPrueba.actividades){a-> MiniaturaActividad(a = a)}
-        }
-
-        Text(text = "Descubre")
-    }
-}
-
-@Composable
-fun ContenidoInicio(innerPadding: PaddingValues) {
+fun Contenido0(innerPadding: PaddingValues) {
     Column(
         modifier = Modifier
             .padding(innerPadding)
             .background(BlancoFondo)
         //.verticalScroll(rememberScrollState())
     ) {
+
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            item(span = { GridItemSpan(2) }) { Categorias()}
-            item(span = { GridItemSpan(2) }) { Destacados()}
+            item(span = { GridItemSpan(2) }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(70.dp)
+                        .padding(top = 12.dp)
+                ) {
+
+                    LazyRow {
+                        items(DatosPrueba.categorias) { c ->
+
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Button(
+                                onClick = { /*TODO*/ },
+                                shape = RoundedCornerShape(4.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = AzulLogo),
+                                contentPadding = PaddingValues(8.dp, 0.dp)
+                            ) {
+                                Text(text = c)
+                            }
+                        }
+                    }
+                }
+
+            }
             items(DatosPrueba.actividades) { a ->
-                MiniaturaActividad(a)
+                VistaActividad0(a)
             }
         }
 
@@ -176,7 +163,7 @@ fun ContenidoInicio(innerPadding: PaddingValues) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MiniaturaActividad(a: Actividad) {
+fun VistaActividad0(a: Actividad) {
     val tam = 150.dp
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Card(shape = RectangleShape,
@@ -232,18 +219,59 @@ fun MiniaturaActividad(a: Actividad) {
 }
 
 
-/**
- * VISTA PREVIA
- */
-@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BarraInferior0(navController: NavHostController) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp)
+            .background(Color(0xFFF4F4F4))
+            .padding(12.dp)
+    ) {
+        IconButton(onClick = { navController.navigate(Pantallas.menuPrincipal.name)}) {
+            Icon(
+                imageVector = Icons.Filled.Home,
+                contentDescription = "Inicio",
+                tint = NegroClaro
+            )
+        }
+        IconButton(onClick = { /*TODO*/ }) {
+            Icon(
+                imageVector = Icons.Filled.FavoriteBorder,
+                contentDescription = "Favoritos",
+                tint = NegroClaro
+            )
+        }
+        IconButton(onClick = { /*TODO*/ }) {
+            Icon(
+                imageVector = Icons.Filled.AddCircle,
+                contentDescription = "Add",
+                tint = AzulLogo
+            )
+        }
+        IconButton (onClick = { /*TODO*/ }) {
+            Icon(
+                imageVector = Icons.Filled.MailOutline,
+                contentDescription = "buscar",
+                tint = NegroClaro
+            )
+        }
+        IconButton (onClick = { /*TODO*/ }) {
+            Icon(
+                imageVector = Icons.Filled.AccountCircle,
+                contentDescription = "Mi Cuenta",
+                tint = NegroClaro
+            )
+        }
+    }
+}
+
+
 @Preview(showBackground = true)
 @Composable
-fun MenuInicioPreview() {
-    val navController = rememberNavController()
-    Scaffold(
-        topBar = { BarraSuperiorMPrincipal(navController = navController) },
-        content = { innerPadding -> ContenidoInicio(innerPadding) },
-        //llama a una función de navegación:
-        bottomBar = { PanelNavegacion(navController = navController) }
-    )
+fun menuPrincipalPreview() {
+    MenuPrincipal(navController = rememberNavController())
+    //VistaActividad(a = DatosPrueba.actividades[0])
 }

@@ -1,6 +1,6 @@
 package com.dam2.proyectocliente.model
 
-enum class Rol{
+enum class Rol {
     OFERTANTE, CONSUMIDOR, ADMINISTRADOR
 }
 
@@ -14,26 +14,42 @@ class Usuario(
     val password: String,
     val foto: Int,
     val nif: String,
-    private val actividades: ArrayList<Actividad>,
-    private val anuncios: ArrayList<Anuncio>,
-    private val conversaciones: ArrayList<Conversacion>
+    val actividades: ArrayList<Actividad> = ArrayList(),
+    val actividadesOfertadas: ArrayList<Actividad> = ArrayList(),
+    val anuncios: ArrayList<Anuncio> = ArrayList(),
+    val contactos: ArrayList<Contacto> = ArrayList()
 ) {
-    fun addActividad(actividad: Actividad){
-        actividades.add(actividad)
+    fun addActividad(actividad: Actividad): Boolean {
+        return actividades.add(actividad)
     }
-    fun eliminarActividad(actividad: Actividad){
-        actividades.remove(actividad)
+
+    fun eliminarActividad(actividad: Actividad): Boolean {
+        return actividades.remove(actividad)
     }
-    fun addAnuncio(anuncio: Anuncio){
-        anuncios.add(anuncio)
+
+    fun addOfertaActividad(actividad: Actividad): Boolean {
+        return actividadesOfertadas.add(actividad)
     }
-    fun eleminarAnuncio(anuncio: Anuncio){
-        anuncios.remove(anuncio)
+
+    fun eliminarOfertaActividad(actividad: Actividad): Boolean {
+        return actividadesOfertadas.remove(actividad)
     }
-    fun addConversacion(conversacion: Conversacion){
-        conversaciones.add(conversacion)
+
+    fun addAnuncio(anuncio: Anuncio): Boolean {
+        return anuncios.add(anuncio)
     }
-    fun eliminarConversacion(conversacion: Conversacion){
-        conversaciones.remove(conversacion)
+
+    fun eliminarAnuncio(anuncio: Anuncio): Boolean {
+        return anuncios.remove(anuncio)
     }
+
+    fun addContacto(contacto: Contacto): Boolean {
+        return contactos.add(contacto)
+    }
+
+    fun eliminarContacto(contacto: Contacto): Boolean {
+        return contactos.remove(contacto)
+    }
+
+
 }

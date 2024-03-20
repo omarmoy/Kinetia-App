@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui
+package com.dam2.proyectocliente.ui.inicio
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -18,8 +18,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.ui.inicio.Inicio
-import com.dam2.proyectocliente.ui.inicio.Login
+import com.dam2.proyectocliente.ui.Pantallas
 
 @Composable
 fun NavegacionInicial(navController: NavHostController = rememberNavController()) {

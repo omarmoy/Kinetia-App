@@ -9,10 +9,11 @@ data class Actividad (
     @DrawableRes val imagen: Int,
     val titulo: String,
     @StringRes val contendio: Int,
-    val ofertante: String,
+    val anuncianteID: Int,
+    val anunciante: String,
     val fecha: Date,
-    val duracion: Int,
-    val precio: Float,
-    val ubicacion: String,
-    val categoria: String
+    val duracion: Int? = null,
+    val precio: Float? = null,
+    val ubicacion: String? = null,
+    val categoria: String? = null,
 )

@@ -4,5 +4,11 @@ enum class Pantallas {
     inicio,
     login,
     registro,
-    menuPrincipal
+
+    menuPrincipal,
+    menuBuscar,
+    menuMensajes,
+    menuMiPerfil,
+
+    vistaActividad
 }

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -20,6 +21,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 
 import androidx.compose.material.icons.Icons
@@ -35,6 +37,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +45,8 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,55 +62,49 @@ import com.example.proyectocliente.ui.theme.NegroClaro
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuPrincipal(navController: NavHostController) {
+fun MenuBusqueda(navController: NavHostController) {
     Scaffold(
-        topBar = { BarraSuperiorMPrincipal(navController = navController) },
-        content = { innerPadding -> ContenidoInicio(innerPadding) }
+        topBar = { BarraSuperiorBusqueda(navController = navController) },
+        content = { innerPadding -> ContenidoBusqueda(innerPadding) }
     )
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorMPrincipal(navController: NavHostController) {
-
+fun BarraSuperiorBusqueda(navController: NavHostController) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
+        //horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)
             .background(BlancoFondo)
             .padding(12.dp)
     ) {
-        Row {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_grain),
-                contentDescription = "",
-                tint = AzulLogo
-            )
-            Text(text = "Kinétia", fontWeight = FontWeight.Bold, fontSize = 24.sp)
-
-        }
-        Row {
-            Icon(
-                imageVector = Icons.Filled.Notifications,
-                contentDescription = "notificacion",
-                tint = NegroClaro
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-            Icon(
-                imageVector = Icons.Filled.Search,
-                contentDescription = "buscar",
-                tint = NegroClaro
-            )
-        }
+        TextField(
+            value = "",
+            onValueChange = { it },
+            singleLine = true,
+            label = { Text(text = "Buscar") },
+            //leadingIcon = { Icon(painter = painterResource(id = R.drawable.money), contentDescription = null) },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done  //tipo de botón
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+        Icon(
+            imageVector = Icons.Filled.Search,
+            contentDescription = "buscar",
+            tint = NegroClaro
+        )
     }
-
 }
 
 
 @Composable
-fun Categorias(){
+fun CategoriasBusqueda() {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -132,51 +131,29 @@ fun Categorias(){
     }
 }
 
-@Composable
-fun Destacados() {
-    Column {
-
-        Text(text = "Destacado")
-        LazyRow{
-            items(DatosPrueba.actividades){a-> MiniaturaActividad(a = a)}
-        }
-        Text(text = "Recientes")
-        LazyRow{
-            items(DatosPrueba.actividades){a-> MiniaturaActividad(a = a)}
-        }
-
-        Text(text = "Descubre")
-    }
-}
 
 @Composable
-fun ContenidoInicio(innerPadding: PaddingValues) {
+fun ContenidoBusqueda(innerPadding: PaddingValues) {
     Column(
         modifier = Modifier
             .padding(innerPadding)
             .background(BlancoFondo)
         //.verticalScroll(rememberScrollState())
     ) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
-            item(span = { GridItemSpan(2) }) { Categorias()}
-            item(span = { GridItemSpan(2) }) { Destacados()}
+
+        LazyColumn {
+            item { CategoriasBusqueda() } //coge el del menú principal
             items(DatosPrueba.actividades) { a ->
-                MiniaturaActividad(a)
+                MiniaturaActividadBusqueda(a)
             }
         }
-
-
     }
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MiniaturaActividad(a: Actividad) {
+fun MiniaturaActividadBusqueda(a: Actividad) {
     val tam = 150.dp
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Card(shape = RectangleShape,
@@ -238,11 +215,11 @@ fun MiniaturaActividad(a: Actividad) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun MenuInicioPreview() {
+fun MenuBusquedaPreview() {
     val navController = rememberNavController()
     Scaffold(
-        topBar = { BarraSuperiorMPrincipal(navController = navController) },
-        content = { innerPadding -> ContenidoInicio(innerPadding) },
+        topBar = { BarraSuperiorBusqueda(navController = navController) },
+        content = { innerPadding -> ContenidoBusqueda(innerPadding) },
         //llama a una función de navegación:
         bottomBar = { PanelNavegacion(navController = navController) }
     )

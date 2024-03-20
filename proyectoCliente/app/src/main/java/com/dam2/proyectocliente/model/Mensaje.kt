@@ -1,9 +1,10 @@
 package com.dam2.proyectocliente.model
 
-import java.util.Date
+import java.time.LocalDateTime
 
 data class Mensaje(
-    val fecha: Date,
+    val idContacto: Int,
+    val fecha: LocalDateTime,
     val contenido: String,
-    val recibido: Boolean
+    var leido: Boolean
 )

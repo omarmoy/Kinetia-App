@@ -1,12 +1,19 @@
 package com.dam2.proyectocliente.model
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import java.util.Date
 
-data class Anuncio(
+class Anuncio(
     val id: Int,
+    @DrawableRes
+    val fotoAnunciante: Int,
     val titulo: String,
-    val contenido: String,
-    val anuncianteNombre: String,
-    val anuncianteID: String,
-    val fecha: Date
-)
+    @StringRes
+    val contendio: Int,
+    val anuncianteID: Int,
+    val anunciante: String,
+    val fecha: Date,
+) {
+
+}

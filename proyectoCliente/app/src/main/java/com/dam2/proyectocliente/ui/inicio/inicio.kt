@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.ui.Pantallas
 import com.example.proyectocliente.R
 
@@ -88,5 +89,6 @@ fun Inicio(navController: NavHostController) {
 @Preview(showBackground = true)
 @Composable
 fun InicioPreview() {
-    //Inicio(null)
+    val navController = rememberNavController()
+    Inicio(navController)
 }

@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -14,29 +13,15 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Send
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,6 +30,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -56,14 +43,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.Data.DatosPrueba
-import com.dam2.proyectocliente.model.Actividad
+import com.dam2.proyectocliente.controlador.AppViewModel
+import com.dam2.proyectocliente.controlador.DatosPrueba
+import com.dam2.proyectocliente.controlador.UiState
 import com.dam2.proyectocliente.model.Contacto
-import com.example.proyectocliente.R
+import com.dam2.proyectocliente.ui.Pantallas
 import com.example.proyectocliente.ui.theme.AzulFondo
-import com.example.proyectocliente.ui.theme.AzulLogo
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.NegroClaro
 import com.example.proyectocliente.ui.theme.Rojo
@@ -71,17 +59,17 @@ import com.example.proyectocliente.ui.theme.Rojo
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuConversaciones(navController: NavHostController) {
+fun MenuConversaciones(navController: NavHostController, vm: AppViewModel, estado: UiState) {
     Scaffold(
-        topBar = { BarraSuperiorConver(navController = navController) },
-        content = { innerPadding -> Conversaciones(innerPadding) }
+        topBar = { BarraSuperiorConver() },
+        content = { innerPadding -> Conversaciones(innerPadding, navController, vm, estado) }
     )
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorConver(navController: NavHostController) {
+fun BarraSuperiorConver() {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         //horizontalArrangement = Arrangement.SpaceBetween,
@@ -99,12 +87,16 @@ fun BarraSuperiorConver(navController: NavHostController) {
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Conversaciones(innerPadding: PaddingValues) {
+fun Conversaciones(
+    innerPadding: PaddingValues,
+    navController: NavHostController,
+    vm: AppViewModel,
+    estado: UiState
+) {
     Column(
         modifier = Modifier
             .padding(innerPadding)
             .background(BlancoFondo)
-        //.verticalScroll(rememberScrollState())
     ) {
 
         LazyColumn {
@@ -129,8 +121,8 @@ fun Conversaciones(innerPadding: PaddingValues) {
                 )
                 Spacer(modifier = Modifier.height(20.dp))
             }
-            items(DatosPrueba.usuario.contactos) { c ->
-                MiniaturaContacto(c)
+            items(estado.contactos) { c ->
+                MiniaturaContacto(c, navController, vm)
             }
         }
     }
@@ -139,9 +131,13 @@ fun Conversaciones(innerPadding: PaddingValues) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MiniaturaContacto(c: Contacto) {
+fun MiniaturaContacto(c: Contacto, navController: NavHostController, vm: AppViewModel) {
     Card(
-        onClick = { /*TODO*/ },
+        onClick = {
+            vm.selectContacto(c)
+            vm.ocultarPanelNavegacion()
+            navController.navigate(Pantallas.chat.name)
+        },
         colors = CardDefaults.cardColors(AzulFondo),
         shape = RectangleShape,
         modifier = Modifier
@@ -160,7 +156,9 @@ fun MiniaturaContacto(c: Contacto) {
             }
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth().padding(8.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
             ) {
                 Text(text = c.nombre, fontSize = 20.sp)
                 if (c.mensajeNuevo) {
@@ -168,12 +166,6 @@ fun MiniaturaContacto(c: Contacto) {
                         imageVector = Icons.Filled.Email,
                         contentDescription = "buscar",
                         tint = Rojo
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Filled.Send,
-                        contentDescription = "buscar",
-                        tint = NegroClaro
                     )
                 }
             }
@@ -192,11 +184,13 @@ fun MiniaturaContacto(c: Contacto) {
 @Composable
 fun ConverPreview() {
     val navController = rememberNavController()
+    val vm: AppViewModel = viewModel()
+    val estado by vm.uiState.collectAsState()
     Scaffold(
-        topBar = { BarraSuperiorConver(navController = navController) },
-        content = { innerPadding -> Conversaciones(innerPadding) },
+        topBar = { BarraSuperiorConver() },
+        content = { innerPadding -> Conversaciones(innerPadding, navController, vm, estado) },
         //llama a una función de navegación:
-        bottomBar = { PanelNavegacion(navController = navController) }
+        bottomBar = { PanelNavegacion(navController = navController, estado) }
     )
 
 

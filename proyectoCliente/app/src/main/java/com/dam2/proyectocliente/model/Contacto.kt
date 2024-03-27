@@ -5,7 +5,7 @@ class Contacto(
     val nombre: String,
     val foto: Int,
     val mensajes: ArrayList<Mensaje>,
-    val mensajeNuevo: Boolean = false
+    var mensajeNuevo: Boolean = false
 ) {
     public fun addMensaje(mensaje: Mensaje) {
         mensajes.add(mensaje)

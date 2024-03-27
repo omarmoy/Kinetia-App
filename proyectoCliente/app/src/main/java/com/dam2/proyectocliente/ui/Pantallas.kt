@@ -10,5 +10,7 @@ enum class Pantallas {
     menuMensajes,
     menuMiPerfil,
 
-    vistaActividad
+    vistaActividad,
+    vistaAnuncio,
+    chat
 }

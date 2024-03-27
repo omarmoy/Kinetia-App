@@ -3,7 +3,7 @@ package com.dam2.proyectocliente.model
 enum class Rol {
     OFERTANTE, CONSUMIDOR, ADMINISTRADOR
 }
-
+/*
 class Usuario(
     val id: Int,
     val nombre: String,
@@ -14,17 +14,17 @@ class Usuario(
     val password: String,
     val foto: Int,
     val nif: String,
-    val actividades: ArrayList<Actividad> = ArrayList(),
+    val actividadesFav: ArrayList<Actividad> = ArrayList(),
     val actividadesOfertadas: ArrayList<Actividad> = ArrayList(),
     val anuncios: ArrayList<Anuncio> = ArrayList(),
     val contactos: ArrayList<Contacto> = ArrayList()
 ) {
-    fun addActividad(actividad: Actividad): Boolean {
-        return actividades.add(actividad)
+    fun addActividadFav(actividad: Actividad): Boolean {
+        return actividadesFav.add(actividad)
     }
 
-    fun eliminarActividad(actividad: Actividad): Boolean {
-        return actividades.remove(actividad)
+    fun eliminarActividadFav(actividad: Actividad): Boolean {
+        return actividadesFav.remove(actividad)
     }
 
     fun addOfertaActividad(actividad: Actividad): Boolean {
@@ -53,3 +53,5 @@ class Usuario(
 
 
 }
+
+ */

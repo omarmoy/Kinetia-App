@@ -34,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -121,5 +122,6 @@ fun Login(navController: NavHostController) {
 @Preview(showBackground = true)
 @Composable
 fun LoginPreview() {
-    //Login({null})
+    val navController = rememberNavController()
+    Login(navController)
 }

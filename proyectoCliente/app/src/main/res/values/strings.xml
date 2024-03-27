@@ -29,5 +29,6 @@ Emisor: El emisor es la parte que inicia o envía un mensaje en la conversación
     <string name="t12">proyectoCliente</string>
     <string name="t13">proyectoCliente</string>
     <string name="t14">proyectoCliente</string>
+    <string name="vacio">vacio</string>
 
 </resources>

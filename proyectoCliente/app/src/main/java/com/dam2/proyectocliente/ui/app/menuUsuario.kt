@@ -190,7 +190,7 @@ fun ContenidoUsuario(innerPadding: PaddingValues, vm: AppViewModel, estado: UiSt
                             }
                         }
                         //TODO("controlar cuando no haya publicado ningún anuncio")
-                        items(estado.anunciosPublicados) { anuncio -> MiniaturaAnuncio(anuncio) }
+                        items(estado.usuario.anunciosPublicados) { anuncio -> MiniaturaAnuncio(anuncio) }
                     }
                 }
             }
@@ -254,7 +254,7 @@ fun PanelPerfil(vm: AppViewModel, estado: UiState) {
         }
     }
     LazyRow {
-        items(DatosPrueba.actividades) { a -> MiniaturaActividadPerfil(a = a) }
+        items(estado.usuario.actividadesFav) { a -> MiniaturaActividadPerfil(a = a) }
     }
 }
 
@@ -271,8 +271,8 @@ fun DatosPerfil(vm: AppViewModel, estado: UiState) {
     ) {
         Card(shape = CircleShape) {
             Image(
-                painter = painterResource(id = estado.foto),
-                contentDescription = estado.nombre,
+                painter = painterResource(id = estado.usuario.foto),
+                contentDescription = estado.usuario.nombre,
                 modifier = Modifier.fillMaxHeight(),
                 contentScale = ContentScale.Crop
             )
@@ -284,7 +284,7 @@ fun DatosPerfil(vm: AppViewModel, estado: UiState) {
                 .padding(8.dp)
         ) {
             Text(
-                text = estado.nombre + " " + estado.apellido1 + " " + estado.apellido2,
+                text = estado.usuario.nombre + " " + estado.usuario.apellido1 + " " + estado.usuario.apellido2,
                 fontSize = 18.sp
             )
         }
@@ -379,6 +379,6 @@ fun PerfilPreview() {
         topBar = { BarraSuperiorPerfil(navController = navController) },
         content = { innerPadding -> ContenidoUsuario(innerPadding, vm, estado) },
         //llama a una función de navegación:
-        bottomBar = { PanelNavegacion(navController = navController, estado) }
+        bottomBar = { PanelNavegacion(navController = navController, vm, estado) }
     )
 }

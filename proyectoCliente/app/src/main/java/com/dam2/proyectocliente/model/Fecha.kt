@@ -9,6 +9,7 @@ class Fecha (
 ) {
     val localDate: LocalDate = localDateTime.toLocalDate()
     val localTime: LocalTime = localDateTime.toLocalTime()
+    val localDateTime: LocalDateTime = localDateTime
 
     fun toStringFecha(): String{
         return "${localDate.dayOfMonth}/${localDate.monthValue}/${localDate.year}"

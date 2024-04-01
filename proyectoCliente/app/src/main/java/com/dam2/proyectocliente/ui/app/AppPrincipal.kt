@@ -1,8 +1,5 @@
 package com.dam2.proyectocliente.ui.app
 
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,6 +31,7 @@ import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.controlador.AppViewModel
 import com.dam2.proyectocliente.controlador.UiState
 import com.dam2.proyectocliente.ui.Pantallas
+import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
 import com.example.proyectocliente.ui.theme.NegroClaro
@@ -48,11 +46,10 @@ fun Principal(
     Scaffold(
         topBar = {},
         content = { innerPadding -> Contenido(innerPadding, navController, vm, estado) },
-        bottomBar = { PanelNavegacion(navController, estado) }
+        bottomBar = { PanelNavegacion(navController, vm, estado) }
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Contenido(
     innerPadding: PaddingValues, navController: NavHostController, vm: AppViewModel, estado: UiState
@@ -72,7 +69,7 @@ fun Contenido(
         }
 
         composable(route = Pantallas.menuMensajes.name) {
-            MenuConversaciones( navController, vm, estado)
+            MenuConversaciones(navController, vm, estado)
         }
 
         composable(route = Pantallas.menuMiPerfil.name) {
@@ -83,10 +80,10 @@ fun Contenido(
         composable(route = Pantallas.vistaActividad.name) {
             VistaActividad(navController, estado.actividadSeleccionada, vm)
         }
-        composable(route = Pantallas.chat.name){
-            VistaChat(navController, estado.contactoSeleccionado , vm, estado)
+        composable(route = Pantallas.chat.name) {
+            VistaChat(navController, estado.contactoSeleccionado, vm, estado)
         }
-        composable(route = Pantallas.vistaAnuncio.name){
+        composable(route = Pantallas.vistaAnuncio.name) {
             //TODO
         }
 
@@ -94,7 +91,7 @@ fun Contenido(
 }
 
 @Composable
-fun PanelNavegacion(navController: NavHostController, estado: UiState) {
+fun PanelNavegacion(navController: NavHostController, vm: AppViewModel, estado: UiState) {
     if (estado.mostrarPanelNavegacion) {
         Box(
             modifier = Modifier
@@ -110,33 +107,42 @@ fun PanelNavegacion(navController: NavHostController, estado: UiState) {
                     .background(BlancoFondo)
                     .padding(12.dp)
             ) {
-                IconButton(onClick = { navController.navigate(Pantallas.menuPrincipal.name) }) {
+                IconButton(onClick = {
+                    vm.cambiarBotonNav(0)
+                    navController.navigate(Pantallas.menuPrincipal.name) }) {
                     Icon(
                         imageVector = Icons.Filled.Home,
                         contentDescription = "Inicio",
-                        tint = NegroClaro
+                        tint = if (estado.botoneraNav[0]) AmarilloPastel else NegroClaro
                     )
                 }
-                IconButton(onClick = { navController.navigate(Pantallas.menuBuscar.name) }) {
+                IconButton(onClick = {
+                    vm.cambiarBotonNav(1)
+                    navController.navigate(Pantallas.menuBuscar.name) }) {
                     Icon(
                         imageVector = Icons.Filled.Search,
                         contentDescription = "Buscar",
-                        tint = NegroClaro
+                        tint = if (estado.botoneraNav[1]) AmarilloPastel else NegroClaro
                     )
                 }
 
-                IconButton(onClick = { navController.navigate(Pantallas.menuMensajes.name) }) {
+                IconButton(onClick = {
+                    vm.cambiarBotonNav(2)
+                    navController.navigate(Pantallas.menuMensajes.name)
+                }) {
                     Icon(
                         imageVector = Icons.Filled.MailOutline,
                         contentDescription = "Mensajes",
-                        tint = NegroClaro
+                        tint = if (estado.botoneraNav[2]) AmarilloPastel else NegroClaro
                     )
                 }
-                IconButton(onClick = { navController.navigate(Pantallas.menuMiPerfil.name) }) {
+                IconButton(onClick = {
+                    vm.cambiarBotonNav(3)
+                    navController.navigate(Pantallas.menuMiPerfil.name) }) {
                     Icon(
                         imageVector = Icons.Filled.AccountCircle,
                         contentDescription = "Mi Cuenta",
-                        tint = NegroClaro
+                        tint = if (estado.botoneraNav[3]) AmarilloPastel else NegroClaro
                     )
                 }
             }

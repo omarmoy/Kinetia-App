@@ -20,20 +20,23 @@ import androidx.compose.foundation.text.KeyboardOptions
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -47,12 +50,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.controlador.AppViewModel
-import com.dam2.proyectocliente.controlador.DatosPrueba
 import com.dam2.proyectocliente.controlador.UiState
 import com.dam2.proyectocliente.model.Contacto
 import com.dam2.proyectocliente.ui.Pantallas
+import com.example.proyectocliente.ui.theme.AmarilloPastel
+import com.example.proyectocliente.ui.theme.AzulAgua
+import com.example.proyectocliente.ui.theme.AzulAguaFondo
 import com.example.proyectocliente.ui.theme.AzulFondo
 import com.example.proyectocliente.ui.theme.BlancoFondo
+import com.example.proyectocliente.ui.theme.Gris2
 import com.example.proyectocliente.ui.theme.NegroClaro
 import com.example.proyectocliente.ui.theme.Rojo
 
@@ -61,7 +67,7 @@ import com.example.proyectocliente.ui.theme.Rojo
 @Composable
 fun MenuConversaciones(navController: NavHostController, vm: AppViewModel, estado: UiState) {
     Scaffold(
-        topBar = { BarraSuperiorConver() },
+        topBar = { BarraSuperiorConver(vm, estado) },
         content = { innerPadding -> Conversaciones(innerPadding, navController, vm, estado) }
     )
 }
@@ -69,17 +75,27 @@ fun MenuConversaciones(navController: NavHostController, vm: AppViewModel, estad
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorConver() {
+fun BarraSuperiorConver(vm: AppViewModel, estado: UiState) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        //horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)
             .background(BlancoFondo)
             .padding(12.dp)
     ) {
-        Text(text = "Mensajes", fontWeight = FontWeight.Bold, fontSize = 24.sp)
+        val textoCabecera = if(estado.filtroMensajesNoleidosActivo) "Mensajes no leídos" else "Mensajes"
+        Text(text = textoCabecera, fontWeight = FontWeight.Bold, fontSize = 24.sp)
+        IconButton(onClick = {
+            if(estado.filtroMensajesNoleidosActivo)
+                vm.quitarFiltroMensajesNoLeidos()
+            else
+                vm.filtrarMensajesNoleidos()
+        }) {
+            Icon(imageVector =Icons.Filled.List , contentDescription = "filtro",
+                tint = if(estado.filtroMensajesNoleidosActivo) AmarilloPastel else AzulAgua)
+        }
     }
 }
 
@@ -96,7 +112,7 @@ fun Conversaciones(
     Column(
         modifier = Modifier
             .padding(innerPadding)
-            .background(BlancoFondo)
+            .background(Color.White)
     ) {
 
         LazyColumn {
@@ -117,11 +133,16 @@ fun Conversaciones(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Done  //tipo de botón
                     ),
+                    colors = TextFieldDefaults.textFieldColors(containerColor=BlancoFondo, unfocusedIndicatorColor = Gris2),
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(20.dp))
             }
-            items(estado.contactos) { c ->
+            val conversaciones = if (estado.filtroMensajesNoleidosActivo){
+                estado.usuario.contactos.filter { it.mensajeNuevo }
+            }else
+                estado.usuario.contactos
+            items(conversaciones) { c ->
                 MiniaturaContacto(c, navController, vm)
             }
         }
@@ -138,7 +159,7 @@ fun MiniaturaContacto(c: Contacto, navController: NavHostController, vm: AppView
             vm.ocultarPanelNavegacion()
             navController.navigate(Pantallas.chat.name)
         },
-        colors = CardDefaults.cardColors(AzulFondo),
+        colors = CardDefaults.cardColors(AzulAguaFondo),
         shape = RectangleShape,
         modifier = Modifier
             .fillMaxWidth()
@@ -187,10 +208,10 @@ fun ConverPreview() {
     val vm: AppViewModel = viewModel()
     val estado by vm.uiState.collectAsState()
     Scaffold(
-        topBar = { BarraSuperiorConver() },
+        topBar = { BarraSuperiorConver(vm, estado) },
         content = { innerPadding -> Conversaciones(innerPadding, navController, vm, estado) },
         //llama a una función de navegación:
-        bottomBar = { PanelNavegacion(navController = navController, estado) }
+        bottomBar = { PanelNavegacion(navController = navController, vm, estado) }
     )
 
 

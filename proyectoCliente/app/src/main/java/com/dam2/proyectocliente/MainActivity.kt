@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     
                     //NavegacionInicial()
-                   Principal()
+                  Principal()
                 }
             }
         }

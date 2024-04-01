@@ -217,6 +217,6 @@ fun MenuBusquedaPreview() {
         topBar = { BarraSuperiorBusqueda(navController = navController) },
         content = { innerPadding -> ContenidoBusqueda(innerPadding) },
         //llama a una función de navegación:
-        bottomBar = { PanelNavegacion(navController = navController, estado) }
+        bottomBar = { PanelNavegacion(navController = navController, vm, estado) }
     )
 }

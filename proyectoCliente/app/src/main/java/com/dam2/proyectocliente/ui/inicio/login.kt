@@ -13,20 +13,20 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -35,6 +35,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.proyectocliente.ui.theme.AzulAguaOscuro
+import com.example.proyectocliente.ui.theme.AzulAguaFondo
+import com.example.proyectocliente.ui.theme.BlancoFondo
+import com.example.proyectocliente.ui.theme.NegroClaro
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,7 +50,7 @@ fun Login(navController: NavHostController) {
             TopAppBar(
                 title = { },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = Color(0xFFF4F4F4)
+                    containerColor = BlancoFondo
                 ),
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
@@ -54,7 +58,7 @@ fun Login(navController: NavHostController) {
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "volver",
                             //modifier = Modifier.shadow(elevation = 8.dp, shape = Shape.)
-                            //,tint = Color.Black
+                            tint = AzulAguaOscuro
                         )
                     }
                 })
@@ -63,7 +67,7 @@ fun Login(navController: NavHostController) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color(0xFFF4F4F4))
+                    .background(BlancoFondo)
                     .padding(40.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
@@ -72,7 +76,8 @@ fun Login(navController: NavHostController) {
                 Text(
                     text = "Inicio de sesión",
                     fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = NegroClaro
                 )
 
                 Spacer(modifier = Modifier.height(40.dp))
@@ -86,27 +91,40 @@ fun Login(navController: NavHostController) {
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next  //tipo de botón
                     ),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = TextFieldDefaults.textFieldColors(containerColor = AzulAguaFondo)
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
-                OutlinedTextField(
+                TextField(
                     value = "",
                     onValueChange = { it },
                     singleLine = true,
                     label = { Text(text = "introduce la contraseña") },
-                    //leadingIcon = { Icon(painter = painterResource(id = R.drawable.money), contentDescription = null) },
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Next  //tipo de botón
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = TextFieldDefaults.textFieldColors(containerColor = AzulAguaFondo)
+                )
+                /*OutlinedTextField(
+                    value = "",
+                    onValueChange = { it },
+                    singleLine = true,
+                    label = { Text(text = "introduce la contraseña") },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Password,
                         imeAction = ImeAction.Next  //tipo de botón
                     ),
                     modifier = Modifier.fillMaxWidth()
                 )
-
+*/
                 Spacer(modifier = Modifier.height(180.dp))
 
                 Button(
                     onClick = { },
+                    colors = ButtonDefaults.buttonColors(AzulAguaOscuro),
                     modifier = Modifier.width(150.dp)
                 ) {
                     Text(text = "Aceptar")

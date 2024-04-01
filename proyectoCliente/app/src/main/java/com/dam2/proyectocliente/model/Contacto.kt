@@ -7,11 +7,11 @@ class Contacto(
     val mensajes: ArrayList<Mensaje>,
     var mensajeNuevo: Boolean = false
 ) {
-    public fun addMensaje(mensaje: Mensaje) {
+    fun addMensaje(mensaje: Mensaje) {
         mensajes.add(mensaje)
     }
 
-    public fun eliminarMensaje(mensaje: Mensaje) {
+    fun eliminarMensaje(mensaje: Mensaje) {
         mensajes.remove(mensaje)
     }
 

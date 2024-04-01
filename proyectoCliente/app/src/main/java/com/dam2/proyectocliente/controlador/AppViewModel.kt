@@ -14,6 +14,22 @@ class AppViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState
 
+
+    fun actividadesDestacadas(): ArrayList<Actividad> {
+        val listaFiltrada = _uiState.value.actividades.filter { it.destacado }
+        return ArrayList(listaFiltrada)
+    }
+    fun actividadesRecientes(): ArrayList<Actividad> {
+        val ordenadas = _uiState.value.actividades.sortedByDescending { it.fecha.localDateTime }
+        val recientes = ArrayList<Actividad>()
+
+        for (i in 0 until minOf(ordenadas.size, 5)) {
+            recientes.add(ordenadas[i])
+        }
+
+        return recientes
+    }
+
     fun selectActividad(a: Actividad) {
         _uiState.update { e -> e.copy(actividadSeleccionada = a) }
     }
@@ -22,6 +38,10 @@ class AppViewModel : ViewModel() {
         _uiState.update { e -> e.copy(anuncioSeleccionado = a) }
     }
 
+
+    /**
+     * MENSAJES
+     */
     fun selectContacto(c: Contacto) {
         _uiState.update { e -> e.copy(contactoSeleccionado = c) }
         if (c.mensajeNuevo) {
@@ -29,26 +49,8 @@ class AppViewModel : ViewModel() {
         }
     }
 
-    /**
-     * MENSAJES
-     */
-
     private fun marcarLeido() {
-        /*
-        val usuario = _uiState.value.usuario
-        val indice = usuario.contactos.indexOf(contacto)
-        usuario.contactos[indice].mensajeNuevo = false
-        _uiState.update { e -> e.copy(usuario = usuario) }
-
-         */
-/*
-        val contactos = _uiState.value.contactos
-        val indice = contactos.indexOf(_uiState.value.contactoSeleccionado)
-        contactos[indice].mensajeNuevo = false
-        _uiState.update { e-> e.copy(contactos = contactos) }
-
- */
-        _uiState.value.mensajeLeido(_uiState.value.contactoSeleccionado)
+        _uiState.value.usuario.marcarMensajeLeido(_uiState.value.contactoSeleccionado)
     }
 
     fun setMensaje(mensaje: String) {
@@ -58,17 +60,27 @@ class AppViewModel : ViewModel() {
     fun enviarMensaje() {
 
         val mensajeNuevo = Mensaje(
-            _uiState.value.id, Fecha.ahora(), _uiState.value.mensajeEnviar, true
+            _uiState.value.usuario.id, Fecha.ahora(), _uiState.value.mensajeEnviar, true
         )
-        _uiState.value.addMensaje(_uiState.value.contactoSeleccionado, mensajeNuevo)
+        _uiState.value.usuario.addMensaje(_uiState.value.contactoSeleccionado, mensajeNuevo)
         _uiState.update { e -> e.copy(mensajeEnviar = "") }
         //TODO("enviar mensaje")
 
     }
 
+    fun filtrarMensajesNoleidos() {
+        if (_uiState.value.usuario.tieneMensajesSinLeer()) {
+            _uiState.update { e -> e.copy(filtroMensajesNoleidosActivo = true) }
+        }
+    }
+
+    fun quitarFiltroMensajesNoLeidos() {
+        _uiState.update { e -> e.copy(filtroMensajesNoleidosActivo = false) }
+    }
+
 
     /**
-     *  PANEL NAVEGACIÓN
+    PANEL NAVEGACIÓN
      */
 
     fun mostrarPanelNavegacion() {
@@ -77,6 +89,29 @@ class AppViewModel : ViewModel() {
 
     fun ocultarPanelNavegacion() {
         _uiState.update { e -> e.copy(mostrarPanelNavegacion = false) }
+    }
+
+    fun cambiarBotonNav(botonPulsado: Int) {
+        val nuevoEstadoBotones = arrayListOf<Boolean>()
+        for (i in 0 until _uiState.value.botoneraNav.size) {
+            if (i == botonPulsado)
+                nuevoEstadoBotones.add(true)
+            else
+                nuevoEstadoBotones.add(false)
+        }
+        _uiState.update { e -> e.copy(botoneraNav = nuevoEstadoBotones) }
+    }
+
+    /**
+    FAVORITOS
+     */
+    fun addFavorito(actividad: Actividad) {
+        if (!_uiState.value.usuario.actividadesFav.contains(actividad))
+            _uiState.value.usuario.addActividadFav(actividad)
+    }
+
+    fun eliminarFavorito(actividad: Actividad) {
+        _uiState.value.usuario.actividadesFav.remove(actividad)
     }
 
 

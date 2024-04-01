@@ -6,6 +6,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,6 +16,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -68,9 +71,15 @@ fun BarraSuperiorActividad(
             }
         },
         actions = {
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "Fav")
+            Row(){
+                IconButton(onClick = { /*TODO*/ }) {
+                    Icon(imageVector = Icons.Filled.Share, contentDescription = "share")
+                }
+                IconButton(onClick = { /*TODO*/ }) {
+                    Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "Fav")
+                }
             }
+
         }
     )
 }
@@ -87,7 +96,7 @@ fun ContenidoActividad(innerPadding: PaddingValues, actividad: Actividad) {
         Image(
             painter = painterResource(id = actividad.imagen),
             contentDescription = actividad.titulo,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().aspectRatio(3f/2f),
             contentScale = ContentScale.Crop
         )
         Text(text = stringResource(id = actividad.contenido))

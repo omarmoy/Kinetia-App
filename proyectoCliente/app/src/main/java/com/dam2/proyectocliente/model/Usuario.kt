@@ -3,7 +3,7 @@ package com.dam2.proyectocliente.model
 enum class Rol {
     OFERTANTE, CONSUMIDOR, ADMINISTRADOR
 }
-/*
+
 class Usuario(
     val id: Int,
     val nombre: String,
@@ -16,15 +16,23 @@ class Usuario(
     val nif: String,
     val actividadesFav: ArrayList<Actividad> = ArrayList(),
     val actividadesOfertadas: ArrayList<Actividad> = ArrayList(),
-    val anuncios: ArrayList<Anuncio> = ArrayList(),
+    val anunciosPublicados: ArrayList<Anuncio> = ArrayList(),
     val contactos: ArrayList<Contacto> = ArrayList()
 ) {
+
+    /**
+      ACTIVIDADES
+     */
     fun addActividadFav(actividad: Actividad): Boolean {
         return actividadesFav.add(actividad)
     }
 
     fun eliminarActividadFav(actividad: Actividad): Boolean {
         return actividadesFav.remove(actividad)
+    }
+
+    fun esFavorita(actividad: Actividad): Boolean{
+        return actividadesFav.contains(actividad)
     }
 
     fun addOfertaActividad(actividad: Actividad): Boolean {
@@ -35,14 +43,20 @@ class Usuario(
         return actividadesOfertadas.remove(actividad)
     }
 
+    /**
+        ANUNCIOS
+     */
     fun addAnuncio(anuncio: Anuncio): Boolean {
-        return anuncios.add(anuncio)
+        return anunciosPublicados.add(anuncio)
     }
 
     fun eliminarAnuncio(anuncio: Anuncio): Boolean {
-        return anuncios.remove(anuncio)
+        return anunciosPublicados.remove(anuncio)
     }
 
+    /**
+        CONVERSACIONES
+     */
     fun addContacto(contacto: Contacto): Boolean {
         return contactos.add(contacto)
     }
@@ -51,7 +65,23 @@ class Usuario(
         return contactos.remove(contacto)
     }
 
+    fun marcarMensajeLeido(contacto: Contacto){
+        val indice = contactos.indexOf(contacto)
+        contactos[indice].mensajeNuevo = false
+    }
+
+    fun addMensaje(contacto: Contacto, mensaje: Mensaje){
+        val indice = contactos.indexOf(contacto)
+        contactos[indice].addMensaje(mensaje)
+    }
+
+    fun tieneMensajesSinLeer(): Boolean{
+        for(contacto in contactos){
+            if(contacto.mensajeNuevo)
+                return true
+        }
+        return false
+    }
 
 }
 
- */

@@ -2,6 +2,7 @@ package com.dam2.proyectocliente.controlador
 
 import com.dam2.proyectocliente.model.Actividad
 import com.dam2.proyectocliente.model.Anuncio
+import com.dam2.proyectocliente.model.Categoria
 import com.dam2.proyectocliente.model.Contacto
 import com.dam2.proyectocliente.model.Fecha
 import com.dam2.proyectocliente.model.Usuario
@@ -14,7 +15,6 @@ data class UiState(
     //Datos IU
     val actividades: ArrayList<Actividad> = DatosPrueba.actividades,
     val anuncios: ArrayList<Anuncio> = DatosPrueba.anuncios,
-    val pantallasMenu: ArrayList<Boolean> = arrayListOf(true, false, false, false),
 
     //Estado IU
     val actividadSeleccionada: Actividad = Actividad(
@@ -28,10 +28,11 @@ data class UiState(
     ),
     val anuncioSeleccionado: Anuncio? = null, //TODO
     val contactoSeleccionado: Contacto = Contacto(0, "nombre", R.drawable.nofoto, ArrayList()),
+    val categoriaSelecciononada: Categoria = Categoria.Todo,
 
     val mostrarPanelNavegacion: Boolean = true,
     val botoneraNav: ArrayList<Boolean> = arrayListOf(true, false, false, false),
-    val modoOfertante: Boolean = false,
+    val modoOfertante: Boolean = false, //TODO
 
     //Entradas de texto
     val mensajeEnviar: String = "",

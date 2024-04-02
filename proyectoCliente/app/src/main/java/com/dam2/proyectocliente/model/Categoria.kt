@@ -1,6 +1,7 @@
 package com.dam2.proyectocliente.model
 
-enum class Categorias {
+enum class Categoria {
+    Todo,
     AireLibre,
     Arte,
     Aventura,
@@ -16,6 +17,7 @@ enum class Categorias {
 
     override fun toString(): String {
         return when (this) {
+            Todo -> "Todo"
             AireLibre -> "Aire Libre"
             Arte -> "Arte"
             Aventura -> "Aventura"

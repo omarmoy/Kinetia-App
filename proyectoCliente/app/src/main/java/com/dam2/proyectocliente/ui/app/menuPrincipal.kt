@@ -43,6 +43,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -57,12 +58,15 @@ import com.dam2.proyectocliente.controlador.AppViewModel
 import com.dam2.proyectocliente.controlador.DatosPrueba
 import com.dam2.proyectocliente.controlador.UiState
 import com.dam2.proyectocliente.model.Actividad
+import com.dam2.proyectocliente.model.Categoria
 import com.dam2.proyectocliente.ui.Pantallas
 import com.example.proyectocliente.R
+import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAgua
 import com.example.proyectocliente.ui.theme.AzulAguaFondo
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
+import com.example.proyectocliente.ui.theme.NegroClaro
 import com.example.proyectocliente.ui.theme.Rojo
 import com.example.proyectocliente.ui.theme.pequena
 import com.example.proyectocliente.ui.theme.subtitulo
@@ -142,7 +146,7 @@ fun ContenidoInicio(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            item(span = { GridItemSpan(2) }) { Categorias() }
+            item(span = { GridItemSpan(2) }) { Categorias(navController, vm, estado) }
             item(span = { GridItemSpan(2) }) { DestacadosyRecientes(vm, estado, navController) }
 
             //Descubre:
@@ -156,7 +160,7 @@ fun ContenidoInicio(
 }
 
 @Composable
-fun Categorias() {
+fun Categorias(navController: NavHostController, vm: AppViewModel, estado: UiState) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -167,16 +171,33 @@ fun Categorias() {
     ) {
 
         LazyRow {
-            items(DatosPrueba.categorias) { c ->
+            items(DatosPrueba.categorias) { categoria ->
+                if (!(categoria == Categoria.Todo && estado.botoneraNav[0])) {
+                    val colorBoton: Color
+                    val colorTexto: Color
+                    if (categoria == estado.categoriaSelecciononada && !estado.botoneraNav[0]){
+                        colorBoton= AmarilloPastel
+                        colorTexto= NegroClaro
+                    }else{
+                        colorBoton= AzulAgua
+                        colorTexto= Color.White
+                    }
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Button(
+                        onClick = {
+                            vm.selectCategoria(categoria)
+                            if (estado.botoneraNav[0]){
+                                vm.cambiarBotonNav(1)
+                                navController.navigate(Pantallas.menuBuscar.name)
+                            }
 
-                Spacer(modifier = Modifier.width(12.dp))
-                Button(
-                    onClick = { /*TODO*/ },
-                    shape = RoundedCornerShape(4.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = AzulAgua),
-                    contentPadding = PaddingValues(8.dp, 0.dp)
-                ) {
-                    Text(text = c)
+                        },
+                        shape = RoundedCornerShape(4.dp),
+                        colors = ButtonDefaults.buttonColors(colorBoton),
+                        contentPadding = PaddingValues(8.dp, 0.dp)
+                    ) {
+                        Text(text = categoria.toString(), color = colorTexto)
+                    }
                 }
             }
         }
@@ -189,11 +210,25 @@ fun DestacadosyRecientes(vm: AppViewModel, estado: UiState, navController: NavHo
 
         Titulo(texto = "Destacado")
         LazyRow {
-            items(vm.actividadesDestacadas()) { a -> MiniaturaScrollLateral(a, vm, navController, estado) }
+            items(vm.actividadesDestacadas()) { a ->
+                MiniaturaScrollLateral(
+                    a,
+                    vm,
+                    navController,
+                    estado
+                )
+            }
         }
         Titulo(texto = "Recientes")
         LazyRow {
-            items(vm.actividadesRecientes()) { a -> MiniaturaScrollLateral(a, vm, navController, estado) }
+            items(vm.actividadesRecientes()) { a ->
+                MiniaturaScrollLateral(
+                    a,
+                    vm,
+                    navController,
+                    estado
+                )
+            }
         }
 
 
@@ -282,7 +317,7 @@ fun MiniaturaScrollLateral(
                 ) {
 
                     IconButton(onClick = {
-                        if(estado.esFavorita(a))
+                        if (estado.esFavorita(a))
                             vm.eliminarFavorito(a)
                         else
                             vm.addFavorito(a)
@@ -304,7 +339,6 @@ fun MiniaturaScrollLateral(
         }
 
     }
-
 
 
 }

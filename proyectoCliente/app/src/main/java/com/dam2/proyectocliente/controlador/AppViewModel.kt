@@ -3,6 +3,7 @@ package com.dam2.proyectocliente.controlador
 import androidx.lifecycle.ViewModel
 import com.dam2.proyectocliente.model.Actividad
 import com.dam2.proyectocliente.model.Anuncio
+import com.dam2.proyectocliente.model.Categoria
 import com.dam2.proyectocliente.model.Contacto
 import com.dam2.proyectocliente.model.Fecha
 import com.dam2.proyectocliente.model.Mensaje
@@ -30,10 +31,27 @@ class AppViewModel : ViewModel() {
         return recientes
     }
 
+    /**
+        ACTIVIDADES
+     */
     fun selectActividad(a: Actividad) {
         _uiState.update { e -> e.copy(actividadSeleccionada = a) }
     }
 
+    fun selectCategoria(c: Categoria){
+        _uiState.update { e -> e.copy(categoriaSelecciononada = c) }
+    }
+
+    fun returnActividades(): ArrayList<Actividad>{
+        if(uiState.value.categoriaSelecciononada == Categoria.Todo)
+            return uiState.value.actividades
+        else
+            return ArrayList(uiState.value.actividades.filter { it.categoria == uiState.value.categoriaSelecciononada})
+    }
+
+    /**
+        ANUNCIOS
+     */
     fun selectAnuncio(a: Anuncio) {
         _uiState.update { e -> e.copy(anuncioSeleccionado = a) }
     }

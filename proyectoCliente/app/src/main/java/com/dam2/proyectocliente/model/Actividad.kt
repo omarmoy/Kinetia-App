@@ -15,7 +15,7 @@ data class Actividad(
     val duracion: Int? = null,
     val precio: Float? = null,
     val ubicacion: String? = null,
-    val categoria: String? = null,
+    val categoria: Categoria? = null,
     val destacado: Boolean = false
 ){
     override fun equals(other: Any?): Boolean {

@@ -30,6 +30,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.controlador.AppViewModel
 import com.dam2.proyectocliente.controlador.UiState
+import com.dam2.proyectocliente.model.Categoria
 import com.dam2.proyectocliente.ui.Pantallas
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.BlancoFondo
@@ -65,7 +66,7 @@ fun Contenido(
         }
 
         composable(route = Pantallas.menuBuscar.name) {
-            MenuBusqueda(navController = navController)
+            MenuBusqueda(navController, vm, estado)
         }
 
         composable(route = Pantallas.menuMensajes.name) {
@@ -118,6 +119,7 @@ fun PanelNavegacion(navController: NavHostController, vm: AppViewModel, estado: 
                 }
                 IconButton(onClick = {
                     vm.cambiarBotonNav(1)
+                    vm.selectCategoria(Categoria.Todo)
                     navController.navigate(Pantallas.menuBuscar.name) }) {
                     Icon(
                         imageVector = Icons.Filled.Search,

@@ -16,7 +16,7 @@ data class UiState(
     val actividades: ArrayList<Actividad> = DatosPrueba.actividades,
     val anuncios: ArrayList<Anuncio> = DatosPrueba.anuncios,
 
-    //Estado IU
+    //Variables de Estado IU
     val actividadSeleccionada: Actividad = Actividad(
         id = 0,
         imagen = R.drawable.nofoto,
@@ -29,6 +29,7 @@ data class UiState(
     val anuncioSeleccionado: Anuncio? = null, //TODO
     val contactoSeleccionado: Contacto = Contacto(0, "nombre", R.drawable.nofoto, ArrayList()),
     val categoriaSelecciononada: Categoria = Categoria.Todo,
+    //val busquedaActiva: Boolean = false,
 
     val mostrarPanelNavegacion: Boolean = true,
     val botoneraNav: ArrayList<Boolean> = arrayListOf(true, false, false, false),

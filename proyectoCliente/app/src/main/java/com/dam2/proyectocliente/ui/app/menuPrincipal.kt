@@ -117,12 +117,17 @@ fun BarraSuperiorMPrincipal(navController: NavHostController, vm: AppViewModel, 
                     tint = if (estado.usuario.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
                 )
             }
-            Spacer(modifier = Modifier.width(12.dp))
-            Icon(
-                imageVector = Icons.Filled.Search,
-                contentDescription = "buscar",
-                tint = AzulAguaOscuro
-            )
+            //Spacer(modifier = Modifier.width(12.dp))
+            IconButton(onClick = {
+                vm.cambiarBotonNav(1)
+                navController.navigate(Pantallas.menuBusquedaDirecta.name)
+            }) {
+                Icon(
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = "busquedaDirecta",
+                    tint = AzulAguaOscuro
+                )
+            }
         }
     }
 
@@ -413,101 +418,3 @@ fun MenuInicioPreview() {
         bottomBar = { PanelNavegacion(navController = navController, vm, estado) }
     )
 }
-
-/*
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MiniaturaScrollLateral(
-    a: Actividad,
-    vm: AppViewModel,
-    navController: NavHostController
-) {
-    val tam = 230.dp
-
-    // Define un estado mutable para actuar como un disparador de recomposición
-    val recomposeTrigger = remember { mutableStateOf(0) }
-
-    // Función para refrescar manualmente la componible
-    fun refreshComposable() {
-        recomposeTrigger.value++
-    }
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(end = 12.dp)
-    ) {
-        Card(
-            onClick = {
-                vm.selectActividad(a)
-                vm.ocultarPanelNavegacion()
-                navController.navigate(Pantallas.vistaActividad.name)
-            }
-        ) {
-            Image(
-                painter = painterResource(id = a.imagen),
-                contentDescription = a.titulo,
-                modifier = Modifier
-                    .width(tam)
-                    .height(tam * 2 / 3),
-                contentScale = ContentScale.Crop
-            )
-        }
-        Card(
-            colors = CardDefaults.cardColors(AzulAguaFondo),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 4.dp, bottom = 8.dp)
-                .width(tam)
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth()
-            ) {
-                Column(modifier = Modifier.widthIn(max = tam * 8 / 10)) {
-                    Text(
-                        text = a.titulo,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        fontWeight = FontWeight.Bold,
-                    )
-                    Text(text = a.ubicacion ?: "", fontSize = pequena)
-                }
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(0.dp),
-                    verticalArrangement = Arrangement.Bottom
-                ) {
-                    IconButton(onClick = {
-                        if (vm.esFavorita(a))
-                            vm.eliminarFavorito(a)
-                        else
-                            vm.addFavorito(a)
-                        // Llama a la función de actualización de la componible
-                        refreshComposable()
-                    }) {
-                        Icon(
-                            imageVector = if (vm.esFavorita(a)) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                            contentDescription = "Fav",
-                            tint = if (vm.esFavorita(a)) AmarilloPastel else NegroClaro
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    // LaunchedEffect que se dispara cada vez que cambia el valor del disparador de recomposición
-    LaunchedEffect(recomposeTrigger.value) {
-        // Esta parte se ejecutará cada vez que cambie el valor de recomposeTrigger
-        // Puedes colocar aquí el contenido que quieres refrescar manualmente
-        // por ejemplo, otras composables o lógica que desees ejecutar nuevamente
-    }
-}
-
-
- */

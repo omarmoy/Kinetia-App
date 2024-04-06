@@ -7,6 +7,7 @@ enum class Pantallas {
 
     menuPrincipal,
     menuBuscar,
+    menuBusquedaDirecta,
     menuMensajes,
     menuMiPerfil,
 

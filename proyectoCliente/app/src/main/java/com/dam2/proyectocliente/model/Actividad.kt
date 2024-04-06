@@ -16,7 +16,10 @@ data class Actividad(
     val precio: Float? = null,
     val ubicacion: String? = null,
     val categoria: Categoria? = null,
-    val destacado: Boolean = false
+    val destacado: Boolean = false,
+    //TODO
+    val plazas: Int = 0,
+    val plazasDisponibles: Int = 0
 ){
     override fun equals(other: Any?): Boolean {
         if (javaClass != other?.javaClass) return false

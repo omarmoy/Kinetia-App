@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -62,25 +61,27 @@ import com.dam2.proyectocliente.controlador.DatosPrueba
 import com.dam2.proyectocliente.controlador.UiState
 import com.dam2.proyectocliente.model.Actividad
 import com.dam2.proyectocliente.model.Anuncio
+import com.dam2.proyectocliente.ui.Pantallas
+import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.AzulFondo
 import com.example.proyectocliente.ui.theme.AzulLogo
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
 import com.example.proyectocliente.ui.theme.NegroClaro
+import com.example.proyectocliente.ui.theme.Rojo
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuUsuario(navController: NavHostController, vm: AppViewModel, estado: UiState) {
     Scaffold(
-        topBar = { BarraSuperiorPerfil(navController = navController) },
+        topBar = { BarraSuperiorPerfil(navController = navController, vm, estado) },
         content = { innerPadding -> ContenidoUsuario(innerPadding, vm, estado) }
     )
 }
 
 
 @Composable
-fun BarraSuperiorPerfil(navController: NavHostController) {
+fun BarraSuperiorPerfil(navController: NavHostController, vm: AppViewModel, estado: UiState) {
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -91,24 +92,34 @@ fun BarraSuperiorPerfil(navController: NavHostController) {
             .background(BlancoFondo)
             .padding(12.dp)
     ) {
-        Icon(
-            imageVector = Icons.Filled.Notifications,
-            contentDescription = "notificacion",
-            tint = NegroClaro
-        )
-        Spacer(modifier = Modifier.width(12.dp))
-        Icon(
-            imageVector = Icons.Filled.Settings,
-            contentDescription = "Ajustes",
-            tint = NegroClaro
-        )
-
+        IconButton(onClick = {
+            if (estado.usuario.tieneMensajesSinLeer()) {
+                vm.filtrarMensajesNoleidos()
+                vm.cambiarBotonNav(2)
+                navController.navigate(Pantallas.menuMensajes.name)
+            } else {
+                //TODO dialogo emergente "No tiene mensajes nuevos"
+            }
+        }) {
+            Icon(
+                imageVector = Icons.Filled.Notifications,
+                contentDescription = "notificacion",
+                tint = if (estado.usuario.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
+            )
+        }
+        //Spacer(modifier = Modifier.width(12.dp))
+        IconButton(onClick = { /*TODO*/ }) {
+            Icon(
+                imageVector = Icons.Filled.Settings,
+                contentDescription = "Ajustes",
+                tint = NegroClaro
+            )
+        }
     }
 
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ContenidoUsuario(innerPadding: PaddingValues, vm: AppViewModel, estado: UiState) {
     var verPerfil by rememberSaveable { mutableStateOf(true) }
@@ -190,7 +201,11 @@ fun ContenidoUsuario(innerPadding: PaddingValues, vm: AppViewModel, estado: UiSt
                             }
                         }
                         //TODO("controlar cuando no haya publicado ningún anuncio")
-                        items(estado.usuario.anunciosPublicados) { anuncio -> MiniaturaAnuncio(anuncio) }
+                        items(estado.usuario.anunciosPublicados) { anuncio ->
+                            MiniaturaAnuncio(
+                                anuncio
+                            )
+                        }
                     }
                 }
             }
@@ -202,7 +217,6 @@ fun ContenidoUsuario(innerPadding: PaddingValues, vm: AppViewModel, estado: UiSt
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PanelPerfil(vm: AppViewModel, estado: UiState) {
     DatosPerfil(vm, estado)
@@ -258,7 +272,6 @@ fun PanelPerfil(vm: AppViewModel, estado: UiState) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DatosPerfil(vm: AppViewModel, estado: UiState) {
     Row(
@@ -333,7 +346,6 @@ fun MiniaturaActividadPerfil(a: Actividad) {
 
 
 @OptIn(ExperimentalMaterial3Api::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MiniaturaAnuncio(anuncio: Anuncio) {
     Box(
@@ -367,7 +379,6 @@ fun MiniaturaAnuncio(anuncio: Anuncio) {
 /**
  * VISTA PREVIA
  */
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
@@ -376,7 +387,7 @@ fun PerfilPreview() {
     val vm: AppViewModel = viewModel()
     val estado by vm.uiState.collectAsState()
     Scaffold(
-        topBar = { BarraSuperiorPerfil(navController = navController) },
+        topBar = { BarraSuperiorPerfil(navController, vm, estado) },
         content = { innerPadding -> ContenidoUsuario(innerPadding, vm, estado) },
         //llama a una función de navegación:
         bottomBar = { PanelNavegacion(navController = navController, vm, estado) }

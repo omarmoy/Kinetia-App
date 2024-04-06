@@ -1,0 +1,13 @@
+front:
+-Menú Usuario
+-Vista Actividad
+-Vista Anuncio
+-Menú Configuración
+
+*inicio
+*registro
+*actividad: reservas, plazas y demás. 
+
+
+BACK:
+todo

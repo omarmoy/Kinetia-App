@@ -1,7 +1,5 @@
 package com.dam2.proyectocliente.ui.app
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
@@ -56,13 +55,11 @@ import com.dam2.proyectocliente.ui.Pantallas
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAgua
 import com.example.proyectocliente.ui.theme.AzulAguaFondo
-import com.example.proyectocliente.ui.theme.AzulFondo
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
 import com.example.proyectocliente.ui.theme.NegroClaro
 import com.example.proyectocliente.ui.theme.Rojo
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuConversaciones(navController: NavHostController, vm: AppViewModel, estado: UiState) {
@@ -73,7 +70,6 @@ fun MenuConversaciones(navController: NavHostController, vm: AppViewModel, estad
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BarraSuperiorConver(vm: AppViewModel, estado: UiState) {
     Row(
@@ -81,7 +77,7 @@ fun BarraSuperiorConver(vm: AppViewModel, estado: UiState) {
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
-            .height(50.dp)
+            .height(55.dp)
             .background(BlancoFondo)
             .padding(12.dp)
     ) {
@@ -99,8 +95,6 @@ fun BarraSuperiorConver(vm: AppViewModel, estado: UiState) {
     }
 }
 
-
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Conversaciones(
@@ -118,8 +112,8 @@ fun Conversaciones(
         LazyColumn {
             item {
                 TextField(
-                    value = "",
-                    onValueChange = { it },
+                    value = estado.contactosBuscar,
+                    onValueChange = { vm.setContactoBuscar(it) },
                     singleLine = true,
                     label = { Text(text = "Buscar") },
                     leadingIcon = {
@@ -134,15 +128,22 @@ fun Conversaciones(
                         imeAction = ImeAction.Done  //tipo de botón
                     ),
                     colors = TextFieldDefaults.textFieldColors(containerColor=BlancoFondo, unfocusedIndicatorColor = Gris2),
+                    trailingIcon = {
+                        if (estado.contactosBuscar != "")
+                            IconButton(onClick = { vm.setContactoBuscar("") }) {
+                                Icon(
+                                    imageVector = Icons.Filled.Clear,
+                                    contentDescription = "buscar",
+                                    tint = NegroClaro
+                                )
+                            }
+                    },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(20.dp))
             }
-            val conversaciones = if (estado.filtroMensajesNoleidosActivo){
-                estado.usuario.contactos.filter { it.mensajeNuevo }
-            }else
-                estado.usuario.contactos
-            items(conversaciones) { c ->
+
+            items(vm.listaContactos()) { c ->
                 MiniaturaContacto(c, navController, vm)
             }
         }
@@ -199,7 +200,6 @@ fun MiniaturaContacto(c: Contacto, navController: NavHostController, vm: AppView
 /**
  * VISTA PREVIA
  */
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable

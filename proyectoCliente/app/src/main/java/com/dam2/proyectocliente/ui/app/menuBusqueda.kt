@@ -1,5 +1,7 @@
 package com.dam2.proyectocliente.ui.app
 
+import android.view.View
+import android.view.ViewGroup
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,31 +16,45 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -61,42 +77,93 @@ import com.example.proyectocliente.ui.theme.pequena
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuBusqueda(navController: NavHostController, vm: AppViewModel, estado: UiState) {
+fun MenuBusqueda(
+    navController: NavHostController,
+    vm: AppViewModel,
+    estado: UiState,
+    focoBusqueda: Boolean = false
+) {
+    var volverArriba by remember { mutableStateOf(false) }
+    val estadoLista = rememberLazyListState()
+    val focusRequester = remember { FocusRequester() }
+
     Scaffold(
-        topBar = { BarraSuperiorBusqueda() },
-        content = { innerPadding -> ContenidoBusqueda(innerPadding, navController, vm, estado) }
+        topBar = { BarraSuperiorBusqueda(vm, estado, focusRequester) },
+        content = { innerPadding ->
+            ContenidoBusqueda(
+                innerPadding,
+                navController,
+                vm,
+                estado,
+                estadoLista
+            )
+        },
+        floatingActionButton = {
+            Surface(
+                //shadowElevation = 4.dp, // Establece la elevación a 4dp
+                shape = CircleShape,
+                color = BlancoFondo.copy(alpha = 0.5f) //establece el color con transparencia
+            ) {
+            IconButton(onClick = {
+                volverArriba = true
+            }) {
+                Icon(
+                    imageVector = Icons.Filled.KeyboardArrowUp,
+                    contentDescription = "Mi Cuenta",
+                    tint = NegroClaro
+                )
+            }
+        }}
     )
+    LaunchedEffect(volverArriba) {
+        if (volverArriba) {
+            estadoLista.animateScrollToItem(index = 0)
+            volverArriba = false
+        }
+    }
+    if (focoBusqueda) {
+        LaunchedEffect(Unit) {
+            focusRequester.requestFocus()
+        }
+    }
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorBusqueda() {
+fun BarraSuperiorBusqueda(vm: AppViewModel, estado: UiState, obtenerFoco: FocusRequester) {
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         //horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
-            .height(50.dp)
+            //.height(150.dp)
             .background(BlancoFondo)
             .padding(12.dp)
     ) {
         TextField(
-            value = "",
-            onValueChange = { it },
+            value = estado.actividadBuscar,
+            onValueChange = { vm.setActividadBuscar(it) },
             singleLine = true,
             label = { Text(text = "Buscar") },
-            //leadingIcon = { Icon(painter = painterResource(id = R.drawable.money), contentDescription = null) },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Done  //tipo de botón
+                imeAction = ImeAction.Default  //tipo de botón
             ),
-            modifier = Modifier.fillMaxWidth()
-        )
-        Icon(
-            imageVector = Icons.Filled.Search,
-            contentDescription = "buscar",
-            tint = NegroClaro
+            trailingIcon = {
+                if (estado.actividadBuscar != "")
+                    IconButton(onClick = { vm.setActividadBuscar("")}) {
+                        Icon(
+                            imageVector = Icons.Filled.Clear,
+                            contentDescription = "buscar",
+                            tint = NegroClaro
+                        )
+                    }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(obtenerFoco)
         )
     }
 }
@@ -107,7 +174,8 @@ fun ContenidoBusqueda(
     innerPadding: PaddingValues,
     navController: NavHostController,
     vm: AppViewModel,
-    estado: UiState
+    estado: UiState,
+    estadoLista: LazyListState
 ) {
     Column(
         modifier = Modifier
@@ -116,10 +184,10 @@ fun ContenidoBusqueda(
         //.verticalScroll(rememberScrollState())
     ) {
 
-        LazyColumn {
+        LazyColumn(state = estadoLista) {
             item { Categorias(navController, vm, estado) } //función definida en menuPrincipal
-            if (vm.returnActividades().size > 0) {
-                items(vm.returnActividades()) { a ->
+            if (vm.listaActividades().size > 0) {
+                items(vm.listaActividades()) { a ->
                     MiniaturaActividadBusqueda(a, vm, navController, estado)
                 }
             } else
@@ -128,7 +196,7 @@ fun ContenidoBusqueda(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.fillMaxSize()
-                        ) {
+                    ) {
                         Spacer(modifier = Modifier.height(150.dp))
                         Text(text = "Ups, no se ha encontrado lo que buscas")
                     }
@@ -136,8 +204,6 @@ fun ContenidoBusqueda(
         }
     }
 }
-
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -152,11 +218,11 @@ fun MiniaturaActividadBusqueda(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Define un estado mutable para actuar como un disparador de recomposición
-        val recomposeTrigger = remember { mutableStateOf(0) }
+        val recomposeTrigger = remember { mutableIntStateOf(0) }
 
         // Función para refrescar manualmente la componible
         fun refreshComposable() {
-            recomposeTrigger.value++
+            recomposeTrigger.intValue++
         }
         Card(shape = RectangleShape, /*cuadrado*/
             onClick = {
@@ -222,7 +288,7 @@ fun MiniaturaActividadBusqueda(
                 }
             }
         }
-        LaunchedEffect(recomposeTrigger.value) {
+        LaunchedEffect(recomposeTrigger.intValue) {
             // Esta parte se ejecutará cada vez que cambie el valor de recomposeTrigger
             // Puedes colocar aquí el contenido que quieres refrescar manualmente
             // por ejemplo, otras composables o lógica que desees ejecutar nuevamente
@@ -244,8 +310,16 @@ fun MenuBusquedaPreview() {
     val vm: AppViewModel = viewModel()
     val estado by vm.uiState.collectAsState()
     Scaffold(
-        topBar = { BarraSuperiorBusqueda() },
-        content = { innerPadding -> ContenidoBusqueda(innerPadding, navController, vm, estado) },
+        topBar = { BarraSuperiorBusqueda(vm, estado, FocusRequester()) },
+        content = { innerPadding ->
+            ContenidoBusqueda(
+                innerPadding,
+                navController,
+                vm,
+                estado,
+                LazyListState()
+            )
+        },
         //llama a una función de navegación:
         bottomBar = { PanelNavegacion(navController = navController, vm, estado) }
     )

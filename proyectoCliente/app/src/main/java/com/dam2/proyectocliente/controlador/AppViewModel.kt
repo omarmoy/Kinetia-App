@@ -15,11 +15,14 @@ class AppViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState
 
-
+    /**
+    ACTIVIDADES
+     */
     fun actividadesDestacadas(): ArrayList<Actividad> {
         val listaFiltrada = _uiState.value.actividades.filter { it.destacado }
         return ArrayList(listaFiltrada)
     }
+
     fun actividadesRecientes(): ArrayList<Actividad> {
         val ordenadas = _uiState.value.actividades.sortedByDescending { it.fecha.localDateTime }
         val recientes = ArrayList<Actividad>()
@@ -31,26 +34,41 @@ class AppViewModel : ViewModel() {
         return recientes
     }
 
-    /**
-        ACTIVIDADES
-     */
     fun selectActividad(a: Actividad) {
         _uiState.update { e -> e.copy(actividadSeleccionada = a) }
     }
 
-    fun selectCategoria(c: Categoria){
+    fun selectCategoria(c: Categoria) {
         _uiState.update { e -> e.copy(categoriaSelecciononada = c) }
     }
 
-    fun returnActividades(): ArrayList<Actividad>{
-        if(uiState.value.categoriaSelecciononada == Categoria.Todo)
-            return uiState.value.actividades
+    fun listaActividades(): ArrayList<Actividad> {
+
+        val listaActividades = if (uiState.value.actividadBuscar!="") {
+            resultadoBusquedaActividad()
+        } else {
+            uiState.value.actividades
+        }
+
+        return if (uiState.value.categoriaSelecciononada == Categoria.Todo)
+            listaActividades
         else
-            return ArrayList(uiState.value.actividades.filter { it.categoria == uiState.value.categoriaSelecciononada})
+            ArrayList(listaActividades.filter {
+                it.categoria == uiState.value.categoriaSelecciononada
+            })
     }
 
+    fun setActividadBuscar(actividad: String) {
+        _uiState.update { e -> e.copy(actividadBuscar = actividad) }
+    }
+
+    fun resultadoBusquedaActividad(tituloBuscar: String = uiState.value.actividadBuscar): ArrayList<Actividad> {
+        return buscarActividad(uiState.value.actividades, tituloBuscar)
+    }
+
+
     /**
-        ANUNCIOS
+    ANUNCIOS
      */
     fun selectAnuncio(a: Anuncio) {
         _uiState.update { e -> e.copy(anuncioSeleccionado = a) }
@@ -58,7 +76,7 @@ class AppViewModel : ViewModel() {
 
 
     /**
-     * MENSAJES
+    MENSAJES
      */
     fun selectContacto(c: Contacto) {
         _uiState.update { e -> e.copy(contactoSeleccionado = c) }
@@ -95,6 +113,31 @@ class AppViewModel : ViewModel() {
     fun quitarFiltroMensajesNoLeidos() {
         _uiState.update { e -> e.copy(filtroMensajesNoleidosActivo = false) }
     }
+
+
+
+    fun listaContactos(): ArrayList<Contacto> {
+
+        val listaContactos = if (uiState.value.contactosBuscar!="") {
+            resultadoBusquedaContacto()
+        } else {
+            uiState.value.usuario.contactos
+        }
+
+        return if (uiState.value.filtroMensajesNoleidosActivo)
+            ArrayList(listaContactos.filter { it.mensajeNuevo })
+        else
+            listaContactos
+    }
+    fun setContactoBuscar(contacto: String){
+        _uiState.update { e -> e.copy(contactosBuscar = contacto) }
+    }
+
+    fun resultadoBusquedaContacto(contactoBuscar: String = uiState.value.contactosBuscar): ArrayList<Contacto> {
+        return buscarContacto(uiState.value.usuario.contactos, contactoBuscar)
+    }
+
+
 
 
     /**

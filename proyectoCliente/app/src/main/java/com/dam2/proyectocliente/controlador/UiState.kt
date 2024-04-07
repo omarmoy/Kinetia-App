@@ -1,5 +1,7 @@
 package com.dam2.proyectocliente.controlador
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import com.dam2.proyectocliente.model.Actividad
 import com.dam2.proyectocliente.model.Anuncio
 import com.dam2.proyectocliente.model.Categoria
@@ -15,18 +17,28 @@ data class UiState(
     //Datos IU
     val actividades: ArrayList<Actividad> = DatosPrueba.actividades,
     val anuncios: ArrayList<Anuncio> = DatosPrueba.anuncios,
+    val categorias: ArrayList<Categoria> = DatosPrueba.categorias,
+    val indiceCategoria: Int = 0,
 
     //Variables de Estado IU
     val actividadSeleccionada: Actividad = Actividad(
         id = 0,
-        imagen = R.drawable.nofoto,
+        imagen = R.drawable.noimagen,
         titulo = "titulo",
         contenido = R.string.vacio,
         anuncianteID = 0,
         anunciante = "anunciante",
         fecha = Fecha.ahora()
     ),
-    val anuncioSeleccionado: Anuncio? = null, //TODO
+    val anuncioSeleccionado: Anuncio = Anuncio(
+        id = 0,
+        fotoAnunciante = R.drawable.nofoto,
+        titulo = "titulo anuncio",
+        contendio = R.string.vacio,
+        anuncianteID = 0,
+        anunciante = "anunciante",
+        fecha = Fecha.ahora()
+    ),
     val contactoSeleccionado: Contacto = Contacto(0, "nombre", R.drawable.nofoto, ArrayList()),
     val categoriaSelecciononada: Categoria = Categoria.Todo,
     //val busquedaActiva: Boolean = false,
@@ -39,14 +51,15 @@ data class UiState(
     val mensajeEnviar: String = "",
     val actividadBuscar: String = "",
     val contactosBuscar: String = "",
+    val actividadUsuarioBuscar: String = "",
 
     //Filtros
     val filtroMensajesNoleidosActivo: Boolean = false
 
 
-){
-    fun esFavorita(actividad: Actividad): Boolean{
-        if (usuario.actividadesFav.size==0)
+) {
+    fun esFavorita(actividad: Actividad): Boolean {
+        if (usuario.actividadesFav.size == 0)
             return false
         return usuario.actividadesFav.contains(actividad)
     }

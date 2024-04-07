@@ -109,7 +109,7 @@ fun MenuBusqueda(
             }) {
                 Icon(
                     imageVector = Icons.Filled.KeyboardArrowUp,
-                    contentDescription = "Mi Cuenta",
+                    contentDescription = "Volver Arriva",
                     tint = NegroClaro
                 )
             }
@@ -220,7 +220,7 @@ fun MiniaturaActividadBusqueda(
         // Define un estado mutable para actuar como un disparador de recomposición
         val recomposeTrigger = remember { mutableIntStateOf(0) }
 
-        // Función para refrescar manualmente la componible
+        // Función para refrescar manualmente la componible cuando se la da a "meegusta"
         fun refreshComposable() {
             recomposeTrigger.intValue++
         }

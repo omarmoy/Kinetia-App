@@ -86,6 +86,13 @@ fun Contenido(
         }
 
         //SubPantallas
+        composable(route = Pantallas.listaReservas.name){
+            //TODO: falta funcionalidad reservas
+            ListaActividades("Mis reservas" , estado.usuario.reservas , navController , vm , estado)
+        }
+        composable(route = Pantallas.listaFavoritos.name){
+            ListaActividades("Favoritos" , estado.usuario.actividadesFav , navController , vm , estado)
+        }
         composable(route = Pantallas.vistaActividad.name) {
             VistaActividad(navController, estado.actividadSeleccionada, vm)
         }
@@ -93,7 +100,7 @@ fun Contenido(
             VistaChat(navController, estado.contactoSeleccionado, vm, estado)
         }
         composable(route = Pantallas.vistaAnuncio.name) {
-            //TODO
+            VistaAnuncio(navController, estado.anuncioSeleccionado, vm)
         }
 
     }
@@ -118,6 +125,7 @@ fun PanelNavegacion(navController: NavHostController, vm: AppViewModel, estado: 
             ) {
                 IconButton(onClick = {
                     vm.cambiarBotonNav(0)
+                    vm.setIndiceCategoria()
                     navController.navigate(Pantallas.menuPrincipal.name) }) {
                     Icon(
                         imageVector = Icons.Filled.Home,

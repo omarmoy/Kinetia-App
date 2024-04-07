@@ -13,5 +13,7 @@ enum class Pantallas {
 
     vistaActividad,
     vistaAnuncio,
-    chat
+    chat,
+    listaReservas,
+    listaFavoritos
 }

@@ -42,9 +42,19 @@ class AppViewModel : ViewModel() {
         _uiState.update { e -> e.copy(categoriaSelecciononada = c) }
     }
 
+    fun setIndiceCategoria(c: Categoria? = null) {
+        val indice =
+            if (c != null) {
+                uiState.value.categorias.indexOf(c)
+            } else {
+                0
+            }
+        _uiState.update { e -> e.copy(indiceCategoria = indice) }
+    }
+
     fun listaActividades(): ArrayList<Actividad> {
 
-        val listaActividades = if (uiState.value.actividadBuscar!="") {
+        val listaActividades = if (uiState.value.actividadBuscar != "") {
             resultadoBusquedaActividad()
         } else {
             uiState.value.actividades
@@ -64,6 +74,21 @@ class AppViewModel : ViewModel() {
 
     fun resultadoBusquedaActividad(tituloBuscar: String = uiState.value.actividadBuscar): ArrayList<Actividad> {
         return buscarActividad(uiState.value.actividades, tituloBuscar)
+    }
+
+    //actividades de usuario
+    fun cargarActividadesUsuario(lista: ArrayList<Actividad>): ArrayList<Actividad> {
+        val actividadBuscada = uiState.value.actividadUsuarioBuscar
+
+        if (actividadBuscada == "") {
+            return lista
+        } else {
+            return buscarActividad(lista, actividadBuscada)
+        }
+    }
+
+    fun setActividadUsuarioBuscar(actividad: String) {
+        _uiState.update { e -> e.copy(actividadUsuarioBuscar = actividad) }
     }
 
 
@@ -115,10 +140,9 @@ class AppViewModel : ViewModel() {
     }
 
 
-
     fun listaContactos(): ArrayList<Contacto> {
 
-        val listaContactos = if (uiState.value.contactosBuscar!="") {
+        val listaContactos = if (uiState.value.contactosBuscar != "") {
             resultadoBusquedaContacto()
         } else {
             uiState.value.usuario.contactos
@@ -129,15 +153,14 @@ class AppViewModel : ViewModel() {
         else
             listaContactos
     }
-    fun setContactoBuscar(contacto: String){
+
+    fun setContactoBuscar(contacto: String) {
         _uiState.update { e -> e.copy(contactosBuscar = contacto) }
     }
 
     fun resultadoBusquedaContacto(contactoBuscar: String = uiState.value.contactosBuscar): ArrayList<Contacto> {
         return buscarContacto(uiState.value.usuario.contactos, contactoBuscar)
     }
-
-
 
 
     /**
@@ -175,5 +198,12 @@ class AppViewModel : ViewModel() {
         _uiState.value.usuario.actividadesFav.remove(actividad)
     }
 
+    /**
+    FUNCIONALIDADES
+     */
+    fun cambiarModo() {
+        val cambioModo = !uiState.value.modoOfertante
+        _uiState.update { e -> e.copy(modoOfertante = cambioModo) }
+    }
 
 }

@@ -22,15 +22,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.MailOutline
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,13 +40,14 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -63,12 +62,11 @@ import com.dam2.proyectocliente.controlador.DatosPrueba
 import com.dam2.proyectocliente.controlador.UiState
 import com.dam2.proyectocliente.model.Contacto
 import com.dam2.proyectocliente.model.Mensaje
-import com.dam2.proyectocliente.ui.Pantallas
 import com.example.proyectocliente.ui.theme.AzulFondo
 import com.example.proyectocliente.ui.theme.AzulLogo
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
-import com.example.proyectocliente.ui.theme.NegroClaro
+import com.example.proyectocliente.ui.theme.Rojo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -92,6 +90,7 @@ fun VistaChat(
 fun BarraSuperiorChat(
     navController: NavHostController, contacto: Contacto, vm: AppViewModel
 ) {
+    var mostrarMenu by remember{ mutableStateOf(false) }
     TopAppBar(
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -120,6 +119,29 @@ fun BarraSuperiorChat(
                     contentDescription = "Cerrar"
                 )
             }
+        },
+        actions = {
+
+            IconButton(onClick = {
+                mostrarMenu = !mostrarMenu
+            }) {
+                Icon(
+                    imageVector = Icons.Filled.MoreVert,
+                    contentDescription = "menú chat"
+                )
+            }
+            DropdownMenu(
+                expanded = mostrarMenu,
+                onDismissRequest = { mostrarMenu=false},
+                modifier = Modifier.background(BlancoFondo)
+            ) {
+                DropdownMenuItem(
+                    text = { Text(text = "Vaciar chat")},
+                    onClick = { /*TODO*/ })
+                DropdownMenuItem(
+                    text = { Text(text = "borrar contacto", color = Rojo)},
+                    onClick = { /*TODO*/ })
+            }
         }
     )
 }
@@ -128,7 +150,9 @@ fun BarraSuperiorChat(
 fun ContenidoChat(innerPadding: PaddingValues, contacto: Contacto) {
     LazyColumn(
         reverseLayout = true,
-        modifier = Modifier.fillMaxSize().padding(innerPadding)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
 
     ) {
         items(contacto.mensajes.reversed()) { m ->
@@ -173,9 +197,9 @@ fun EntradaDeTexto(vm: AppViewModel, estado: UiState) {
             horizontalArrangement = Arrangement.SpaceAround,
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(min=50.dp, max=200.dp)
+                .heightIn(min = 50.dp, max = 200.dp)
                 .background(BlancoFondo)
-                .padding(start=12.dp, end= 12.dp, bottom = 4.dp, top = 4.dp)
+                .padding(start = 12.dp, end = 12.dp, bottom = 4.dp, top = 4.dp)
         ) {
 
             OutlinedTextField(
@@ -186,8 +210,11 @@ fun EntradaDeTexto(vm: AppViewModel, estado: UiState) {
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Default
                 ),
-                modifier = Modifier.weight(.9f).background(Color.White)
-                    .border(1.dp, Gris2, RoundedCornerShape(4.dp)).heightIn(min = 40.dp)
+                modifier = Modifier
+                    .weight(.9f)
+                    .background(Color.White)
+                    .border(1.dp, Gris2, RoundedCornerShape(4.dp))
+                    .heightIn(min = 40.dp)
             )
             IconButton(
                 modifier = Modifier.weight(.1f),

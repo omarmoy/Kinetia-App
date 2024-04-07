@@ -1,5 +1,7 @@
 package com.dam2.proyectocliente.model
 
+import com.dam2.proyectocliente.controlador.DatosPrueba
+
 enum class Rol {
     OFERTANTE, CONSUMIDOR, ADMINISTRADOR
 }
@@ -15,6 +17,7 @@ class Usuario(
     val foto: Int,
     val nif: String,
     val actividadesFav: ArrayList<Actividad> = ArrayList(),
+    val reservas: ArrayList<Actividad> = DatosPrueba.actividades, //TODO: cambiar y poner funcionalidad Reservas
     val actividadesOfertadas: ArrayList<Actividad> = ArrayList(),
     val anunciosPublicados: ArrayList<Anuncio> = ArrayList(),
     val contactos: ArrayList<Contacto> = ArrayList()

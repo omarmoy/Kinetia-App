@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 
 import androidx.compose.material.icons.Icons
@@ -35,12 +36,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -83,25 +89,22 @@ fun MenuPrincipal(navController: NavHostController, vm: AppViewModel, estado: Ui
 /**
  * MENÚ SUPERIOR
  */
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BarraSuperiorMPrincipal(navController: NavHostController, vm: AppViewModel, estado: UiState) {
+    TopAppBar(
+        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = BlancoFondo),
+        title = {
+            Image(
+                painter = painterResource(R.drawable.logolinealetraylogo),
+                contentDescription = "logo",
+                modifier = Modifier.height(35.dp)
+                //contentScale = ContentScale.Crop
+            )
+        },
+        actions = {
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp)
-            .background(BlancoFondo)
-            .padding(12.dp)
-    ) {
-        Image(
-            painter = painterResource(R.drawable.logolinealetraylogo),
-            contentDescription = "logo",
-            modifier = Modifier.fillMaxHeight()
-        )
-
-        Row {
             IconButton(onClick = {
                 if (estado.usuario.tieneMensajesSinLeer()) {
                     vm.filtrarMensajesNoleidos()
@@ -120,6 +123,8 @@ fun BarraSuperiorMPrincipal(navController: NavHostController, vm: AppViewModel, 
             //Spacer(modifier = Modifier.width(12.dp))
             IconButton(onClick = {
                 vm.cambiarBotonNav(1)
+                vm.setIndiceCategoria()
+                vm.selectCategoria(Categoria.Todo)
                 navController.navigate(Pantallas.menuBusquedaDirecta.name)
             }) {
                 Icon(
@@ -128,9 +133,9 @@ fun BarraSuperiorMPrincipal(navController: NavHostController, vm: AppViewModel, 
                     tint = AzulAguaOscuro
                 )
             }
-        }
-    }
 
+        }
+    )
 }
 
 /**
@@ -165,7 +170,12 @@ fun ContenidoInicio(
 }
 
 @Composable
-fun Categorias(navController: NavHostController, vm: AppViewModel, estado: UiState) {
+fun Categorias(
+    navController: NavHostController,
+    vm: AppViewModel,
+    estado: UiState
+) {
+    val estadoLista = rememberLazyListState()
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -175,27 +185,27 @@ fun Categorias(navController: NavHostController, vm: AppViewModel, estado: UiSta
             .padding(top = 12.dp)
     ) {
 
-        LazyRow {
-            items(DatosPrueba.categorias) { categoria ->
+        LazyRow(state = estadoLista) {
+            items(estado.categorias) { categoria ->
                 if (!(categoria == Categoria.Todo && estado.botoneraNav[0])) {
                     val colorBoton: Color
                     val colorTexto: Color
-                    if (categoria == estado.categoriaSelecciononada && !estado.botoneraNav[0]){
-                        colorBoton= AmarilloPastel
-                        colorTexto= NegroClaro
-                    }else{
-                        colorBoton= AzulAgua
-                        colorTexto= Color.White
+                    if (categoria == estado.categoriaSelecciononada && !estado.botoneraNav[0]) {
+                        colorBoton = AmarilloPastel
+                        colorTexto = NegroClaro
+                    } else {
+                        colorBoton = AzulAgua
+                        colorTexto = Color.White
                     }
                     Spacer(modifier = Modifier.width(12.dp))
                     Button(
                         onClick = {
                             vm.selectCategoria(categoria)
-                            if (estado.botoneraNav[0]){
+                            if (estado.botoneraNav[0]) {
                                 vm.cambiarBotonNav(1)
+                                vm.setIndiceCategoria(categoria)
                                 navController.navigate(Pantallas.menuBuscar.name)
                             }
-
                         },
                         shape = RoundedCornerShape(4.dp),
                         colors = ButtonDefaults.buttonColors(colorBoton),
@@ -206,6 +216,9 @@ fun Categorias(navController: NavHostController, vm: AppViewModel, estado: UiSta
                 }
             }
         }
+    }
+    LaunchedEffect(estado.indiceCategoria != 0) {
+        estadoLista.animateScrollToItem(index = estado.indiceCategoria)
     }
 }
 
@@ -258,7 +271,8 @@ fun MiniaturaScrollLateral(
     a: Actividad,
     vm: AppViewModel,
     navController: NavHostController,
-    estado: UiState
+    estado: UiState,
+    mostrarMenos: Boolean = false
 ) {
     val tam = 230.dp
     Column(
@@ -310,29 +324,33 @@ fun MiniaturaScrollLateral(
                         fontWeight = FontWeight.Bold,
 
                         )
-                    Text(text = a.ubicacion ?: "", fontSize = pequena)
+                    if (!mostrarMenos) {
+                        Text(text = a.ubicacion ?: "", fontSize = pequena)
+                    }
                 }
 
-                Column(
-                    modifier = Modifier
-                        //.weight(0.1f)
-                        .fillMaxHeight()
-                        .padding(0.dp),
-                    verticalArrangement = Arrangement.Bottom
-                ) {
+                if (!mostrarMenos) {
+                    Column(
+                        modifier = Modifier
+                            //.weight(0.1f)
+                            .fillMaxHeight()
+                            .padding(0.dp),
+                        verticalArrangement = Arrangement.Bottom
+                    ) {
 
-                    IconButton(onClick = {
-                        if (estado.esFavorita(a))
-                            vm.eliminarFavorito(a)
-                        else
-                            vm.addFavorito(a)
-                        refreshComposable()
-                    }) {
-                        Icon(
-                            imageVector = if (estado.esFavorita(a)) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                            contentDescription = "Fav",
-                            tint = AzulAguaOscuro
-                        )
+                        IconButton(onClick = {
+                            if (estado.esFavorita(a))
+                                vm.eliminarFavorito(a)
+                            else
+                                vm.addFavorito(a)
+                            refreshComposable()
+                        }) {
+                            Icon(
+                                imageVector = if (estado.esFavorita(a)) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                                contentDescription = "Fav",
+                                tint = AzulAguaOscuro
+                            )
+                        }
                     }
                 }
             }

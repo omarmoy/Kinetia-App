@@ -14,7 +14,7 @@ data class Actividad(
     val fechaPublicacion: Fecha = Fecha.ahora(),
     val duracion: Int? = null,
     val precio: Float? = null,
-    val ubicacion: String? = null,
+    val ubicacion: String,
     val categoria: Categoria? = null,
     val destacado: Boolean = false,
     //TODO

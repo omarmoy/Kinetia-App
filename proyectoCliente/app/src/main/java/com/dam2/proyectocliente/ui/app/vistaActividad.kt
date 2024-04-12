@@ -1,7 +1,5 @@
 package com.dam2.proyectocliente.ui.app
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,14 +9,12 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,9 +23,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.twotone.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -43,16 +39,19 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -61,8 +60,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.controlador.AppViewModel
 import com.dam2.proyectocliente.controlador.DatosPrueba
+import com.dam2.proyectocliente.controlador.UiState
 import com.dam2.proyectocliente.model.Actividad
-import com.dam2.proyectocliente.ui.Pantallas
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
@@ -71,10 +70,10 @@ import com.example.proyectocliente.ui.theme.BlancoFondo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VistaActividad(navController: NavHostController, actividad: Actividad, vm: AppViewModel) {
+fun VistaActividad(navController: NavHostController, actividad: Actividad, vm: AppViewModel,estado: UiState) {
 
     Scaffold(
-        topBar = { BarraSuperiorActividad(navController, actividad, vm) },
+        topBar = { BarraSuperiorActividad(navController, actividad, vm, estado) },
         content = { innerPadding -> ContenidoActividad(innerPadding, navController, actividad, vm) }
     )
 }
@@ -83,8 +82,17 @@ fun VistaActividad(navController: NavHostController, actividad: Actividad, vm: A
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BarraSuperiorActividad(
-    navController: NavHostController, actividad: Actividad, vm: AppViewModel
+    navController: NavHostController, actividad: Actividad, vm: AppViewModel, estado: UiState
 ) {
+    // Define un estado mutable para actuar como un disparador de recomposición
+    val recomposeTrigger = remember { mutableStateOf(0) }
+    // Función para refrescar manualmente la componible
+    fun refreshComposable() {
+        recomposeTrigger.value++
+    }
+    LaunchedEffect(recomposeTrigger.value) {
+        // Esta parte se ejecutará cada vez que cambie el valor de recomposeTrigger
+    }
     TopAppBar(
         title = {
             //Text(actividad.titulo, overflow = TextOverflow.Ellipsis)
@@ -102,13 +110,18 @@ fun BarraSuperiorActividad(
             }
         },
         actions = {
-            Row() {
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(imageVector = Icons.Filled.Share, contentDescription = "share")
-                }
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "Fav")
-                }
+            IconButton(onClick = {
+                if (estado.esFavorita(actividad))
+                    vm.eliminarFavorito(actividad)
+                else
+                    vm.addFavorito(actividad)
+                refreshComposable()
+            }) {
+                Icon(
+                    imageVector = if (estado.esFavorita(actividad)) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                    contentDescription = "Fav",
+                    tint = AzulAguaOscuro
+                )
             }
 
         }
@@ -320,9 +333,10 @@ fun PanelContenido(navController: NavHostController, actividad: Actividad, vm: A
  */
 @Preview(showBackground = true)
 @Composable
-fun actividadPreview() {
+fun ActividadPreview() {
     val vm: AppViewModel = viewModel()
     val navController = rememberNavController()
     val a = DatosPrueba.actividades[0]
-    VistaActividad(navController = navController, actividad = a, vm)
+    val estado by vm.uiState.collectAsState()
+    VistaActividad(navController = navController, actividad = a, vm, estado)
 }

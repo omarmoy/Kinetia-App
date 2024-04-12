@@ -7,6 +7,7 @@ import com.dam2.proyectocliente.model.Categoria
 import com.dam2.proyectocliente.model.Contacto
 import com.dam2.proyectocliente.model.Fecha
 import com.dam2.proyectocliente.model.Mensaje
+import com.dam2.proyectocliente.model.Usuario
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -14,6 +15,13 @@ import kotlinx.coroutines.flow.update
 class AppViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState
+
+    /**
+     * usuario
+     */
+    fun usuario(): Usuario {
+        return _uiState.value.usuario
+    }
 
     /**
     ACTIVIDADES

@@ -94,7 +94,7 @@ fun Contenido(
             ListaActividades("Favoritos" , estado.usuario.actividadesFav , navController , vm , estado)
         }
         composable(route = Pantallas.vistaActividad.name) {
-            VistaActividad(navController, estado.actividadSeleccionada, vm)
+            VistaActividad(navController, estado.actividadSeleccionada, vm, estado)
         }
         composable(route = Pantallas.chat.name) {
             VistaChat(navController, estado.contactoSeleccionado, vm, estado)

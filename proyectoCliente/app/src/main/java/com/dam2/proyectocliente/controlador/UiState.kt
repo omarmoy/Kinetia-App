@@ -28,7 +28,8 @@ data class UiState(
         contenido = R.string.vacio,
         anuncianteID = 0,
         anunciante = "anunciante",
-        fecha = Fecha.ahora()
+        fecha = Fecha.ahora(),
+        ubicacion = "ubicación"
     ),
     val anuncioSeleccionado: Anuncio = Anuncio(
         id = 0,

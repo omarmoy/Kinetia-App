@@ -53,7 +53,7 @@ object DatosPrueba {
             id = 13, titulo = "Titulo Actividad 13", imagen = R.drawable.painting, contenido = R.string.t5,
             anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.Experiencias,  duracion = 2, precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" ,  anuncianteID = 1),
         Actividad(
-            id = 14, titulo = "Titulo Actividad 14", imagen = R.drawable.tech, contenido = R.string.t5,
+            id = 14, titulo = "Titulo Actividad 14", imagen = R.drawable.tech, contenido = R.string.t14,
             anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.Aventura,  duracion = 2, precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" ,  anuncianteID = 1, destacado = true)
     )
 

@@ -4,23 +4,36 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.twotone.DateRange
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,20 +43,30 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.controlador.AppViewModel
 import com.dam2.proyectocliente.controlador.DatosPrueba
 import com.dam2.proyectocliente.model.Actividad
+import com.dam2.proyectocliente.ui.Pantallas
+import com.example.proyectocliente.R
+import com.example.proyectocliente.ui.theme.AmarilloPastel
+import com.example.proyectocliente.ui.theme.AzulAguaClaro
+import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -92,6 +115,7 @@ fun BarraSuperiorActividad(
     )
 }
 
+
 @Composable
 fun ContenidoActividad(
     innerPadding: PaddingValues,
@@ -99,65 +123,61 @@ fun ContenidoActividad(
     actividad: Actividad,
     vm: AppViewModel
 ) {
-    LazyColumn(
+    Column(
         modifier = Modifier
             .padding(innerPadding)
-            //.fillMaxSize()
-            //.verticalScroll(rememberScrollState())
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .background(color = BlancoFondo)
     ) {
 
-        item {
-            Image(
-                painter = painterResource(id = actividad.imagen),
-                contentDescription = actividad.titulo,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(3f / 2f),
-                contentScale = ContentScale.Crop
-            )
-        }
-        item { PanelTitulo(navController, actividad, vm) }
-        item { PanelDatos(navController, actividad, vm) }
-        item { PanelBotones(navController, actividad, vm) }
-        item { PanelContenido(navController, actividad, vm) }
 
+        Image(
+            painter = painterResource(id = actividad.imagen),
+            contentDescription = actividad.titulo,
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(3f / 2f),
+            contentScale = ContentScale.Crop
+        )
 
-        /*Text(text = stringResource(id = actividad.contenido))
-
-        Text(text = actividad.anunciante)
-        Text(text = actividad.fecha.toString())
-        Text(text = actividad.duracion.toString() ?: "sinDuracion")
-        Text(text = actividad.precio.toString() ?: "gratis")
-        Text(text = actividad.ubicacion ?: "no hay ubicación")
-
-        Button(onClick = { *//*TODO()*//* }) {
-            Text(text = "Contactar")
-        }*/
-
+        PanelTitulo(navController, actividad, vm)
+        PanelDatos(navController, actividad, vm)
+        PanelBotones(navController, actividad, vm)
+        PanelContenido(navController, actividad, vm)
     }
 }
 
 @Composable
 fun PanelTitulo(navController: NavHostController, actividad: Actividad, vm: AppViewModel) {
-    Column(modifier = Modifier.padding(12.dp)) {
+
+    Column(modifier = Modifier.padding(top = 12.dp, end = 12.dp, start = 12.dp, bottom = 1.dp)) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = actividad.titulo)
-                Text(text = actividad.ubicacion)
-                Text(text = actividad.anunciante)
+                Text(
+                    text = actividad.titulo, color = AzulAguaOscuro, fontWeight = FontWeight.Bold,
+                    fontSize = 28.sp
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = actividad.ubicacion, color = AzulAguaClaro, fontSize = 16.sp)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = actividad.anunciante, color = AzulAguaClaro, fontSize = 14.sp)
             }
             IconButton(
                 modifier = Modifier.weight(.2f),
                 onClick = {
                     /*TODO*/
                 }) {
-                Icon(imageVector = Icons.Filled.Share, contentDescription = "compartir")
+                Icon(
+                    imageVector = Icons.Filled.Share, contentDescription = "compartir",
+                    tint = AzulAguaOscuro,
+                    modifier = Modifier.size(30.dp)
+                )
             }
         }
         Text(
             text = "publicado: " + actividad.fechaPublicacion.mostrarFecha(),
-            textAlign = TextAlign.End,
+            textAlign = TextAlign.End, color = AzulAguaClaro, fontSize = 14.sp,
             modifier = Modifier.fillMaxWidth()
         )
     }
@@ -166,20 +186,133 @@ fun PanelTitulo(navController: NavHostController, actividad: Actividad, vm: AppV
 
 @Composable
 fun PanelDatos(navController: NavHostController, actividad: Actividad, vm: AppViewModel) {
-    Row(modifier = Modifier.fillMaxWidth()) {
-        Icon(imageVector = Icons.Filled.DateRange, contentDescription = "fecha")
-        //Icon(imageVector = Icons.Filled., contentDescription = "fecha")
+    Surface(
+        modifier = Modifier
+            .background(color = AmarilloPastel)
+            .padding(top = 1.dp)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceAround,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = BlancoFondo)
+                .padding(top = 12.dp)
+        ) {
+            val tamIcon = 40.dp
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Filled.DateRange, contentDescription = "fecha",
+                    tint = AzulAguaClaro,
+                    modifier = Modifier.size(tamIcon)
+                )
+                Text(
+                    text = actividad.fecha.toStringFecha(),
+                    color = AzulAguaClaro,
+                    fontSize = 14.sp
+                )
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_clock),
+                    contentDescription = "duración",
+                    tint = AzulAguaClaro,
+                    modifier = Modifier.size(tamIcon)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = actividad.duracion.toString() + " horas",
+                    color = AzulAguaClaro,
+                    fontSize = 14.sp
+                )
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_euro),
+                    contentDescription = "euro",
+                    tint = AzulAguaClaro,
+                    modifier = Modifier.size(tamIcon)
+                )
+                Text(
+                    text = actividad.precio.toString() + " euros",
+                    color = AzulAguaClaro,
+                    fontSize = 14.sp
+                )
+            }
+        }
+    }
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PanelBotones(navController: NavHostController, actividad: Actividad, vm: AppViewModel) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 40.dp, start = 70.dp, end = 70.dp, bottom = 12.dp)
+    ) {
+        Button(
+            onClick = {
+                //TODO
+            },
+            shape = RoundedCornerShape(4.dp),
+            colors = ButtonDefaults.buttonColors(AmarilloPastel),
+            contentPadding = PaddingValues(8.dp, 0.dp)
+        ) {
+            Text(text = "Reservar", color = Color.Black)
+        }
+        IconButton(onClick = { /*TODO*/ }) {
+        }
+        Card(
+            shape = CircleShape,
+            colors = CardDefaults.cardColors(containerColor = AzulAguaOscuro),
+            modifier = Modifier.size(50.dp),
+            onClick = { /*TODO*/ }
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize() ,
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Email,
+                    contentDescription = "contactar",
+                    tint = Color.White,
+                    modifier = Modifier.size(38.dp)
+                )
+            }
+        }
+
     }
 }
 
 @Composable
-fun PanelBotones(navController: NavHostController, actividad: Actividad, vm: AppViewModel) {
-
-}
-
-@Composable
 fun PanelContenido(navController: NavHostController, actividad: Actividad, vm: AppViewModel) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(8.dp)
+    ) {
 
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Text(text = stringResource(actividad.contenido), textAlign = TextAlign.Justify,fontSize = 14.sp)
+        }
+
+        if (stringResource(actividad.contenido).length>1399) {
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(
+                onClick = {
+                    //TODO
+                },
+                shape = RoundedCornerShape(4.dp),
+                colors = ButtonDefaults.buttonColors(AmarilloPastel),
+                contentPadding = PaddingValues(8.dp, 0.dp)
+            ) {
+                Text(text = "Reservar", color = Color.Black)
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+    }
 }
 
 /**

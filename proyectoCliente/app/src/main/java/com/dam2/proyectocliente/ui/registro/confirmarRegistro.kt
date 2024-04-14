@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -28,43 +29,35 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.controlador.AppViewModel
-import com.dam2.proyectocliente.model.Rol
+import com.dam2.proyectocliente.controlador.UiState
 import com.dam2.proyectocliente.ui.Pantallas
 import com.example.proyectocliente.R
-import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.AzulAgua
+import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.NegroClaro
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ElegirRol(navController: NavHostController, vm: AppViewModel) {
+fun ConfirmarRegistro(navController: NavHostController, vm: AppViewModel, estado: UiState) {
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { },
-                colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = BlancoFondo),
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "volver",
-                            tint = AzulAguaOscuro
-                        )
-                    }
-                }
+                colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = BlancoFondo)
             )
-        },
-    ) { padding ->
+        }) { padding ->
         Surface(modifier = Modifier.padding(padding)) {
             Column(
                 modifier = Modifier
@@ -81,43 +74,35 @@ fun ElegirRol(navController: NavHostController, vm: AppViewModel) {
                     contentDescription = "logotipo",
                     modifier = Modifier.height(120.dp)
                 )
-                Spacer(modifier = Modifier.height(90.dp))
 
+                Spacer(modifier = Modifier.height(20.dp))
                 Text(
-                    text = "Cuéntamos, ¿cómo vas a utilizar la aplicación?",
+                    text = "Enhorabuena",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = NegroClaro
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = "El registro se ha llevado a cabo con éxito",
                     textAlign = TextAlign.Center,
                     color = NegroClaro
                 )
-                Spacer(modifier = Modifier.height(24.dp))
 
-                OutlinedButton(
+
+                Spacer(modifier = Modifier.height(180.dp))
+
+
+                Button(
                     onClick = {
-                        vm.setEsEmpresa(false)
-                        vm.addCampoFormularioRegistro("rol", Rol.CONSUMIDOR.toString())
-                        navController.navigate(Pantallas.nuevoUsuario.name)
+                        vm.mostrarPanelNavegacion()
+                        navController.navigate(Pantallas.menuPrincipal.name)
                     },
-                    border = BorderStroke(
-                        ButtonDefaults.outlinedButtonBorder.width,
-                        color = AzulAgua
-                    ),
+                    colors = ButtonDefaults.buttonColors(AzulAguaOscuro),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Quiero encontrar actividades", color = AzulAguaOscuro)
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-                OutlinedButton(
-                    onClick = {
-                        vm.addCampoFormularioRegistro("rol", Rol.OFERTANTE.toString())
-                        navController.navigate(Pantallas.elegirTipoPro.name)
-                    },
-                    border = BorderStroke(
-                        ButtonDefaults.outlinedButtonBorder.width,
-                        color = AzulAgua
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = "Soy ofertante de actividades", color = AzulAguaOscuro)
+                    Text(text = "Ir a la aplicación")
                 }
 
             }
@@ -128,10 +113,10 @@ fun ElegirRol(navController: NavHostController, vm: AppViewModel) {
 
 @Preview(showBackground = true)
 @Composable
-fun ElegirRolPreview() {
+fun CRegistroPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
     val estado by vm.uiState.collectAsState()
-    ElegirRol(navController, vm)
+    ConfirmarRegistro(navController, vm, estado)
 }
 

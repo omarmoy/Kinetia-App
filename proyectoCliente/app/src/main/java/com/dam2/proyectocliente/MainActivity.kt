@@ -7,10 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.ui.app.MenuPrincipal
 import com.dam2.proyectocliente.ui.app.Principal
-import com.dam2.proyectocliente.ui.inicio.NavegacionInicial
 import com.example.proyectocliente.ui.theme.ProyectoClienteTheme
 
 

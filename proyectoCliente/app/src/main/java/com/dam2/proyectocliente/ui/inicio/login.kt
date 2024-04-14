@@ -25,6 +25,8 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -33,8 +35,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.dam2.proyectocliente.controlador.AppViewModel
+import com.dam2.proyectocliente.controlador.UiState
+import com.dam2.proyectocliente.ui.Pantallas
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.AzulAguaFondo
 import com.example.proyectocliente.ui.theme.BlancoFondo
@@ -43,7 +49,7 @@ import com.example.proyectocliente.ui.theme.NegroClaro
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Login(navController: NavHostController) {
+fun Login(navController: NavHostController, vm: AppViewModel, estado: UiState) {
 
     Scaffold(
         topBar = {
@@ -103,7 +109,7 @@ fun Login(navController: NavHostController) {
                     label = { Text(text = "introduce la contraseña") },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Next  //tipo de botón
+                        imeAction = ImeAction.Done  //tipo de botón
                     ),
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.textFieldColors(containerColor = AzulAguaFondo)
@@ -123,7 +129,11 @@ fun Login(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(180.dp))
 
                 Button(
-                    onClick = { },
+                    onClick = {
+                        //TODO
+                        vm.mostrarPanelNavegacion()
+                        navController.navigate(Pantallas.menuPrincipal.name)
+                    },
                     colors = ButtonDefaults.buttonColors(AzulAguaOscuro),
                     modifier = Modifier.width(150.dp)
                 ) {
@@ -139,7 +149,8 @@ fun Login(navController: NavHostController) {
 
 @Preview(showBackground = true)
 @Composable
-fun LoginPreview() {
-    val navController = rememberNavController()
-    Login(navController)
+fun LoginPreview() {val navController = rememberNavController()
+    val vm: AppViewModel = viewModel()
+    val estado by vm.uiState.collectAsState()
+    Login(navController, vm, estado)
 }

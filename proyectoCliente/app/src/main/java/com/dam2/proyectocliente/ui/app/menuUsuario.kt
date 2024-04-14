@@ -21,9 +21,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -39,6 +42,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -92,7 +96,9 @@ fun MenuUsuario(navController: NavHostController, vm: AppViewModel, estado: UiSt
 fun BarraSuperiorPerfil(navController: NavHostController, vm: AppViewModel, estado: UiState) {
 
     var mostrarMenu by remember { mutableStateOf(false) }
-    TopAppBar(title = { /*sin título*/ },
+    TopAppBar(
+        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = BlancoFondo),
+        title = { /*sin título*/ },
         actions = {
             IconButton(onClick = {
                 if (estado.usuario.tieneMensajesSinLeer()) {
@@ -110,6 +116,7 @@ fun BarraSuperiorPerfil(navController: NavHostController, vm: AppViewModel, esta
                 )
             }
             //Spacer(modifier = Modifier.width(12.dp))
+
             //Ajustes
             IconButton(onClick = { mostrarMenu = !mostrarMenu }) {
                 Icon(
@@ -126,23 +133,54 @@ fun BarraSuperiorPerfil(navController: NavHostController, vm: AppViewModel, esta
                 if (estado.usuario.rol == Rol.OFERTANTE || estado.usuario.rol == Rol.ADMINISTRADOR) {
                     DropdownMenuItem(
                         text = {
-                            Text(
-                                text = if (estado.modoOfertante)
-                                    "Cambiar a modo Ofertante"
-                                else "Cambiar a modo Consumidor"
-                            )
+                            Row(
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                if (estado.modoPro)
+                                    Text(text = "Modo Ofertante")
+                                else
+                                    Text(text = "Modo Consumidor")
+                                Icon(
+                                    imageVector = Icons.Filled.Refresh,
+                                    contentDescription = "modo"
+                                )
+                            }
                         },
                         onClick = {
-                        /*TODO*/
+                            /*TODO*/
                             vm.cambiarModo()
                         })
                 }
                 DropdownMenuItem(
-                    text = { Text(text = "Editar perfil") },
-                    onClick = { /*TODO*/ })
+                    text = {
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(text = "Editar perfil")
+                            Icon(imageVector = Icons.Filled.AccountBox, contentDescription = "edit")
+                        }
+                    },
+                    onClick = {
+                        /*TODO*/
+                    })
                 DropdownMenuItem(
-                    text = { Text(text = "Cerrar sesión") },
-                    onClick = { /*TODO*/ })
+                    text = {
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(text = "Cerrar sesión")
+                            Icon(imageVector = Icons.Filled.ExitToApp, contentDescription = "salir")
+                        }
+                    },
+                    onClick = {
+                        /*TODO*/
+                        vm.ocultarPanelNavegacion()
+                        vm.cambiarBotonNav(0)
+                        navController.navigate(Pantallas.inicio.name)
+                    })
             }
         }
     )

@@ -24,6 +24,24 @@ class AppViewModel : ViewModel() {
     }
 
     /**
+     * FORMULARIO REGISTRO
+     */
+//    fun nuevoUsuario(campo: String, valor: String){
+//        var usuario = _uiState.value.usuarioResitro
+//        usuario[campo] = valor
+//        _uiState.update { e -> e.copy(usuarioResitro = usuario) }
+//
+//    }
+
+    fun setEsEmpresa( esEmpresa: Boolean){
+        _uiState.update { e -> e.copy(esEmpresa = esEmpresa)
+        }
+    }
+    fun addCampoFormularioRegistro(campo: String, valor: String){
+        _uiState.value.formularioRegistro[campo] = valor
+    }
+
+    /**
     ACTIVIDADES
      */
     fun actividadesDestacadas(): ArrayList<Actividad> {
@@ -210,8 +228,8 @@ class AppViewModel : ViewModel() {
     FUNCIONALIDADES
      */
     fun cambiarModo() {
-        val cambioModo = !uiState.value.modoOfertante
-        _uiState.update { e -> e.copy(modoOfertante = cambioModo) }
+        val cambioModo = !uiState.value.modoPro
+        _uiState.update { e -> e.copy(modoPro = cambioModo) }
     }
 
 }

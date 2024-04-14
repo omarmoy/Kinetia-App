@@ -46,7 +46,7 @@ import com.example.proyectocliente.ui.theme.NegroClaro
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ElegirRol(navController: NavHostController, vm: AppViewModel) {
+fun ElegirTipoPro(navController: NavHostController, vm: AppViewModel) {
 
     Scaffold(
         topBar = {
@@ -84,7 +84,7 @@ fun ElegirRol(navController: NavHostController, vm: AppViewModel) {
                 Spacer(modifier = Modifier.height(90.dp))
 
                 Text(
-                    text = "Cuéntamos, ¿cómo vas a utilizar la aplicación?",
+                    text = "Cuéntamos más",
                     textAlign = TextAlign.Center,
                     color = NegroClaro
                 )
@@ -93,7 +93,6 @@ fun ElegirRol(navController: NavHostController, vm: AppViewModel) {
                 OutlinedButton(
                     onClick = {
                         vm.setEsEmpresa(false)
-                        vm.addCampoFormularioRegistro("rol", Rol.CONSUMIDOR.toString())
                         navController.navigate(Pantallas.nuevoUsuario.name)
                     },
                     border = BorderStroke(
@@ -102,14 +101,14 @@ fun ElegirRol(navController: NavHostController, vm: AppViewModel) {
                     ),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Quiero encontrar actividades", color = AzulAguaOscuro)
+                    Text(text = "Soy una persona física", color = AzulAguaOscuro)
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
                 OutlinedButton(
                     onClick = {
-                        vm.addCampoFormularioRegistro("rol", Rol.OFERTANTE.toString())
-                        navController.navigate(Pantallas.elegirTipoPro.name)
+                        vm.setEsEmpresa(true)
+                        navController.navigate(Pantallas.nuevoUsuario.name)
                     },
                     border = BorderStroke(
                         ButtonDefaults.outlinedButtonBorder.width,
@@ -117,7 +116,7 @@ fun ElegirRol(navController: NavHostController, vm: AppViewModel) {
                     ),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Soy ofertante de actividades", color = AzulAguaOscuro)
+                    Text(text = "Soy una empresa", color = AzulAguaOscuro)
                 }
 
             }
@@ -128,10 +127,10 @@ fun ElegirRol(navController: NavHostController, vm: AppViewModel) {
 
 @Preview(showBackground = true)
 @Composable
-fun ElegirRolPreview() {
+fun ElegirTipoProPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
     val estado by vm.uiState.collectAsState()
-    ElegirRol(navController, vm)
+    ElegirTipoPro(navController, vm)
 }
 

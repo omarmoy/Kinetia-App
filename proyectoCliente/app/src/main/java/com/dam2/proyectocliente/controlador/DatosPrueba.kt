@@ -80,7 +80,7 @@ object DatosPrueba {
 
     val usuario = Usuario(
         id = 1, nombre = "Crash", apellido1 = "Bandicoot", apellido2 = "PlayStation", mail = "correo@correo.es",
-        rol = Rol.OFERTANTE, password = "crash", foto = R.drawable.crash, nif = "44112233M",
+        rol = Rol.OFERTANTE, password = "crash", foto = R.drawable.crash, cif = "44112233M",
         actividadesFav = cargarActividadesFav(),//arrayListOf<Actividad>(),
         actividadesOfertadas = cargarActividadesOfertadas(),
         anunciosPublicados = cargarAnuncios(),

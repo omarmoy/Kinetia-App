@@ -11,8 +11,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,61 +34,75 @@ import com.dam2.proyectocliente.ui.Pantallas
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.AzulAgua
+import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.NegroClaro
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Inicio(navController: NavHostController) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { },
+                colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = BlancoFondo)
+            )
+        }) { padding ->
+        Surface(modifier = Modifier.padding(padding)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFFF4F4F4))
+                    .padding(40.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+                //,verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Spacer(modifier = Modifier.height(50.dp))
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFF4F4F4))
-            .padding(40.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-        //,verticalArrangement = Arrangement.SpaceBetween
-    ) {
-        Spacer(modifier = Modifier.height(100.dp))
+                Image(
+                    painter = painterResource(R.drawable.logoredondo),
+                    contentDescription = "logotipo",
+                    modifier = Modifier.height(120.dp)
+                )
 
-        Image(
-            painter = painterResource(R.drawable.logoredondoletras),
-            contentDescription = "logotipo",
-            modifier = Modifier.height(120.dp)
-        )
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = "Encuéntralo en KINèTIA",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = NegroClaro
+                )
 
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            text = "Encuéntralo en KINèTIA",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = NegroClaro
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            text = "La App donde publicar o buscar actividades cerca de ti",
-            textAlign = TextAlign.Center,
-            color = NegroClaro
-        )
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = "La App donde publicar o buscar actividades cerca de ti",
+                    textAlign = TextAlign.Center,
+                    color = NegroClaro
+                )
 
 
-        Spacer(modifier = Modifier.height(180.dp))
+                Spacer(modifier = Modifier.height(180.dp))
 
-        OutlinedButton(
-            onClick = {},
-            border = BorderStroke(ButtonDefaults.outlinedButtonBorder.width, color = AzulAgua),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "Registro", color = AzulAguaOscuro)
+                OutlinedButton(
+                    onClick = { navController.navigate(Pantallas.elegirRol.name) },
+                    border = BorderStroke(
+                        ButtonDefaults.outlinedButtonBorder.width,
+                        color = AzulAgua
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = "Registro", color = AzulAguaOscuro)
+                }
+                Button(
+                    onClick = { navController.navigate(Pantallas.login.name) },
+                    colors = ButtonDefaults.buttonColors(AzulAguaOscuro),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = "Iniciar sesión")
+                }
+
+            }
         }
-        Button(
-            onClick = {navController.navigate(Pantallas.login.name)},
-            colors = ButtonDefaults.buttonColors(AzulAguaOscuro),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "Iniciar sesión")
-        }
-
     }
 }
 

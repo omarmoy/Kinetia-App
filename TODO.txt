@@ -1,12 +1,12 @@
 front:
--Menú Usuario
--Vista Actividad
--Vista Anuncio
--Menú Configuración
+-Modo Empresa
+-formularios: actividad, anuncio. 
 
+funcionalidad:
 *inicio
 *registro
 *actividad: reservas, plazas y demás. 
+*Contactar
 
 
 BACK:

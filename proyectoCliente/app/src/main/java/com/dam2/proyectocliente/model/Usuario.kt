@@ -1,6 +1,7 @@
 package com.dam2.proyectocliente.model
 
 import com.dam2.proyectocliente.controlador.DatosPrueba
+import java.time.LocalDate
 
 enum class Rol {
     OFERTANTE, CONSUMIDOR, ADMINISTRADOR
@@ -8,14 +9,18 @@ enum class Rol {
 
 class Usuario(
     val id: Int,
+    val mail: String,
+    val password: String,
+    val rol: Rol,
     val nombre: String,
     val apellido1: String,
-    val apellido2: String,
-    val mail: String,
-    val rol: Rol,
-    val password: String,
+    val apellido2: String = "",
+    val fechaNaciminto: LocalDate? = null,
     val foto: Int,
-    val nif: String,
+    val nombreEmpsesa: String = "",
+    val cif: String = "",
+    val direccion: String = "",
+
     val actividadesFav: ArrayList<Actividad> = ArrayList(),
     val reservas: ArrayList<Actividad> = DatosPrueba.actividades, //TODO: cambiar y poner funcionalidad Reservas
     val actividadesOfertadas: ArrayList<Actividad> = ArrayList(),

@@ -1,7 +1,5 @@
 package com.dam2.proyectocliente.controlador
 
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import com.dam2.proyectocliente.model.Actividad
 import com.dam2.proyectocliente.model.Anuncio
 import com.dam2.proyectocliente.model.Categoria
@@ -13,6 +11,24 @@ import com.example.proyectocliente.R
 data class UiState(
 
     val usuario: Usuario = DatosPrueba.usuario,
+
+    //Formulario inscripción
+    val formularioRegistro: MutableMap<String, String> = mutableMapOf(
+        "mail" to "",
+        "password" to "",
+        "rol" to "",
+        "nombre" to "",
+        "apellido1" to "",
+        "apellido2" to "",
+        "diaNac" to "",
+        "mesNac" to "",
+        "anioNac" to "",
+        //"foto" to "",
+        "nombreEmpresa" to "",
+        "cif" to "",
+        "direccion" to ""
+    ),
+    val esEmpresa: Boolean = false,
 
     //Datos IU
     val actividades: ArrayList<Actividad> = DatosPrueba.actividades,
@@ -44,9 +60,9 @@ data class UiState(
     val categoriaSelecciononada: Categoria = Categoria.Todo,
     //val busquedaActiva: Boolean = false,
 
-    val mostrarPanelNavegacion: Boolean = true,
+    val mostrarPanelNavegacion: Boolean = false,
     val botoneraNav: ArrayList<Boolean> = arrayListOf(true, false, false, false),
-    val modoOfertante: Boolean = false, //TODO
+    val modoPro: Boolean = false, //TODO
 
     //Entradas de texto
     val mensajeEnviar: String = "",

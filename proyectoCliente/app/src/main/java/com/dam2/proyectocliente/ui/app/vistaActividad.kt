@@ -36,6 +36,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -67,14 +68,30 @@ import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
+import com.example.proyectocliente.ui.theme.Gris2
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VistaActividad(navController: NavHostController, actividad: Actividad, vm: AppViewModel,estado: UiState) {
+fun VistaActividad(
+    navController: NavHostController,
+    actividad: Actividad,
+    vm: AppViewModel,
+    estado: UiState,
+    vistaPrevia: Boolean = false
+) {
 
     Scaffold(
-        topBar = { BarraSuperiorActividad(navController, actividad, vm, estado) },
-        content = { innerPadding -> ContenidoActividad(innerPadding, navController, actividad, vm) }
+        topBar = {
+            if (vistaPrevia)
+                BarraSuperiorActividadVP()
+            else
+                BarraSuperiorActividad(navController, actividad, vm, estado)
+        },
+        content = { innerPadding -> ContenidoActividad(innerPadding, navController, actividad, vm) },
+        bottomBar = {
+            if(vistaPrevia)
+                BarraInferiorActividadVP(navController, actividad, vm, estado)
+        }
     )
 }
 
@@ -86,6 +103,7 @@ fun BarraSuperiorActividad(
 ) {
     // Define un estado mutable para actuar como un disparador de recomposición
     val recomposeTrigger = remember { mutableStateOf(0) }
+
     // Función para refrescar manualmente la componible
     fun refreshComposable() {
         recomposeTrigger.value++
@@ -285,7 +303,7 @@ fun PanelBotones(navController: NavHostController, actividad: Actividad, vm: App
             onClick = { /*TODO*/ }
         ) {
             Box(
-                modifier = Modifier.fillMaxSize() ,
+                modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -308,10 +326,14 @@ fun PanelContenido(navController: NavHostController, actividad: Actividad, vm: A
     ) {
 
         Box(modifier = Modifier.fillMaxWidth()) {
-            Text(text = stringResource(actividad.contenido), textAlign = TextAlign.Justify,fontSize = 14.sp)
+            Text(
+                text = stringResource(actividad.contenido),
+                textAlign = TextAlign.Justify,
+                fontSize = 14.sp
+            )
         }
 
-        if (stringResource(actividad.contenido).length>1399) {
+        if (stringResource(actividad.contenido).length > 1399) {
             Spacer(modifier = Modifier.height(24.dp))
             Button(
                 onClick = {
@@ -327,6 +349,74 @@ fun PanelContenido(navController: NavHostController, actividad: Actividad, vm: A
         }
     }
 }
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BarraSuperiorActividadVP() {
+    TopAppBar(
+        title = {
+            Text("Vista previa")
+        },
+        colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = BlancoFondo),
+        navigationIcon = {
+            IconButton(onClick = { }) {
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = "Cerrar"
+                )
+            }
+        },
+        actions = {
+            IconButton(onClick = { }) {
+                Icon(
+                    imageVector = Icons.Filled.FavoriteBorder,
+                    contentDescription = "Fav",
+                    tint = AzulAguaOscuro
+                )
+            }
+        }
+    )
+}
+
+@Composable
+fun BarraInferiorActividadVP(
+    navController: NavHostController,
+    actividad: Actividad,
+    vm: AppViewModel,
+    estado: UiState,
+) {
+    Box(
+        modifier = Modifier
+            .background(Gris2)
+            .padding(top = 1.dp)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(BlancoFondo)
+        ) {
+            TextButton(onClick = {
+
+                //TODO
+
+            }) {
+                Text(text = "Editar", color = AzulAguaOscuro, fontSize = 16.sp)
+            }
+
+            TextButton(onClick = {
+
+                //TODO
+
+            }) {
+                Text(text = "Publicar", color = AzulAguaOscuro, fontSize = 16.sp)
+            }
+        }
+    }
+
+}
+
 
 /**
  * VISTA PREVIA

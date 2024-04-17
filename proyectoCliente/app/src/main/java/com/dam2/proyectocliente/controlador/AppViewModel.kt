@@ -41,6 +41,15 @@ class AppViewModel : ViewModel() {
         _uiState.value.formularioRegistro[campo] = valor
     }
 
+    fun addCampoFormularioActividad(campo: String, valor: String){
+
+        _uiState.value.formularioActividad[campo] = valor
+//        var formulario =_uiState.value.formularioActividad
+//        formulario[campo] = valor
+//        _uiState.update { e -> e.copy(formularioActividad = formulario) }
+
+    }
+
     /**
     ACTIVIDADES
      */

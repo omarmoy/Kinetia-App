@@ -4,27 +4,21 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -38,9 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -52,12 +44,11 @@ import com.dam2.proyectocliente.ui.Pantallas
 import com.dam2.proyectocliente.ui.recursos.DialogoInfo
 import com.dam2.proyectocliente.ui.recursos.TextFieldConCabecera
 import com.dam2.proyectocliente.ui.recursos.TextFieldIntroducirNumero
-import com.example.proyectocliente.ui.theme.AzulAguaFondo
+import com.dam2.proyectocliente.controlador.fechaNacimientoOK
+import com.dam2.proyectocliente.controlador.texfieldVacio
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.NegroClaro
-import java.time.DateTimeException
-import java.time.LocalDate
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -100,8 +91,8 @@ fun NuevoUsuarioDatos(navController: NavHostController, vm: AppViewModel, estado
                     .background(BlancoFondo)
             ) {
                 TextButton(onClick = {
-                    if (texfieldVacio(arrayListOf( nombre, apellido1, diaT, mesT, anioT))
-                        || !fechaNacimintoOK(dia, mes, anio)
+                    if (texfieldVacio(arrayListOf(nombre, apellido1, diaT, mesT, anioT))
+                        || !fechaNacimientoOK(dia, mes, anio)
                     ) {
                         error = true
                     } else {
@@ -162,29 +153,47 @@ fun NuevoUsuarioDatos(navController: NavHostController, vm: AppViewModel, estado
                     fontSize = 16.sp
                 )
                 Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
+//                    horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    TextFieldIntroducirNumero(label = "día", value = diaT, onValueChange = { diaT = it })
-                    TextFieldIntroducirNumero(label = "mes", value = mesT, onValueChange = { mesT = it })
                     TextFieldIntroducirNumero(
-                        label = "año", value = anioT, onValueChange = { anioT = it },
-                        ImeAction.Done, 70.dp
+                        label = "día",
+                        value = diaT,
+                        onValueChange = { diaT = it },
+                        modifier = Modifier
+                            .width(60.dp)
+                            .padding(end = 2.dp)
+                    )
+                    TextFieldIntroducirNumero(
+                        label = "mes",
+                        value = mesT,
+                        onValueChange = { mesT = it },
+                        modifier = Modifier
+                            .width(60.dp)
+                            .padding(end = 2.dp)
+                    )
+                    TextFieldIntroducirNumero(
+                        label = "año",
+                        value = anioT,
+                        onValueChange = { anioT = it },
+                        modifier = Modifier.width(80.dp), ImeAction.Done
                     )
                 }
+
+                Text(text = estado.formularioRegistro.toString(), color = Color.Red)
 
             }
 
             when {
                 error -> {
-                    if (texfieldVacio(arrayListOf( nombre, apellido1, diaT, mesT, anioT)))
+                    if (texfieldVacio(arrayListOf(nombre, apellido1, diaT, mesT, anioT)))
                         DialogoInfo(
-                            onConfirmation = { error=false },
+                            onConfirmation = { error = false },
                             dialogText = "Todos los campos son obligatorios"
                         )
-                    else if (!fechaNacimintoOK(dia, mes, anio))
+                    else if (!fechaNacimientoOK(dia, mes, anio))
                         DialogoInfo(
-                            onConfirmation = { error=false },
+                            onConfirmation = { error = false },
                             dialogText = "Introduzca una fecha de nacimiento válida"
                         )
 
@@ -193,9 +202,6 @@ fun NuevoUsuarioDatos(navController: NavHostController, vm: AppViewModel, estado
         }
     }
 }
-
-
-
 
 
 @Preview(showBackground = true)

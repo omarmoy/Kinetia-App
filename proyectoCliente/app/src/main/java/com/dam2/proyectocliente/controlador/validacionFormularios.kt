@@ -1,12 +1,20 @@
-package com.dam2.proyectocliente.ui.registro
+package com.dam2.proyectocliente.controlador
 
 import java.time.DateTimeException
 import java.time.LocalDate
 
-fun fechaNacimintoOK(dia: Int, mes: Int, anio: Int): Boolean {
+fun fechaNacimientoOK(dia: Int, mes: Int, anio: Int): Boolean {
     try {
         LocalDate.of(anio, mes, dia)
         return true
+    } catch (e: DateTimeException){
+        return false
+    }
+}
+
+fun validarFecha(dia: Int, mes: Int, anio: Int): Boolean {
+    try {
+        return LocalDate.of(anio, mes, dia) > LocalDate.now()
     } catch (e: DateTimeException){
         return false
     }

@@ -23,12 +23,23 @@ data class UiState(
         "diaNac" to "",
         "mesNac" to "",
         "anioNac" to "",
-        //"foto" to "",
         "nombreEmpresa" to "",
         "cif" to "",
         "direccion" to ""
     ),
     val esEmpresa: Boolean = false,
+
+    //Formulario actividad
+    var formularioActividad: MutableMap<String, String> = mutableMapOf(
+        "titulo" to "",
+        "fecha" to "",
+        //"duracion" to "", TODO quitar de los demás sitios, poner hora en su lugar
+        "precio" to "",
+        "ubicacion" to "",
+        "categoria" to "",
+        "destacado" to "",
+        "contenido" to ""
+    ),
 
     //Datos IU
     val actividades: ArrayList<Actividad> = DatosPrueba.actividades,

@@ -11,11 +11,16 @@ enum class Pantallas {
     addImagen,
     confirmarRegistro,
 
+    formularioActividad,
+    formularioAnuncio,
+    previewNuevaActividad,
+    previewNuevoAnuncio,
+
     menuPrincipal,
     menuBuscar,
     menuBusquedaDirecta,
     menuMensajes,
-    menuMiPerfil,
+    menuUsuario,
 
     vistaActividad,
     vistaAnuncio,

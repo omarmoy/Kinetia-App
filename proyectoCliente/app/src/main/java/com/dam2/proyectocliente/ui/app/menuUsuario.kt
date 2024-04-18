@@ -31,7 +31,6 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -57,7 +56,6 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -65,15 +63,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.controlador.AppViewModel
-import com.dam2.proyectocliente.controlador.DatosPrueba
 import com.dam2.proyectocliente.controlador.UiState
-import com.dam2.proyectocliente.model.Actividad
 import com.dam2.proyectocliente.model.Anuncio
 import com.dam2.proyectocliente.model.Rol
+import com.dam2.proyectocliente.ui.PanelNavegacion
 import com.dam2.proyectocliente.ui.Pantallas
+import com.dam2.proyectocliente.ui.recursos.DialogoInfo
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
-import com.example.proyectocliente.ui.theme.AzulFondo
 import com.example.proyectocliente.ui.theme.BlancoFondOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
@@ -84,10 +81,27 @@ import com.example.proyectocliente.ui.theme.pequena
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuUsuario(navController: NavHostController, vm: AppViewModel, estado: UiState) {
+
+    var borrarAnuncio by remember { mutableStateOf<Anuncio?>(null) }
+    val setBorrarAnuncio: (Anuncio?) -> Unit = { anuncio -> borrarAnuncio = anuncio }
+
     Scaffold(
         topBar = { BarraSuperiorPerfil(navController = navController, vm, estado) },
-        content = { innerPadding -> ContenidoUsuario(innerPadding, navController, vm, estado) }
+        content = { innerPadding ->
+            ContenidoUsuario(innerPadding, navController, vm, estado, setBorrarAnuncio)
+        }
     )
+
+    if (borrarAnuncio!=null) {
+        DialogoInfo(
+            onDismissRequest = {setBorrarAnuncio(null)},
+            onConfirmation = {vm.borrarAnuncio(borrarAnuncio!!); setBorrarAnuncio(null)},
+            dialogTitle = borrarAnuncio!!.titulo,
+            dialogText = "¿Quieres borrar este anunco?",
+            buttonConfirm = "Aceptar",
+            buttonDismiss = "Cancelar"
+        )
+    }
 }
 
 
@@ -193,7 +207,8 @@ fun ContenidoUsuario(
     innerPadding: PaddingValues,
     navController: NavHostController,
     vm: AppViewModel,
-    estado: UiState
+    estado: UiState,
+    setBorrarAnuncio: (Anuncio) -> Unit
 ) {
     var verPerfil by rememberSaveable { mutableStateOf(true) }
     Scaffold(
@@ -202,14 +217,11 @@ fun ContenidoUsuario(
             Column(
                 modifier = Modifier
                     .padding(paddinHijo)
-                //.background(BlancoFondo)  //blanco por defecto
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(45.dp)
-                    //.padding(bottom = 0.dp)
-                    //.background(AzulFondo)
                 ) {
                     Button(
                         onClick = { verPerfil = true },
@@ -239,7 +251,7 @@ fun ContenidoUsuario(
                             .weight(1f)
                     ) {
                         Text(
-                            text = "Anuncios",
+                            text = "Mis anuncios",
                             color = if (!verPerfil) Color.Black else Color.White
                         )
                     }
@@ -264,18 +276,20 @@ fun ContenidoUsuario(
                                     text = "Publicados:",
                                     fontSize = 18.sp
                                 )
-                                /*IconButton(onClick = { TODO() }) {
-                                    Icon(
-                                        imageVector = Icons.Filled.AddCircle,
-                                        contentDescription = "nuevoAnuncio",
-                                        tint = AzulLogo
-                                    )
-                                }*/
                             }
                         }
-                        //TODO("controlar cuando no haya publicado ningún anuncio")
                         items(estado.usuario.anunciosPublicados) { anuncio ->
-                            MiniaturaAnuncio(anuncio, navController, vm)
+                            MiniaturaAnuncio(anuncio, navController, vm, setBorrarAnuncio)
+                        }
+
+                        if (estado.usuario.anunciosPublicados.size == 0) {
+                            item {
+                                Text(
+                                    text = "No ha publicado ningún anuncio todavía",
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.fillMaxWidth().padding(top = 100.dp)
+                                )
+                            }
                         }
                     }
                 }
@@ -287,7 +301,8 @@ fun ContenidoUsuario(
                     shape = CircleShape,
                 ) {
                     IconButton(onClick = {
-                        //TODO: añadir anuncio
+                        vm.ocultarPanelNavegacion()
+                        navController.navigate(Pantallas.formularioAnuncio.name)
                     }) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally
@@ -312,7 +327,7 @@ fun ContenidoUsuario(
 
 @Composable
 fun PanelPerfil(navController: NavHostController, vm: AppViewModel, estado: UiState) {
-    DatosPerfil(vm, estado)
+    DatosPerfil(estado)
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -320,7 +335,7 @@ fun PanelPerfil(navController: NavHostController, vm: AppViewModel, estado: UiSt
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-        //Text(text = "Mis reservas", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+
         Titulo(texto = "Mis reservas")
         OutlinedButton(
             onClick = { navController.navigate(Pantallas.listaReservas.name) },
@@ -340,14 +355,17 @@ fun PanelPerfil(navController: NavHostController, vm: AppViewModel, estado: UiSt
         }
     }
     LazyRow {
-        items(DatosPrueba.actividades /*TODO(falta filtro)*/) { a ->
-            MiniaturaScrollLateral(
-                a,
-                vm,
-                navController,
-                estado,
-                true
-            )
+        items(estado.usuario.actividadesReservadas) { a ->
+            MiniaturaScrollLateral(a, vm, navController, estado,true)
+        }
+        if (estado.usuario.actividadesReservadas.size == 0) {
+            item {
+                Text(
+                    text = "No ha reservado ninguna actividad",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth().padding(25.dp)
+                )
+            }
         }
     }
     Row(
@@ -357,7 +375,7 @@ fun PanelPerfil(navController: NavHostController, vm: AppViewModel, estado: UiSt
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-        //Text(text = "Favoritos", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+
         Titulo(texto = "Favoritos")
         OutlinedButton(
             onClick = { navController.navigate(Pantallas.listaFavoritos.name) },
@@ -377,19 +395,22 @@ fun PanelPerfil(navController: NavHostController, vm: AppViewModel, estado: UiSt
     }
     LazyRow {
         items(estado.usuario.actividadesFav) { a ->
-            MiniaturaScrollLateral(
-                a,
-                vm,
-                navController,
-                estado,
-                true
-            )
+            MiniaturaScrollLateral(a, vm, navController, estado,true)
+        }
+        if (estado.usuario.actividadesFav.size == 0) {
+            item {
+                Text(
+                    text = "No ha marcado ninguna actividad como favorita",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth().padding(25.dp)
+                )
+            }
         }
     }
 }
 
 @Composable
-fun DatosPerfil(vm: AppViewModel, estado: UiState) {
+fun DatosPerfil(estado: UiState) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -413,57 +434,22 @@ fun DatosPerfil(vm: AppViewModel, estado: UiState) {
                 .padding(8.dp)
         ) {
             Text(
-                text = estado.usuario.nombre + " " + estado.usuario.apellido1 + " " + estado.usuario.apellido2,
+                text = estado.usuario.nombreCompleto(),
                 fontSize = 18.sp
             )
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MiniaturaActividadPerfil(a: Actividad) {
-    val tam = 180.dp
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Card(shape = RectangleShape,
-            onClick = {/*TODO*/ }) {
-            Image(
-                painter = painterResource(id = a.imagen),
-                contentDescription = a.titulo,
-                modifier = Modifier
-                    //.fillMaxHeight()
-                    .width(tam),
-                contentScale = ContentScale.Crop
-            )
-        }
-        Card(
-            colors = CardDefaults.cardColors(AzulFondo),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 4.dp, bottom = 8.dp)
-                .width(tam)
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(8.dp)
-            ) {
-                Text(
-                    text = a.titulo,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
-        }
-
-    }
-
-}
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MiniaturaAnuncio(anuncio: Anuncio, navController: NavHostController, vm: AppViewModel) {
+fun MiniaturaAnuncio(
+    anuncio: Anuncio,
+    navController: NavHostController,
+    vm: AppViewModel,
+    setBorrarAnuncio: (Anuncio) -> Unit
+) {
     Box(
         modifier = Modifier
             .background(Gris2)
@@ -491,7 +477,7 @@ fun MiniaturaAnuncio(anuncio: Anuncio, navController: NavHostController, vm: App
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(text = anuncio.fecha.mostrarFecha(), fontSize = 12.sp)
                     IconButton(onClick = {
-                        // TODO:(borrar anuncio)
+                        setBorrarAnuncio(anuncio)
                     }) {
                         Icon(
                             imageVector = Icons.Filled.Delete,
@@ -518,9 +504,16 @@ fun PerfilPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
     val estado by vm.uiState.collectAsState()
+    val setBorrarAnuncio: (Anuncio) -> Unit = {  }
     Scaffold(
         topBar = { BarraSuperiorPerfil(navController, vm, estado) },
-        content = { innerPadding -> ContenidoUsuario(innerPadding, navController, vm, estado) },
+        content = { innerPadding -> ContenidoUsuario(
+            innerPadding,
+            navController,
+            vm,
+            estado,
+            setBorrarAnuncio
+        ) },
         //llama a una función de navegación:
         bottomBar = { PanelNavegacion(navController = navController, vm, estado) }
     )

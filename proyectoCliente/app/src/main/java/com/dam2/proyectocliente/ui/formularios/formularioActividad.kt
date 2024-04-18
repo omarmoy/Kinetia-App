@@ -7,7 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -28,9 +26,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -40,9 +39,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,23 +52,30 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.controlador.AppViewModel
 import com.dam2.proyectocliente.controlador.UiState
+import com.dam2.proyectocliente.controlador.texfieldVacio
+import com.dam2.proyectocliente.controlador.validarFechaActividad
 import com.dam2.proyectocliente.model.Categoria
+import com.dam2.proyectocliente.ui.recursos.DialogoInfo
 import com.dam2.proyectocliente.ui.recursos.TextFieldConCabecera
 import com.dam2.proyectocliente.ui.recursos.TextFieldIntroducirNumero
 import com.example.proyectocliente.R
+import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
 import com.example.proyectocliente.ui.theme.NegroClaro
+import java.text.NumberFormat
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormularioActividad(
-    navController: NavHostController = rememberNavController(),
-    vm: AppViewModel = viewModel()
+//    navController: NavHostController = rememberNavController(),
+//    vm: AppViewModel = viewModel()
+    navController: NavHostController,
+    vm: AppViewModel, estado: UiState
 ) {
-    val estado by vm.uiState.collectAsState()
+//    val estado by vm.uiState.collectAsState()
 
 
     val categorias: ArrayList<Categoria> =
@@ -111,17 +119,19 @@ fun FormularioActividad(
     var horaT by rememberSaveable { mutableStateOf("") }
     var minutosT by rememberSaveable { mutableStateOf("") }
 
-    var dia = diaT.toIntOrNull() ?: 0
-    var mes = mesT.toIntOrNull() ?: 0
-    var anio = anioT.toIntOrNull() ?: 0
-    var hora = horaT.toIntOrNull() ?: -1
-    var minutos = minutosT.toIntOrNull() ?: -1
     var precio = precioT.toDoubleOrNull() ?: 0.0
 
+    var error by rememberSaveable { mutableStateOf("") }
+    val setError: (String) -> Unit = { e -> error = e }
 
     Scaffold(
         topBar = { BarraSuperiorFA(navController) },
-        bottomBar = { BarraInferiorFA(vm, estado, categoria) }
+        bottomBar = {
+            BarraInferiorFA(
+                vm, estado, titulo, precioT, ubicacion, categoria, destacado,
+                contenido, diaT, mesT, anioT, horaT, minutosT, setError
+            )
+        }
 
     ) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) {
@@ -244,11 +254,85 @@ fun FormularioActividad(
                     onValueChange = { contenido = it },
                     label = { Text("Descripción") },
                     colors = TextFieldDefaults.outlinedTextFieldColors(unfocusedBorderColor = AzulAguaOscuro),
-                    modifier = Modifier.fillMaxWidth().height(500.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(500.dp)
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(20.dp))
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = "Precio: ", color = NegroClaro, fontSize = 16.sp)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        TextFieldIntroducirNumero(
+                            showLabel = false,
+                            //NumberFormat.getCurrencyInstance().format(propina)
+                            value = precioT,
+                            onValueChange = { precioT = it },
+                            modifier = Modifier.width(100.dp),
+                            imeAction = ImeAction.Done
+                        )
+                        Icon(
+                            painter = painterResource(R.drawable.icon_euro),
+                            contentDescription = "",
+                            tint = AzulAguaOscuro
+                        )
+                    }
+
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = "Promocionar: ", color = NegroClaro, fontSize = 16.sp)
+                    Switch(
+                        checked = destacado,
+                        onCheckedChange = { destacado = it },
+                        colors = SwitchDefaults.colors(
+//                            checkedThumbColor = MaterialTheme.colorScheme.primary,
+                            checkedTrackColor = AmarilloPastel,
+//                            uncheckedThumbColor = MaterialTheme.colorScheme.secondary,
+//                            uncheckedTrackColor = MaterialTheme.colorScheme.secondaryContainer,
+                        )
+                    )
+                }
+
+
+                //fin
+                Spacer(modifier = Modifier.height(20.dp))
             }
+
+            // control de entrada
+            when (error) {
+                "campoVacio" -> {
+                    DialogoInfo(
+                        onConfirmation = { error = "" },
+                        dialogText = "Todos los campos son obligatorios"
+                    )
+                }
+
+                "fecha" -> {
+                    DialogoInfo(
+                        onConfirmation = { error = "" },
+                        dialogText = "Introduzca una fecha válida, superior al día de hoy"
+                    )
+                }
+
+                "precioNoInt" -> {
+                    DialogoInfo(
+                        onConfirmation = { error = "" },
+                        dialogText = "El precio debe tener formato numérico"
+                    )
+                }
+            }
+
+
         }
 
 
@@ -279,10 +363,32 @@ fun BarraSuperiorFA(navController: NavHostController) {
 fun BarraInferiorFA(
     vm: AppViewModel,
     estado: UiState,
+    titulo: String,
+    precioT: String,
+    ubicacion: String,
     categoria: Categoria?,
+    destacado: Boolean,
+    contenido: String,
+    diaT: String,
+    mesT: String,
+    anioT: String,
+    horaT: String,
+    minutosT: String,
+    setError: (String) -> Unit,
 ) {
 
-    var error by rememberSaveable { mutableStateOf(false) }
+    var dia = diaT.toIntOrNull() ?: 0
+    var mes = mesT.toIntOrNull() ?: 0
+    var anio = anioT.toIntOrNull() ?: 0
+    var hora = horaT.toIntOrNull() ?: -1
+    var minutos = minutosT.toIntOrNull() ?: -1
+    var precio = precioT.toDoubleOrNull() ?: 0.0
+
+    val campos = arrayListOf<String>(
+        titulo, precioT, ubicacion, categoria?.toString() ?: "", diaT, mesT, anioT, horaT,
+        minutosT, contenido
+    )
+
     Box(
         modifier = Modifier
             .background(Gris2)
@@ -295,8 +401,15 @@ fun BarraInferiorFA(
                 .background(BlancoFondo)
         ) {
             TextButton(onClick = {
-
-                //TODO
+                if (texfieldVacio(campos))
+                    setError("campoVacio")
+                else if (!validarFechaActividad(dia, mes, anio))
+                    setError("fecha")
+                else if (precioT.toDoubleOrNull() == null)
+                    setError("precioNoInt")
+                else {
+                    //TODO crear Actividad y pasar a vista previa
+                }
 
             }) {
                 Text(text = "Vista previa", color = AzulAguaOscuro, fontSize = 16.sp)
@@ -312,5 +425,5 @@ fun MenuInicioPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
     val estado by vm.uiState.collectAsState()
-    FormularioActividad(navController, vm)
+    FormularioActividad(navController, vm, estado)
 }

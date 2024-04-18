@@ -1,6 +1,6 @@
 front:
 -Modo Empresa
--formularios: actividad, anuncio. 
+-formularios: anuncio. 
 
 funcionalidad:
 *inicio

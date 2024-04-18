@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.app
+package com.dam2.proyectocliente.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,7 +31,16 @@ import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.controlador.AppViewModel
 import com.dam2.proyectocliente.controlador.UiState
 import com.dam2.proyectocliente.model.Categoria
-import com.dam2.proyectocliente.ui.Pantallas
+import com.dam2.proyectocliente.ui.app.ListaActividades
+import com.dam2.proyectocliente.ui.app.MenuBusqueda
+import com.dam2.proyectocliente.ui.app.MenuConversaciones
+import com.dam2.proyectocliente.ui.app.MenuPrincipal
+import com.dam2.proyectocliente.ui.app.MenuUsuario
+import com.dam2.proyectocliente.ui.app.VistaActividad
+import com.dam2.proyectocliente.ui.app.VistaAnuncio
+import com.dam2.proyectocliente.ui.app.VistaChat
+import com.dam2.proyectocliente.ui.formularios.FormularioActividad
+import com.dam2.proyectocliente.ui.formularios.FormularioAnuncio
 import com.dam2.proyectocliente.ui.inicio.Inicio
 import com.dam2.proyectocliente.ui.inicio.Login
 import com.dam2.proyectocliente.ui.registro.AddImagen
@@ -90,14 +99,14 @@ fun Contenido(
             MenuConversaciones(navController, vm, estado)
         }
 
-        composable(route = Pantallas.menuMiPerfil.name) {
+        composable(route = Pantallas.menuUsuario.name) {
             MenuUsuario(navController = navController, vm, estado)
         }
 
         //SubPantallas
         composable(route = Pantallas.listaReservas.name) {
             //TODO: falta funcionalidad reservas
-            ListaActividades("Mis reservas", estado.usuario.reservas, navController, vm, estado)
+            ListaActividades("Mis reservas", estado.usuario.actividadesReservadas, navController, vm, estado)
         }
         composable(route = Pantallas.listaFavoritos.name) {
             ListaActividades("Favoritos", estado.usuario.actividadesFav, navController, vm, estado)
@@ -142,6 +151,21 @@ fun Contenido(
         composable(route = Pantallas.confirmarRegistro.name){
             ConfirmarRegistro (navController = navController, vm, estado)
         }
+
+        //formularios y previstas publicar
+        composable(route = Pantallas.formularioAnuncio.name){
+            FormularioAnuncio (navController = navController, vm, estado)
+        }
+        composable(route = Pantallas.previewNuevoAnuncio.name) {
+            VistaAnuncio(navController, estado.nuevoAnuncio!!, vm, true)
+        }
+        composable(route = Pantallas.formularioActividad.name){
+            FormularioActividad (navController = navController, vm, estado)
+        }
+        composable(route = Pantallas.previewNuevaActividad.name) {
+            VistaActividad(navController, estado.nuevaActividad!!, vm, estado, true)
+        }
+
 
     }
 }
@@ -198,7 +222,7 @@ fun PanelNavegacion(navController: NavHostController, vm: AppViewModel, estado: 
                 }
                 IconButton(onClick = {
                     vm.cambiarBotonNav(3)
-                    navController.navigate(Pantallas.menuMiPerfil.name)
+                    navController.navigate(Pantallas.menuUsuario.name)
                 }) {
                     Icon(
                         imageVector = Icons.Filled.AccountCircle,

@@ -12,9 +12,10 @@ fun fechaNacimientoOK(dia: Int, mes: Int, anio: Int): Boolean {
     }
 }
 
-fun validarFecha(dia: Int, mes: Int, anio: Int): Boolean {
+fun validarFechaActividad(dia: Int, mes: Int, anio: Int): Boolean {
     try {
-        return LocalDate.of(anio, mes, dia) > LocalDate.now()
+        val fecha = LocalDate.of(anio, mes, dia)
+        return fecha > LocalDate.now()
     } catch (e: DateTimeException){
         return false
     }

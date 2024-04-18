@@ -33,15 +33,17 @@ class AppViewModel : ViewModel() {
 //
 //    }
 
-    fun setEsEmpresa( esEmpresa: Boolean){
-        _uiState.update { e -> e.copy(esEmpresa = esEmpresa)
+    fun setEsEmpresa(esEmpresa: Boolean) {
+        _uiState.update { e ->
+            e.copy(esEmpresa = esEmpresa)
         }
     }
-    fun addCampoFormularioRegistro(campo: String, valor: String){
+
+    fun addCampoFormularioRegistro(campo: String, valor: String) {
         _uiState.value.formularioRegistro[campo] = valor
     }
 
-    fun addCampoFormularioActividad(campo: String, valor: String){
+    fun addCampoFormularioActividad(campo: String, valor: String) {
 
         _uiState.value.formularioActividad[campo] = valor
 //        var formulario =_uiState.value.formularioActividad
@@ -125,15 +127,6 @@ class AppViewModel : ViewModel() {
     fun setActividadUsuarioBuscar(actividad: String) {
         _uiState.update { e -> e.copy(actividadUsuarioBuscar = actividad) }
     }
-
-
-    /**
-    ANUNCIOS
-     */
-    fun selectAnuncio(a: Anuncio) {
-        _uiState.update { e -> e.copy(anuncioSeleccionado = a) }
-    }
-
 
     /**
     MENSAJES
@@ -240,5 +233,52 @@ class AppViewModel : ViewModel() {
         val cambioModo = !uiState.value.modoPro
         _uiState.update { e -> e.copy(modoPro = cambioModo) }
     }
+
+    /**
+    ANUNCIOS
+     */
+
+    fun selectAnuncio(a: Anuncio) {
+        _uiState.update { e -> e.copy(anuncioSeleccionado = a) }
+    }
+    fun nuevoAnuncio(titulo: String, localidad: String, contenido: String) {
+        val anuncio =
+            Anuncio(
+                id = 100,
+                fotoAnunciante = _uiState.value.usuario.foto,
+                titulo = titulo,
+                contenido = contenido,
+                anuncianteID = _uiState.value.usuario.id,
+                anunciante = _uiState.value.usuario.nombreCompleto(),
+                fecha = Fecha.ahora(),
+                localidad = localidad
+            )
+        _uiState.update { e -> e.copy(nuevoAnuncio = anuncio) }
+    }
+    fun resetNuevoAnuncio(){
+//        _uiState.update { e -> e.copy(nuevoAnuncio = null) }
+        //TODO peta cuando llama a esta función
+    }
+    fun publicarAnuncio(){
+        val anuncio = _uiState.value.nuevoAnuncio
+        _uiState.value.usuario.addAnuncio(anuncio!!)
+        resetNuevoAnuncio()
+    }
+
+    fun borrarAnuncio(anuncio: Anuncio){
+        _uiState.value.usuario.eliminarAnuncio(anuncio)
+    }
+
+    /**
+     RESERVAS CONSUMIDOR
+     */
+    fun reservar(actividad: Actividad){
+        _uiState.value.usuario.reseservar(actividad)
+
+    }
+    fun cancelarReserva(actividad: Actividad){
+        _uiState.value.usuario.cancelarReserva(actividad)
+    }
+
 
 }

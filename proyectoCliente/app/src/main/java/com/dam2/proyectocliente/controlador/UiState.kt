@@ -29,7 +29,9 @@ data class UiState(
     ),
     val esEmpresa: Boolean = false,
 
-    //Formulario actividad
+    //Formulario publicar
+    var nuevoAnuncio: Anuncio? = null,
+    var nuevaActividad: Actividad? = null,
     var formularioActividad: MutableMap<String, String> = mutableMapOf(
         "titulo" to "",
         "fecha" to "",
@@ -62,10 +64,11 @@ data class UiState(
         id = 0,
         fotoAnunciante = R.drawable.nofoto,
         titulo = "titulo anuncio",
-        contendio = R.string.vacio,
+        contenidoInt = R.string.vacio,
         anuncianteID = 0,
         anunciante = "anunciante",
-        fecha = Fecha.ahora()
+        fecha = Fecha.ahora(),
+        contenido = ""
     ),
     val contactoSeleccionado: Contacto = Contacto(0, "nombre", R.drawable.nofoto, ArrayList()),
     val categoriaSelecciononada: Categoria = Categoria.Todo,

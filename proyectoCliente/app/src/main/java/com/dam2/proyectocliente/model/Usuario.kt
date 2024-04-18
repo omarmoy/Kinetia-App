@@ -20,16 +20,20 @@ class Usuario(
     val nombreEmpsesa: String = "",
     val cif: String = "",
     val direccion: String = "",
+    val actividadesReservadas: ArrayList<Actividad> = ArrayList(),
 
     val actividadesFav: ArrayList<Actividad> = ArrayList(),
-    val reservas: ArrayList<Actividad> = DatosPrueba.actividades, //TODO: cambiar y poner funcionalidad Reservas
     val actividadesOfertadas: ArrayList<Actividad> = ArrayList(),
     val anunciosPublicados: ArrayList<Anuncio> = ArrayList(),
     val contactos: ArrayList<Contacto> = ArrayList()
 ) {
 
+    fun nombreCompleto(): String {
+        return this.nombre + " " + this.apellido1 + " " + this.apellido2
+    }
+
     /**
-      ACTIVIDADES
+    ACTIVIDADES
      */
     fun addActividadFav(actividad: Actividad): Boolean {
         return actividadesFav.add(actividad)
@@ -39,7 +43,7 @@ class Usuario(
         return actividadesFav.remove(actividad)
     }
 
-    fun esFavorita(actividad: Actividad): Boolean{
+    fun esFavorita(actividad: Actividad): Boolean {
         return actividadesFav.contains(actividad)
     }
 
@@ -52,7 +56,7 @@ class Usuario(
     }
 
     /**
-        ANUNCIOS
+    ANUNCIOS
      */
     fun addAnuncio(anuncio: Anuncio): Boolean {
         return anunciosPublicados.add(anuncio)
@@ -63,7 +67,7 @@ class Usuario(
     }
 
     /**
-        CONVERSACIONES
+    CONVERSACIONES
      */
     fun addContacto(contacto: Contacto): Boolean {
         return contactos.add(contacto)
@@ -73,23 +77,60 @@ class Usuario(
         return contactos.remove(contacto)
     }
 
-    fun marcarMensajeLeido(contacto: Contacto){
+    fun marcarMensajeLeido(contacto: Contacto) {
         val indice = contactos.indexOf(contacto)
         contactos[indice].mensajeNuevo = false
     }
 
-    fun addMensaje(contacto: Contacto, mensaje: Mensaje){
+    fun addMensaje(contacto: Contacto, mensaje: Mensaje) {
         val indice = contactos.indexOf(contacto)
         contactos[indice].addMensaje(mensaje)
     }
 
-    fun tieneMensajesSinLeer(): Boolean{
-        for(contacto in contactos){
-            if(contacto.mensajeNuevo)
+    fun tieneMensajesSinLeer(): Boolean {
+        for (contacto in contactos) {
+            if (contacto.mensajeNuevo)
                 return true
         }
         return false
     }
 
+    /**
+    RESERVAS MODO PRO
+     */
+    fun addReserva(actividad: Actividad, contacto: Contacto) {
+        for (actividadOf in actividadesOfertadas) {
+            if (actividadOf == actividad) {
+                actividadOf.addReserva(contacto)
+                return
+            }
+        }
+    }
+
+
+    fun removeReserva(actividad: Actividad, contacto: Contacto) {
+        for (actividadOf in actividadesOfertadas) {
+            if (actividadOf == actividad) {
+                actividadOf.removeReserva(contacto)
+                return
+            }
+        }
+
+    }
+
+    /**
+    RESERVAS MODO CONSUMIDOR
+     */
+
+    fun reseservar(actividad: Actividad){
+        actividadesReservadas.add(actividad)
+        actividad.addReserva(Contacto(id=this.id, nombre=this.nombreCompleto(), foto=this.foto))
+        //TODO: api
+    }
+    fun cancelarReserva(actividad: Actividad){
+        actividadesReservadas.remove(actividad)
+        actividad.removeReserva(Contacto(id=this.id, nombre=this.nombreCompleto(), foto=this.foto))
+        //TODO: api
+    }
 }
 

@@ -17,7 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -27,6 +27,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -48,6 +49,7 @@ import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.controlador.AppViewModel
 import com.dam2.proyectocliente.controlador.DatosPrueba
 import com.dam2.proyectocliente.model.Anuncio
+import com.dam2.proyectocliente.ui.Pantallas
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
 import com.example.proyectocliente.ui.theme.AzulAguaFondo2
@@ -58,12 +60,52 @@ import com.example.proyectocliente.ui.theme.pequena
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VistaAnuncio(navController: NavHostController, anuncio: Anuncio, vm: AppViewModel) {
+fun VistaAnuncio(
+    navController: NavHostController,
+    anuncio: Anuncio,
+    vm: AppViewModel,
+    vistaPrevia: Boolean = false
+) {
 
     Scaffold(
-        topBar = { BarraSuperiorAnuncio(navController, anuncio, vm) },
+        topBar = {
+            if (vistaPrevia)
+                BarraSuperiorAnuncioVP()
+            else
+                BarraSuperiorAnuncio(navController, anuncio, vm)
+        },
         content = { innerPadding -> ContenidoAnuncio(innerPadding, anuncio) },
-        bottomBar = { BotonContactar(navController, anuncio, vm) }
+        bottomBar = {
+            if (anuncio.anuncianteID != vm.usuario().id)
+                BotonContactar(navController, anuncio, vm)
+            if(vistaPrevia)
+                BarraInferiorAnuncioVP(navController, vm)
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BarraSuperiorAnuncioVP() {
+    TopAppBar(
+        title = {
+            Text(
+                text = "Vista Previa",
+                textAlign = TextAlign.Center,
+                fontStyle = FontStyle.Italic,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 12.dp)
+            )
+        },
+        colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = BlancoFondo),
+        navigationIcon = {
+            Icon(
+                imageVector = Icons.Filled.ArrowBack,
+                contentDescription = "atrás"
+            )
+        }
+
     )
 }
 
@@ -77,8 +119,8 @@ fun BarraSuperiorAnuncio(
         title = {
             if (anuncio.anuncianteID == vm.usuario().id) {
                 Text(
-                    text = "vista previa*",
-                    textAlign = TextAlign.End,
+                    text = "Mi Anuncio",
+                    textAlign = TextAlign.Center,
                     fontStyle = FontStyle.Italic,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -93,8 +135,8 @@ fun BarraSuperiorAnuncio(
                 navController.navigateUp()
             }) {
                 Icon(
-                    imageVector = Icons.Filled.Close,
-                    contentDescription = "Cerrar"
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "atrás"
                 )
             }
         }
@@ -143,9 +185,13 @@ fun ContenidoAnuncio(innerPadding: PaddingValues, anuncio: Anuncio) {
                 .padding(12.dp)
         ) {
 
-            Text(text = "Ciudad", color = AzulAguaClaro, fontSize = 16.sp)
+            Text(text = "Ubicacion: " + anuncio.localidad, color = AzulAguaClaro, fontSize = 16.sp)
 
-            Text(text = anuncio.fecha.mostrarFecha(), color = AzulAguaClaro, fontSize = 16.sp)
+            Text(
+                text = "Publicado " + anuncio.fecha.mostrarFecha(),
+                color = AzulAguaClaro,
+                fontSize = 16.sp
+            )
         }
 
         Surface(
@@ -155,7 +201,10 @@ fun ContenidoAnuncio(innerPadding: PaddingValues, anuncio: Anuncio) {
         ) {
 
             Text(
-                text = stringResource(id = anuncio.contendio),
+                text = if (anuncio.contenido == "")  //TODO quitar stringResource()
+                    stringResource(id = anuncio.contenidoInt)
+                else
+                    anuncio.contenido,
                 textAlign = TextAlign.Justify,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -211,6 +260,48 @@ fun BotonContactar(navController: NavHostController, anuncio: Anuncio, vm: AppVi
 
         }
     }
+}
+
+@Composable
+fun BarraInferiorAnuncioVP(
+    navController: NavHostController,
+    vm: AppViewModel
+) {
+    Box(
+        modifier = Modifier
+            .background(Gris2)
+            .padding(top = 1.dp)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(BlancoFondo)
+        ) {
+            TextButton(onClick = {
+                navController.navigateUp()
+            }) {
+                Text(text = "Editar", color = AzulAguaOscuro, fontSize = 16.sp)
+            }
+
+            TextButton(onClick = {
+                vm.resetNuevoAnuncio()
+                vm.mostrarPanelNavegacion()
+                navController.navigate(Pantallas.menuUsuario.name)
+            }) {
+                Text(text = "Cancelar", color = AzulAguaOscuro, fontSize = 16.sp)
+            }
+            TextButton(onClick = {
+                vm.publicarAnuncio()
+                vm.mostrarPanelNavegacion()
+                navController.navigate(Pantallas.menuUsuario.name)
+
+            }) {
+                Text(text = "Publicar", color = AzulAguaOscuro, fontSize = 16.sp)
+            }
+        }
+    }
+
 }
 
 /**

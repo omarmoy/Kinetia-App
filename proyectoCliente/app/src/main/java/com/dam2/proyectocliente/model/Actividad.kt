@@ -18,8 +18,9 @@ data class Actividad(
     val categoria: Categoria? = null,
     val destacado: Boolean = false,
     //TODO
-    val plazas: Int = 0,
-    val plazasDisponibles: Int = 0
+    val plazas: Int = 1,
+    var plazasDisponibles: Int = 1,
+    val reservas: ArrayList<Contacto> = ArrayList()
 ){
     override fun equals(other: Any?): Boolean {
         if (javaClass != other?.javaClass) return false
@@ -43,4 +44,15 @@ data class Actividad(
         result = 31 * result + destacado.hashCode()
         return result
     }
+
+    fun addReserva(contacto: Contacto){
+        reservas.add(contacto)
+        this.plazasDisponibles--
+    }
+
+    fun removeReserva(contacto: Contacto){
+        reservas.remove(contacto)
+        this.plazasDisponibles++
+    }
+
 }

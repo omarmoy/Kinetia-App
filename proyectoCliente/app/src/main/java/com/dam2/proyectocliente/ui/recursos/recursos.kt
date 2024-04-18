@@ -46,7 +46,7 @@ fun DialogoInfo(
         icon = { Icon(icon, contentDescription = "Icon") },
         title = { Text(text = dialogTitle) },
         text = { Text(text = dialogText) },
-        onDismissRequest = { onDismissRequest(); println("Confirmación") },
+        onDismissRequest = { onDismissRequest()},
         confirmButton = {
             TextButton(onClick = { onConfirmation() }) {
                 Text(buttonConfirm)
@@ -99,24 +99,39 @@ fun TextFieldConCabecera(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TextFieldIntroducirNumero(
-    label: String,
+    label: String = "label",
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier,
-    imeAction: ImeAction = ImeAction.Next
+    imeAction: ImeAction = ImeAction.Next,
+    showLabel: Boolean = true
 ) {
-    TextField(
-        value = value,
-        onValueChange = onValueChange,
-        singleLine = true,
-        label = { Text(text = label, fontSize = 12.sp) },
-        keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = KeyboardType.Number,
-            imeAction = imeAction //tipo de botón
-        ),
-        modifier = modifier,
-        colors = TextFieldDefaults.textFieldColors(containerColor = AzulAguaFondo)
-    )
+    if (showLabel) {
+        TextField(
+            value = value,
+            onValueChange = onValueChange,
+            singleLine = true,
+            label = { Text(text = label, fontSize = 12.sp) },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Number,
+                imeAction = imeAction //tipo de botón
+            ),
+            modifier = modifier,
+            colors = TextFieldDefaults.textFieldColors(containerColor = AzulAguaFondo)
+        )
+    } else {
+        TextField(
+            value = value,
+            onValueChange = onValueChange,
+            singleLine = true,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Number,
+                imeAction = imeAction //tipo de botón
+            ),
+            modifier = modifier,
+            colors = TextFieldDefaults.textFieldColors(containerColor = AzulAguaFondo)
+        )
+    }
 }
 
 @Preview(showBackground = true)

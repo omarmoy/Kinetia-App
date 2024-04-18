@@ -4,9 +4,10 @@ class Contacto(
     val id: Int,
     val nombre: String,
     val foto: Int,
-    val mensajes: ArrayList<Mensaje>,
+    val mensajes: ArrayList<Mensaje> = ArrayList(),
     var mensajeNuevo: Boolean = false
 ) {
+
     fun addMensaje(mensaje: Mensaje) {
         mensajes.add(mensaje)
     }

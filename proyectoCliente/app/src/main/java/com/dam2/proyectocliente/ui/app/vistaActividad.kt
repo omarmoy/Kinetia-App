@@ -87,9 +87,17 @@ fun VistaActividad(
             else
                 BarraSuperiorActividad(navController, actividad, vm, estado)
         },
-        content = { innerPadding -> ContenidoActividad(innerPadding, navController, actividad, vm) },
+        content = { innerPadding ->
+            ContenidoActividad(
+                innerPadding,
+                navController,
+                actividad,
+                vm,
+                estado
+            )
+        },
         bottomBar = {
-            if(vistaPrevia)
+            if (vistaPrevia)
                 BarraInferiorActividadVP(navController, actividad, vm, estado)
         }
     )
@@ -152,7 +160,8 @@ fun ContenidoActividad(
     innerPadding: PaddingValues,
     navController: NavHostController,
     actividad: Actividad,
-    vm: AppViewModel
+    vm: AppViewModel,
+    estado: UiState
 ) {
     Column(
         modifier = Modifier
@@ -162,6 +171,12 @@ fun ContenidoActividad(
             .background(color = BlancoFondo)
     ) {
 
+
+        val recomposeTrigger = remember { mutableStateOf(0) }
+        val refreshComposable: () -> Unit = { recomposeTrigger.value++ }
+        LaunchedEffect(recomposeTrigger.value) {
+            // Esta parte se ejecutará cada vez que cambie el valor de recomposeTrigger
+        }
 
         Image(
             painter = painterResource(id = actividad.imagen),
@@ -174,8 +189,8 @@ fun ContenidoActividad(
 
         PanelTitulo(navController, actividad, vm)
         PanelDatos(navController, actividad, vm)
-        PanelBotones(navController, actividad, vm)
-        PanelContenido(navController, actividad, vm)
+        PanelBotones(navController, actividad, vm, estado, refreshComposable)
+        PanelContenido(navController, actividad, vm, estado, refreshComposable)
     }
 }
 
@@ -193,11 +208,14 @@ fun PanelTitulo(navController: NavHostController, actividad: Actividad, vm: AppV
                 Text(text = actividad.ubicacion, color = AzulAguaClaro, fontSize = 16.sp)
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = actividad.anunciante, color = AzulAguaClaro, fontSize = 14.sp)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "Plazas disponibles: "+actividad.plazasDisponibles,
+                    color = AzulAguaClaro, fontSize = 14.sp)
             }
             IconButton(
                 modifier = Modifier.weight(.2f),
                 onClick = {
-                    /*TODO*/
+                    /*TODO botón compartir*/
                 }) {
                 Icon(
                     imageVector = Icons.Filled.Share, contentDescription = "compartir",
@@ -276,7 +294,13 @@ fun PanelDatos(navController: NavHostController, actividad: Actividad, vm: AppVi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PanelBotones(navController: NavHostController, actividad: Actividad, vm: AppViewModel) {
+fun PanelBotones(
+    navController: NavHostController,
+    actividad: Actividad,
+    vm: AppViewModel,
+    estado: UiState,
+    refreshComposable: () -> Unit
+) {
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically,
@@ -285,17 +309,21 @@ fun PanelBotones(navController: NavHostController, actividad: Actividad, vm: App
             .padding(top = 40.dp, start = 70.dp, end = 70.dp, bottom = 12.dp)
     ) {
         Button(
-            onClick = {
-                //TODO
-            },
+            onClick = { vm.reservar(actividad); refreshComposable() },
             shape = RoundedCornerShape(4.dp),
             colors = ButtonDefaults.buttonColors(AmarilloPastel),
-            contentPadding = PaddingValues(8.dp, 0.dp)
+            contentPadding = PaddingValues(8.dp, 0.dp),
+            enabled = actividad.plazasDisponibles != 0
+                    && !estado.usuario.actividadesReservadas.contains(actividad)
         ) {
-            Text(text = "Reservar", color = Color.Black)
+            val texto =
+                if (estado.usuario.actividadesReservadas.contains(actividad))
+                    "Reservado"
+                else
+                    "Reservar"
+            Text(text = texto, color = Color.Black)
         }
-        IconButton(onClick = { /*TODO*/ }) {
-        }
+
         Card(
             shape = CircleShape,
             colors = CardDefaults.cardColors(containerColor = AzulAguaOscuro),
@@ -319,7 +347,13 @@ fun PanelBotones(navController: NavHostController, actividad: Actividad, vm: App
 }
 
 @Composable
-fun PanelContenido(navController: NavHostController, actividad: Actividad, vm: AppViewModel) {
+fun PanelContenido(
+    navController: NavHostController,
+    actividad: Actividad,
+    vm: AppViewModel,
+    estado: UiState,
+    refreshComposable: () -> Unit
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(8.dp)
@@ -336,17 +370,35 @@ fun PanelContenido(navController: NavHostController, actividad: Actividad, vm: A
         if (stringResource(actividad.contenido).length > 1399) {
             Spacer(modifier = Modifier.height(24.dp))
             Button(
-                onClick = {
-                    //TODO
-                },
+                onClick = { vm.reservar(actividad); refreshComposable() },
                 shape = RoundedCornerShape(4.dp),
                 colors = ButtonDefaults.buttonColors(AmarilloPastel),
+                contentPadding = PaddingValues(8.dp, 0.dp),
+                enabled = actividad.plazasDisponibles != 0
+                        && !estado.usuario.actividadesReservadas.contains(actividad)
+            ) {
+                val texto =
+                    if (estado.usuario.actividadesReservadas.contains(actividad))
+                        "Reservado"
+                    else
+                        "Reservar"
+                Text(text = texto, color = Color.Black)
+            }
+
+        }
+
+        if(estado.usuario.actividadesReservadas.contains(actividad)){
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(
+                onClick = { vm.cancelarReserva(actividad); refreshComposable() },
+                shape = RoundedCornerShape(4.dp),
+                colors = ButtonDefaults.buttonColors(AzulAguaOscuro),
                 contentPadding = PaddingValues(8.dp, 0.dp)
             ) {
-                Text(text = "Reservar", color = Color.Black)
+                Text(text = "Cancelar Reserva", color = Color.White)
             }
-            Spacer(modifier = Modifier.height(24.dp))
         }
+        Spacer(modifier = Modifier.height(24.dp))
     }
 }
 

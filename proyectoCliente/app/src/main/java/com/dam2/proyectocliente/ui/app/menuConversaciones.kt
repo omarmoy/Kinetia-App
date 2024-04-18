@@ -51,6 +51,7 @@ import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.controlador.AppViewModel
 import com.dam2.proyectocliente.controlador.UiState
 import com.dam2.proyectocliente.model.Contacto
+import com.dam2.proyectocliente.ui.PanelNavegacion
 import com.dam2.proyectocliente.ui.Pantallas
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAgua

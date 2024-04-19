@@ -32,5 +32,8 @@ enum class Categoria {
             SaludYBienestar -> "Salud y Bienestar"
         }
     }
+
+
+
 }
 

@@ -22,6 +22,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -83,7 +84,7 @@ fun VistaActividad(
     Scaffold(
         topBar = {
             if (vistaPrevia)
-                BarraSuperiorActividadVP()
+                BarraSuperiorActividadVistaPrevia()
             else
                 BarraSuperiorActividad(navController, actividad, vm, estado)
         },
@@ -209,8 +210,10 @@ fun PanelTitulo(navController: NavHostController, actividad: Actividad, vm: AppV
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = actividad.anunciante, color = AzulAguaClaro, fontSize = 14.sp)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Plazas disponibles: "+actividad.plazasDisponibles,
-                    color = AzulAguaClaro, fontSize = 14.sp)
+                Text(
+                    text = "Plazas disponibles: " + actividad.plazasDisponibles,
+                    color = AzulAguaClaro, fontSize = 14.sp
+                )
             }
             IconButton(
                 modifier = Modifier.weight(.2f),
@@ -269,7 +272,7 @@ fun PanelDatos(navController: NavHostController, actividad: Actividad, vm: AppVi
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = actividad.duracion.toString() + " horas",
+                    text = actividad.fecha.toStringHora(),
                     color = AzulAguaClaro,
                     fontSize = 14.sp
                 )
@@ -361,13 +364,16 @@ fun PanelContenido(
 
         Box(modifier = Modifier.fillMaxWidth()) {
             Text(
-                text = stringResource(actividad.contenido),
+                text = if (stringResource(actividad.contenidoPrueba) == "vacio") //TODO QUITAR ESTA MIERDA
+                    actividad.contenido
+                else
+                    stringResource(actividad.contenidoPrueba),
                 textAlign = TextAlign.Justify,
                 fontSize = 14.sp
             )
         }
 
-        if (stringResource(actividad.contenido).length > 1399) {
+        if (actividad.contenido.length > 1399) {
             Spacer(modifier = Modifier.height(24.dp))
             Button(
                 onClick = { vm.reservar(actividad); refreshComposable() },
@@ -387,7 +393,7 @@ fun PanelContenido(
 
         }
 
-        if(estado.usuario.actividadesReservadas.contains(actividad)){
+        if (estado.usuario.actividadesReservadas.contains(actividad)) {
             Spacer(modifier = Modifier.height(24.dp))
             Button(
                 onClick = { vm.cancelarReserva(actividad); refreshComposable() },
@@ -405,7 +411,7 @@ fun PanelContenido(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorActividadVP() {
+fun BarraSuperiorActividadVistaPrevia() {
     TopAppBar(
         title = {
             Text("Vista previa")
@@ -420,10 +426,12 @@ fun BarraSuperiorActividadVP() {
             }
         },
         actions = {
-            IconButton(onClick = { }) {
+            IconButton(onClick = {
+                //TODO
+            }) {
                 Icon(
-                    imageVector = Icons.Filled.FavoriteBorder,
-                    contentDescription = "Fav",
+                    imageVector = Icons.Filled.Edit,
+                    contentDescription = "edid",
                     tint = AzulAguaOscuro
                 )
             }

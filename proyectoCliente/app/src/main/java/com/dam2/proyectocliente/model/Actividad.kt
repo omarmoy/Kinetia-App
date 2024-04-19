@@ -2,23 +2,24 @@ package com.dam2.proyectocliente.model
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import com.example.proyectocliente.R
 
 data class Actividad(
     val id: Int,
     @DrawableRes val imagen: Int,
-    val titulo: String,
-    @StringRes val contenido: Int,
+    var titulo: String,
+    @StringRes var contenidoPrueba: Int = R.string.vacio, //TODO BORRAR
+    var contenido: String ="",
     val anuncianteID: Int,
     val anunciante: String,
-    val fecha: Fecha,
+    var fecha: Fecha,
     val fechaPublicacion: Fecha = Fecha.ahora(),
-    val duracion: Int? = null,
-    val precio: Float? = null,
-    val ubicacion: String,
-    val categoria: Categoria? = null,
-    val destacado: Boolean = false,
+    var precio: Float? = null,
+    var ubicacion: String,
+    var categoria: Categoria? = null,
+    var destacado: Boolean = false,
     //TODO
-    val plazas: Int = 1,
+    var plazas: Int = 1,
     var plazasDisponibles: Int = 1,
     val reservas: ArrayList<Contacto> = ArrayList()
 ){
@@ -32,12 +33,11 @@ data class Actividad(
         var result = id
         result = 31 * result + imagen
         result = 31 * result + titulo.hashCode()
-        result = 31 * result + contenido
+        result = 31 * result + contenidoPrueba
         result = 31 * result + anuncianteID
         result = 31 * result + anunciante.hashCode()
         result = 31 * result + fecha.hashCode()
         result = 31 * result + fechaPublicacion.hashCode()
-        result = 31 * result + (duracion ?: 0)
         result = 31 * result + (precio?.hashCode() ?: 0)
         result = 31 * result + (ubicacion?.hashCode() ?: 0)
         result = 31 * result + (categoria?.hashCode() ?: 0)

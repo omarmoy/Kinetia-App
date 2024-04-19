@@ -18,8 +18,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -51,9 +51,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.controlador.AppViewModel
+import com.dam2.proyectocliente.controlador.DatosPrueba
 import com.dam2.proyectocliente.controlador.UiState
 import com.dam2.proyectocliente.controlador.texfieldVacio
 import com.dam2.proyectocliente.controlador.validarFechaActividad
+import com.dam2.proyectocliente.model.Actividad
 import com.dam2.proyectocliente.model.Categoria
 import com.dam2.proyectocliente.ui.recursos.DialogoInfo
 import com.dam2.proyectocliente.ui.recursos.TextFieldConCabecera
@@ -64,18 +66,15 @@ import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
 import com.example.proyectocliente.ui.theme.NegroClaro
-import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FormularioActividad(
-    navController: NavHostController = rememberNavController(),
-    vm: AppViewModel = viewModel()
-//    navController: NavHostController,
-//    vm: AppViewModel, estado: UiState
+fun ModificarActividad(
+    navController: NavHostController,
+    vm: AppViewModel,
+    estado: UiState,
+    actividad: Actividad
 ) {
-    val estado by vm.uiState.collectAsState()
-
 
     val categorias: ArrayList<Categoria> =
         ArrayList(Categoria.values().filter { it != Categoria.Todo })
@@ -106,28 +105,29 @@ fun FormularioActividad(
     )
     val listaMinutos = arrayListOf<String>("00", "15", "30", "45")
 
-    var titulo by rememberSaveable { mutableStateOf("") }
-    var precioT by rememberSaveable { mutableStateOf("") }
-    var ubicacion by rememberSaveable { mutableStateOf("") }
-    var categoria by rememberSaveable { mutableStateOf<Categoria?>(null) }
-    var destacado by rememberSaveable { mutableStateOf(false) }
-    var contenido by rememberSaveable { mutableStateOf("") }
-    var diaT by rememberSaveable { mutableStateOf("") }
-    var mesT by rememberSaveable { mutableStateOf("") }
-    var anioT by rememberSaveable { mutableStateOf(LocalDate.now().year.toString()) }
-    var horaT by rememberSaveable { mutableStateOf("") }
-    var minutosT by rememberSaveable { mutableStateOf("") }
-    var nPlazasT by rememberSaveable { mutableStateOf("") }
+    var titulo by rememberSaveable { mutableStateOf(actividad.titulo) }
+    var precioT by rememberSaveable { mutableStateOf(actividad.precio.toString()) }
+    var ubicacion by rememberSaveable { mutableStateOf(actividad.ubicacion) }
+    var categoria by rememberSaveable { mutableStateOf<Categoria?>(actividad.categoria) }
+    var destacado by rememberSaveable { mutableStateOf(actividad.destacado) }
+    var contenido by rememberSaveable { mutableStateOf(actividad.contenido) }
+    var diaT by rememberSaveable { mutableStateOf(actividad.fecha.diaString()) }
+    var mesT by rememberSaveable { mutableStateOf(actividad.fecha.mesString()) }
+    var anioT by rememberSaveable { mutableStateOf(actividad.fecha.anioString()) }
+    var horaT by rememberSaveable { mutableStateOf(actividad.fecha.horaString()) }
+    var minutosT by rememberSaveable { mutableStateOf(actividad.fecha.minutosString())}
+    var nPlazasT by rememberSaveable { mutableStateOf(actividad.plazas.toString()) }
 
     var error by rememberSaveable { mutableStateOf("") }
     val setError: (String) -> Unit = { e -> error = e }
 
     Scaffold(
-        topBar = { BarraSuperiorFA(navController) },
+        topBar = { BarraSuperiorModActividad(navController, vm) },
         bottomBar = {
-            BarraInferiorFA(
+            BarraInferiorModActividad(
                 vm, estado, titulo, precioT, ubicacion, categoria, destacado,
-                contenido, diaT, mesT, anioT, horaT, minutosT, nPlazasT, setError
+                contenido, diaT, mesT, anioT, horaT, minutosT, nPlazasT, setError, actividad,
+                navController
             )
         }
 
@@ -147,7 +147,7 @@ fun FormularioActividad(
                         .fillMaxWidth()
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.noimagen),
+                        painter = painterResource(actividad.imagen),
                         contentDescription = "imagen",
                         modifier = Modifier
                             .fillMaxWidth()
@@ -164,8 +164,8 @@ fun FormularioActividad(
                             }
                         ) {
                             Icon(
-                                imageVector = Icons.Filled.AddCircle,
-                                contentDescription = "addImagen",
+                                imageVector = Icons.Filled.Edit,
+                                contentDescription = "edit",
                                 tint = AzulAguaOscuro
                             )
                         }
@@ -190,6 +190,7 @@ fun FormularioActividad(
                 ComboBoxCategoria(
                     options = categorias,
                     onOptionChosen = { categoria = it },
+                    selectedOption = categoria,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(20.dp))
@@ -369,15 +370,18 @@ fun FormularioActividad(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorFA(navController: NavHostController) {
+fun BarraSuperiorModActividad(navController: NavHostController, vm: AppViewModel) {
     TopAppBar(
-        title = { Text(text = "Formulario Actividad") },
+        title = { Text(text = "Modificar Actividad") },
         colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = BlancoFondo),
         navigationIcon = {
-            IconButton(onClick = { navController.navigateUp() }) {
+            IconButton(onClick = {
+                vm.mostrarPanelNavegacion()
+                navController.navigateUp()
+            }) {
                 Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "volver",
+                    imageVector = Icons.Filled.Clear,
+                    contentDescription = "cancelar",
                     tint = AzulAguaOscuro
                 )
             }
@@ -386,7 +390,7 @@ fun BarraSuperiorFA(navController: NavHostController) {
 }
 
 @Composable
-fun BarraInferiorFA(
+fun BarraInferiorModActividad(
     vm: AppViewModel,
     estado: UiState,
     titulo: String,
@@ -401,15 +405,14 @@ fun BarraInferiorFA(
     horaT: String,
     minutosT: String,
     nPlazasT: String,
-    setError: (String) -> Unit
+    setError: (String) -> Unit,
+    actividad: Actividad,
+    navController: NavHostController
 ) {
 
     var dia = diaT.toIntOrNull() ?: 0
     var mes = mesT.toIntOrNull() ?: 0
     var anio = anioT.toIntOrNull() ?: 0
-    var hora = horaT.toIntOrNull() ?: -1
-    var minutos = minutosT.toIntOrNull() ?: -1
-    var precio = precioT.toDoubleOrNull() ?: 0.0
 
     val campos = arrayListOf<String>(
         titulo, precioT, ubicacion, categoria?.toString() ?: "", diaT, mesT, anioT, horaT,
@@ -437,11 +440,12 @@ fun BarraInferiorFA(
                 else if (nPlazasT.toIntOrNull() == null){
                     setError("plazasNoInt")
                 }else{
-                    //TODO crear Actividad y pasar a vista previa
+                    vm.modificarActividad(campos, actividad, destacado)
+                    navController.navigateUp()
                 }
 
             }) {
-                Text(text = "Vista previa", color = AzulAguaOscuro, fontSize = 16.sp)
+                Text(text = "Guardar cambios", color = AzulAguaOscuro, fontSize = 16.sp)
             }
         }
     }
@@ -450,9 +454,11 @@ fun BarraInferiorFA(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun MenuInicioPreview() {
+fun ModificarActividadPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
     val estado by vm.uiState.collectAsState()
-    FormularioActividad(navController, vm)//, estado)
+    ModificarActividad(navController, vm, estado,
+        DatosPrueba.actividades[0]
+        )
 }

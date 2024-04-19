@@ -30,6 +30,23 @@ class Fecha (
         return toStringFecha()
     }
 
+    fun diaString(): String{
+        return localDate.dayOfMonth.toString()
+    }
+    fun mesString(): String{
+        return localDate.monthValue.toString()
+    }
+    fun anioString(): String{
+        return localDate.year.toString()
+    }
+
+    fun horaString(): String{
+        return localTime.hour.toString()
+    }
+    fun minutosString(): String{
+        return localTime.minute.toString()
+    }
+
     companion object {
         fun ahora(): Fecha {
             return Fecha(LocalDateTime.now())

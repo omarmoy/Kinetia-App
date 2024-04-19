@@ -27,6 +27,8 @@ enum class Pantallas {
     menuPrincipalPro,
     menuReservasGestionPro,
     menuBusquedaAnunciosPro,
+    vistaActividadPro,
+    vistaAnuncioPro,
 
     vistaActividad,
     vistaAnuncio,

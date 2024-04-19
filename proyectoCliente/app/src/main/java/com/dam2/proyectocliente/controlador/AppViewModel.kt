@@ -8,9 +8,11 @@ import com.dam2.proyectocliente.model.Contacto
 import com.dam2.proyectocliente.model.Fecha
 import com.dam2.proyectocliente.model.Mensaje
 import com.dam2.proyectocliente.model.Usuario
+import com.example.proyectocliente.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import java.time.LocalDateTime
 
 class AppViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(UiState())
@@ -45,7 +47,7 @@ class AppViewModel : ViewModel() {
 
     fun addCampoFormularioActividad(campo: String, valor: String) {
 
-        _uiState.value.formularioActividad[campo] = valor
+//        _uiState.value.formularioActividad[campo] = valor
 //        var formulario =_uiState.value.formularioActividad
 //        formulario[campo] = valor
 //        _uiState.update { e -> e.copy(formularioActividad = formulario) }
@@ -126,6 +128,49 @@ class AppViewModel : ViewModel() {
 
     fun setActividadUsuarioBuscar(actividad: String) {
         _uiState.update { e -> e.copy(actividadUsuarioBuscar = actividad) }
+    }
+
+    fun selectModActividad(actividad: Actividad) {
+        _uiState.update { e -> e.copy(modActividad = actividad) }
+    }
+
+    fun modificarActividad(campos: ArrayList<String>, actividad: Actividad, destacado: Boolean) {
+        //TODO: imagen
+        actividad.titulo = campos[0]
+        actividad.precio = campos[1].toFloat()
+        actividad.ubicacion = campos[2]
+        actividad.categoria = stringToCategoria(campos[3])
+        val fechayHora = LocalDateTime.of(
+            campos[6].toInt(),
+            campos[5].toInt(),
+            campos[4].toInt(),
+            campos[7].toInt(),
+            campos[8].toInt()
+        )
+        actividad.fecha = Fecha(fechayHora)
+        actividad.contenido = campos[9]
+        actividad.contenidoPrueba = R.string.vacio //TODO BORRAR
+        actividad.plazas = campos[10].toInt()
+        actividad.destacado = destacado
+    }
+
+    private fun stringToCategoria(cadena: String): Categoria? {
+        return when (cadena) {
+            "Todo" -> Categoria.Todo
+            "Aire Libre" -> Categoria.AireLibre
+            "Arte" -> Categoria.Arte
+            "Aventura" -> Categoria.Aventura
+            "Bares" -> Categoria.Bares
+            "Cursos" -> Categoria.CursosYTalleres
+            "Deporte" -> Categoria.Deporte
+            "Experiencias" -> Categoria.Experiencias
+            "Gastronomía" -> Categoria.Gastronomia
+            "Música" -> Categoria.Musica
+            "Ocio" -> Categoria.Ocio
+            "Ofertas" -> Categoria.Ofertas
+            "Salud y Bienestar" -> Categoria.SaludYBienestar
+            else -> null
+        }
     }
 
     /**
@@ -229,9 +274,10 @@ class AppViewModel : ViewModel() {
     /**
     FUNCIONALIDADES
      */
-    fun cambiarModo() {
+    fun cambiarModo(): Boolean {
         val cambioModo = !uiState.value.modoPro
         _uiState.update { e -> e.copy(modoPro = cambioModo) }
+        return cambioModo
     }
 
     /**
@@ -241,6 +287,7 @@ class AppViewModel : ViewModel() {
     fun selectAnuncio(a: Anuncio) {
         _uiState.update { e -> e.copy(anuncioSeleccionado = a) }
     }
+
     fun nuevoAnuncio(titulo: String, localidad: String, contenido: String) {
         val anuncio =
             Anuncio(
@@ -262,32 +309,34 @@ class AppViewModel : ViewModel() {
         anuncio.contenido = contenido
     }
 
-    fun selectModAnuncio(anuncio: Anuncio){
+    fun selectModAnuncio(anuncio: Anuncio) {
         _uiState.update { e -> e.copy(modAnuncio = anuncio) }
     }
 
-    fun resetNuevoAnuncio(){
+    fun resetNuevoAnuncio() {
 //        _uiState.update { e -> e.copy(nuevoAnuncio = null) }
         //TODO peta cuando llama a esta función
     }
-    fun publicarAnuncio(){
+
+    fun publicarAnuncio() {
         val anuncio = _uiState.value.nuevoAnuncio
         _uiState.value.usuario.addAnuncio(anuncio!!)
         resetNuevoAnuncio()
     }
 
-    fun borrarAnuncio(anuncio: Anuncio){
+    fun borrarAnuncio(anuncio: Anuncio) {
         _uiState.value.usuario.eliminarAnuncio(anuncio)
     }
 
     /**
-     RESERVAS CONSUMIDOR
+    RESERVAS CONSUMIDOR
      */
-    fun reservar(actividad: Actividad){
+    fun reservar(actividad: Actividad) {
         _uiState.value.usuario.reseservar(actividad)
 
     }
-    fun cancelarReserva(actividad: Actividad){
+
+    fun cancelarReserva(actividad: Actividad) {
         _uiState.value.usuario.cancelarReserva(actividad)
     }
 

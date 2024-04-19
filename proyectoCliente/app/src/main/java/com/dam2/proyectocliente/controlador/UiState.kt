@@ -32,16 +32,16 @@ data class UiState(
     //Formulario publicar
     var nuevoAnuncio: Anuncio? = null,
     var nuevaActividad: Actividad? = null,
-    var formularioActividad: MutableMap<String, String> = mutableMapOf(
-        "titulo" to "",
-        "fecha" to "",
-        //"duracion" to "", TODO quitar de los demás sitios, poner hora en su lugar
-        "precio" to "",
-        "ubicacion" to "",
-        "categoria" to "",
-        "destacado" to "",
-        "contenido" to ""
-    ),
+//    var formularioActividad: MutableMap<String, String> = mutableMapOf(
+//        "titulo" to "",
+//        "fecha" to "",
+//        //"duracion" to "", TODO quitar de los demás sitios, poner hora en su lugar
+//        "precio" to "",
+//        "ubicacion" to "",
+//        "categoria" to "",
+//        "destacado" to "",
+//        "contenido" to ""
+//    ),
     var modAnuncio: Anuncio? = null,
     var modActividad: Actividad? = null,
 
@@ -56,7 +56,7 @@ data class UiState(
         id = 0,
         imagen = R.drawable.noimagen,
         titulo = "titulo",
-        contenido = R.string.vacio,
+        contenidoPrueba = R.string.vacio,
         anuncianteID = 0,
         anunciante = "anunciante",
         fecha = Fecha.ahora(),
@@ -76,9 +76,9 @@ data class UiState(
     val categoriaSelecciononada: Categoria = Categoria.Todo,
     //val busquedaActiva: Boolean = false,
 
-    val mostrarPanelNavegacion: Boolean = false,
+    val mostrarPanelNavegacion: Boolean = true, //TODO gestionar
     val botoneraNav: ArrayList<Boolean> = arrayListOf(true, false, false, false),
-    val modoPro: Boolean = false, //TODO
+    val modoPro: Boolean = true, //TODO gestionar
 
     //Entradas de texto
     val mensajeEnviar: String = "",

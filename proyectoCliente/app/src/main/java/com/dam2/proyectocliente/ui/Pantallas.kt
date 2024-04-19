@@ -15,12 +15,18 @@ enum class Pantallas {
     formularioAnuncio,
     previewNuevaActividad,
     previewNuevoAnuncio,
+    modificarActividad,
+    modificarAnuncio,
 
     menuPrincipal,
     menuBuscar,
     menuBusquedaDirecta,
     menuMensajes,
     menuUsuario,
+
+    menuPrincipalPro,
+    menuReservasGestionPro,
+    menuBusquedaAnunciosPro,
 
     vistaActividad,
     vistaAnuncio,

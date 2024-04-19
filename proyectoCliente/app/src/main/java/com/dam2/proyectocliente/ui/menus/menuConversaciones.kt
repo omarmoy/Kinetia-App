@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.app
+package com.dam2.proyectocliente.ui.menus
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

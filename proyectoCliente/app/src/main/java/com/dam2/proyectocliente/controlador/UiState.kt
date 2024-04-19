@@ -42,6 +42,8 @@ data class UiState(
         "destacado" to "",
         "contenido" to ""
     ),
+    var modAnuncio: Anuncio? = null,
+    var modActividad: Actividad? = null,
 
     //Datos IU
     val actividades: ArrayList<Actividad> = DatosPrueba.actividades,

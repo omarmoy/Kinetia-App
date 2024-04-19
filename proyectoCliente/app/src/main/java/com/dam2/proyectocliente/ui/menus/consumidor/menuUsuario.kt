@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.app
+package com.dam2.proyectocliente.ui.menus.consumidor
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -86,9 +86,21 @@ fun MenuUsuario(navController: NavHostController, vm: AppViewModel, estado: UiSt
     val setBorrarAnuncio: (Anuncio?) -> Unit = { anuncio -> borrarAnuncio = anuncio }
 
     Scaffold(
-        topBar = { BarraSuperiorPerfil(navController = navController, vm, estado) },
+        topBar = {
+            BarraSuperiorPerfil(
+                navController = navController,
+                vm,
+                estado
+            )
+        },
         content = { innerPadding ->
-            ContenidoUsuario(innerPadding, navController, vm, estado, setBorrarAnuncio)
+            ContenidoUsuario(
+                innerPadding,
+                navController,
+                vm,
+                estado,
+                setBorrarAnuncio
+            )
         }
     )
 
@@ -259,7 +271,13 @@ fun ContenidoUsuario(
 
                 LazyColumn {
                     if (verPerfil)
-                        item { PanelPerfil(navController, vm, estado) }
+                        item {
+                            PanelPerfil(
+                                navController,
+                                vm,
+                                estado
+                            )
+                        }
                     else {
                         item {
                             Row(
@@ -279,7 +297,12 @@ fun ContenidoUsuario(
                             }
                         }
                         items(estado.usuario.anunciosPublicados) { anuncio ->
-                            MiniaturaAnuncio(anuncio, navController, vm, setBorrarAnuncio)
+                            MiniaturaAnuncio(
+                                anuncio,
+                                navController,
+                                vm,
+                                setBorrarAnuncio
+                            )
                         }
 
                         if (estado.usuario.anunciosPublicados.size == 0) {
@@ -356,7 +379,13 @@ fun PanelPerfil(navController: NavHostController, vm: AppViewModel, estado: UiSt
     }
     LazyRow {
         items(estado.usuario.actividadesReservadas) { a ->
-            MiniaturaScrollLateral(a, vm, navController, estado,true)
+            MiniaturaScrollLateral(
+                a,
+                vm,
+                navController,
+                estado,
+                true
+            )
         }
         if (estado.usuario.actividadesReservadas.size == 0) {
             item {
@@ -395,7 +424,13 @@ fun PanelPerfil(navController: NavHostController, vm: AppViewModel, estado: UiSt
     }
     LazyRow {
         items(estado.usuario.actividadesFav) { a ->
-            MiniaturaScrollLateral(a, vm, navController, estado,true)
+            MiniaturaScrollLateral(
+                a,
+                vm,
+                navController,
+                estado,
+                true
+            )
         }
         if (estado.usuario.actividadesFav.size == 0) {
             item {
@@ -506,14 +541,22 @@ fun PerfilPreview() {
     val estado by vm.uiState.collectAsState()
     val setBorrarAnuncio: (Anuncio) -> Unit = {  }
     Scaffold(
-        topBar = { BarraSuperiorPerfil(navController, vm, estado) },
-        content = { innerPadding -> ContenidoUsuario(
-            innerPadding,
-            navController,
-            vm,
-            estado,
-            setBorrarAnuncio
-        ) },
+        topBar = {
+            BarraSuperiorPerfil(
+                navController,
+                vm,
+                estado
+            )
+        },
+        content = { innerPadding ->
+            ContenidoUsuario(
+                innerPadding,
+                navController,
+                vm,
+                estado,
+                setBorrarAnuncio
+            )
+        },
         //llama a una función de navegación:
         bottomBar = { PanelNavegacion(navController = navController, vm, estado) }
     )

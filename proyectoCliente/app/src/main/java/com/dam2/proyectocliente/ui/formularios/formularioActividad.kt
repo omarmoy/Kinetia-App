@@ -64,18 +64,17 @@ import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
 import com.example.proyectocliente.ui.theme.NegroClaro
-import java.text.NumberFormat
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormularioActividad(
-//    navController: NavHostController = rememberNavController(),
-//    vm: AppViewModel = viewModel()
-    navController: NavHostController,
-    vm: AppViewModel, estado: UiState
+    navController: NavHostController = rememberNavController(),
+    vm: AppViewModel = viewModel()
+//    navController: NavHostController,
+//    vm: AppViewModel, estado: UiState
 ) {
-//    val estado by vm.uiState.collectAsState()
+    val estado by vm.uiState.collectAsState()
 
 
     val categorias: ArrayList<Categoria> =
@@ -118,8 +117,7 @@ fun FormularioActividad(
     var anioT by rememberSaveable { mutableStateOf(LocalDate.now().year.toString()) }
     var horaT by rememberSaveable { mutableStateOf("") }
     var minutosT by rememberSaveable { mutableStateOf("") }
-
-    var precio = precioT.toDoubleOrNull() ?: 0.0
+    var nPlazasT by rememberSaveable { mutableStateOf("") }
 
     var error by rememberSaveable { mutableStateOf("") }
     val setError: (String) -> Unit = { e -> error = e }
@@ -129,7 +127,7 @@ fun FormularioActividad(
         bottomBar = {
             BarraInferiorFA(
                 vm, estado, titulo, precioT, ubicacion, categoria, destacado,
-                contenido, diaT, mesT, anioT, horaT, minutosT, setError
+                contenido, diaT, mesT, anioT, horaT, minutosT, nPlazasT, setError
             )
         }
 
@@ -290,6 +288,27 @@ fun FormularioActividad(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
+                    Text(text = "Número de plazas: ", color = NegroClaro, fontSize = 16.sp)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        TextFieldIntroducirNumero(
+                            showLabel = false,
+                            //NumberFormat.getCurrencyInstance().format(propina)
+                            value = nPlazasT,
+                            onValueChange = { nPlazasT = it },
+                            modifier = Modifier.width(80.dp),
+                            imeAction = ImeAction.Done
+                        )
+
+                    }
+
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     Text(text = "Promocionar: ", color = NegroClaro, fontSize = 16.sp)
                     Switch(
                         checked = destacado,
@@ -328,6 +347,13 @@ fun FormularioActividad(
                     DialogoInfo(
                         onConfirmation = { error = "" },
                         dialogText = "El precio debe tener formato numérico"
+                    )
+                }
+
+                "plazasNoInt" -> {
+                    DialogoInfo(
+                        onConfirmation = { error = "" },
+                        dialogText = "El número de plazas debe tener formato numérico"
                     )
                 }
             }
@@ -374,7 +400,8 @@ fun BarraInferiorFA(
     anioT: String,
     horaT: String,
     minutosT: String,
-    setError: (String) -> Unit,
+    nPlazasT: String,
+    setError: (String) -> Unit
 ) {
 
     var dia = diaT.toIntOrNull() ?: 0
@@ -386,7 +413,7 @@ fun BarraInferiorFA(
 
     val campos = arrayListOf<String>(
         titulo, precioT, ubicacion, categoria?.toString() ?: "", diaT, mesT, anioT, horaT,
-        minutosT, contenido
+        minutosT, contenido, nPlazasT
     )
 
     Box(
@@ -407,7 +434,9 @@ fun BarraInferiorFA(
                     setError("fecha")
                 else if (precioT.toDoubleOrNull() == null)
                     setError("precioNoInt")
-                else {
+                else if (nPlazasT.toIntOrNull() == null){
+                    setError("plazasNoInt")
+                }else{
                     //TODO crear Actividad y pasar a vista previa
                 }
 
@@ -425,5 +454,5 @@ fun MenuInicioPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
     val estado by vm.uiState.collectAsState()
-    FormularioActividad(navController, vm, estado)
+    FormularioActividad(navController, vm)//, estado)
 }

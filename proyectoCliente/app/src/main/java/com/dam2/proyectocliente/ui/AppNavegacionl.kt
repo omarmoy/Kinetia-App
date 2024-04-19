@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MailOutline
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -22,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -31,16 +34,17 @@ import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.controlador.AppViewModel
 import com.dam2.proyectocliente.controlador.UiState
 import com.dam2.proyectocliente.model.Categoria
-import com.dam2.proyectocliente.ui.app.ListaActividades
-import com.dam2.proyectocliente.ui.app.MenuBusqueda
-import com.dam2.proyectocliente.ui.app.MenuConversaciones
-import com.dam2.proyectocliente.ui.app.MenuPrincipal
-import com.dam2.proyectocliente.ui.app.MenuUsuario
-import com.dam2.proyectocliente.ui.app.VistaActividad
-import com.dam2.proyectocliente.ui.app.VistaAnuncio
-import com.dam2.proyectocliente.ui.app.VistaChat
+import com.dam2.proyectocliente.ui.vistas.ListaActividades
+import com.dam2.proyectocliente.ui.menus.consumidor.MenuBusqueda
+import com.dam2.proyectocliente.ui.menus.MenuConversaciones
+import com.dam2.proyectocliente.ui.menus.consumidor.MenuPrincipal
+import com.dam2.proyectocliente.ui.menus.consumidor.MenuUsuario
+import com.dam2.proyectocliente.ui.vistas.VistaActividad
+import com.dam2.proyectocliente.ui.vistas.VistaAnuncio
+import com.dam2.proyectocliente.ui.vistas.VistaChat
 import com.dam2.proyectocliente.ui.formularios.FormularioActividad
 import com.dam2.proyectocliente.ui.formularios.FormularioAnuncio
+import com.dam2.proyectocliente.ui.formularios.ModificarAnuncio
 import com.dam2.proyectocliente.ui.inicio.Inicio
 import com.dam2.proyectocliente.ui.inicio.Login
 import com.dam2.proyectocliente.ui.registro.AddImagen
@@ -160,10 +164,18 @@ fun Contenido(
             VistaAnuncio(navController, estado.nuevoAnuncio!!, vm, true)
         }
         composable(route = Pantallas.formularioActividad.name){
-            FormularioActividad (navController = navController, vm, estado)
+//            FormularioActividad (navController = navController, vm, estado)
+            FormularioActividad()
+//            TODO
         }
         composable(route = Pantallas.previewNuevaActividad.name) {
             VistaActividad(navController, estado.nuevaActividad!!, vm, estado, true)
+        }
+        composable(route = Pantallas.modificarAnuncio.name) {
+            ModificarAnuncio(navController, vm, estado, estado.modAnuncio!!)
+        }
+        composable(route = Pantallas.previewNuevaActividad.name) {
+            //TODO
         }
 
 
@@ -233,4 +245,77 @@ fun PanelNavegacion(navController: NavHostController, vm: AppViewModel, estado: 
             }
         }
     }
+}
+
+@Composable
+fun PanelNavegacionPro(navController: NavHostController, vm: AppViewModel, estado: UiState) {
+    if (true) {
+//    if (estado.mostrarPanelNavegacion) {
+        Box(
+            modifier = Modifier
+                .background(Gris2)
+                .padding(top = 1.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceAround,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .background(BlancoFondo)
+                    .padding(12.dp)
+            ) {
+                IconButton(onClick = {
+                    vm.cambiarBotonNav(0)
+                    navController.navigate(Pantallas.menuPrincipalPro.name)
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.Menu,
+                        contentDescription = "Menú principal Pro",
+                        tint = if (estado.botoneraNav[0]) AmarilloPastel else NegroClaro
+                    )
+                }
+                IconButton(onClick = {
+                    vm.cambiarBotonNav(1)
+                    navController.navigate(Pantallas.menuReservasGestionPro.name)
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.DateRange,
+                        contentDescription = "Reservas",
+                        tint = if (estado.botoneraNav[1]) AmarilloPastel else NegroClaro
+                    )
+                }
+
+                IconButton(onClick = {
+                    vm.cambiarBotonNav(2)
+                    navController.navigate(Pantallas.menuMensajes.name)
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.MailOutline,
+                        contentDescription = "Mensajes",
+                        tint = if (estado.botoneraNav[2]) AmarilloPastel else NegroClaro
+                    )
+                }
+                IconButton(onClick = {
+                    vm.cambiarBotonNav(3)
+                    navController.navigate(Pantallas.menuBusquedaAnunciosPro.name)
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = "buscar",
+                        tint = if (estado.botoneraNav[3]) AmarilloPastel else NegroClaro
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BarraPreview() {
+    val navController = rememberNavController()
+    val vm: AppViewModel = viewModel()
+    val estado by vm.uiState.collectAsState()
+    PanelNavegacionPro(navController, vm, estado)
 }

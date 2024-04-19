@@ -8,14 +8,14 @@ class Anuncio(
     val id: Int,
     @DrawableRes
     val fotoAnunciante: Int,
-    val titulo: String,
+    var titulo: String,
     @StringRes
     val contenidoInt: Int = R.string.vacio,  //TODO eliminar
-    val contenido: String = "",
+    var contenido: String = "",
     val anuncianteID: Int,
     val anunciante: String,
     val fecha: Fecha,
-    val localidad: String = "Sevilla"
+    var localidad: String = "Sevilla"
 ) {
 
 }

@@ -1,6 +1,8 @@
 front:
 -Modo Empresa
--formularios: anuncio. 
+-formularios: actividad-plazas ¿ya?
+-modificar actividad. 
+-dar de baja usuario
 
 funcionalidad:
 *inicio

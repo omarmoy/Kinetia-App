@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.app
+package com.dam2.proyectocliente.ui.menus.consumidor
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -81,15 +81,11 @@ fun MenuBusqueda(
     val focusRequester = remember { FocusRequester() }
 
     Scaffold(
-        topBar = { BarraSuperiorBusqueda(vm, estado, focusRequester) },
+        topBar = {
+            BarraSuperiorBusqueda(vm, estado, focusRequester)
+        },
         content = { innerPadding ->
-            ContenidoBusqueda(
-                innerPadding,
-                navController,
-                vm,
-                estado,
-                estadoLista
-            )
+            ContenidoBusqueda(innerPadding, navController, vm, estado, estadoLista)
         },
         floatingActionButton = {
             Surface(
@@ -181,7 +177,12 @@ fun ContenidoBusqueda(
             item { Categorias(navController, vm, estado) } //función definida en menuPrincipal
             if (vm.listaActividades().size > 0) {
                 items(vm.listaActividades()) { a ->
-                    MiniaturaActividadBusqueda(a, vm, navController, estado)
+                    MiniaturaActividadBusqueda(
+                        a,
+                        vm,
+                        navController,
+                        estado
+                    )
                 }
             } else
                 item {
@@ -254,7 +255,7 @@ fun MiniaturaActividadBusqueda(
                         fontWeight = FontWeight.Bold,
 
                         )
-                    Text(text = a.ubicacion ?: "", fontSize = pequena)
+                    Text(text = a.ubicacion, fontSize = pequena)
                 }
 
                 Column(
@@ -303,7 +304,13 @@ fun MenuBusquedaPreview() {
     val vm: AppViewModel = viewModel()
     val estado by vm.uiState.collectAsState()
     Scaffold(
-        topBar = { BarraSuperiorBusqueda(vm, estado, FocusRequester()) },
+        topBar = {
+            BarraSuperiorBusqueda(
+                vm,
+                estado,
+                FocusRequester()
+            )
+        },
         content = { innerPadding ->
             ContenidoBusqueda(
                 innerPadding,

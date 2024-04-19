@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.app
+package com.dam2.proyectocliente.ui.vistas
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -78,7 +79,7 @@ fun VistaAnuncio(
         bottomBar = {
             if (anuncio.anuncianteID != vm.usuario().id)
                 BotonContactar(navController, anuncio, vm)
-            if(vistaPrevia)
+            if (vistaPrevia)
                 BarraInferiorAnuncioVP(navController, vm)
         }
     )
@@ -116,18 +117,7 @@ fun BarraSuperiorAnuncio(
     navController: NavHostController, anuncio: Anuncio, vm: AppViewModel
 ) {
     TopAppBar(
-        title = {
-            if (anuncio.anuncianteID == vm.usuario().id) {
-                Text(
-                    text = "Mi Anuncio",
-                    textAlign = TextAlign.Center,
-                    fontStyle = FontStyle.Italic,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 12.dp)
-                )
-            }
-        },
+        title = { },
         colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = BlancoFondo),
         navigationIcon = {
             IconButton(onClick = {
@@ -139,7 +129,22 @@ fun BarraSuperiorAnuncio(
                     contentDescription = "atrás"
                 )
             }
+        },
+        actions = {
+            if (anuncio.anuncianteID == vm.usuario().id) {
+                IconButton(onClick = {
+                    vm.selectModAnuncio(anuncio)
+                    navController.navigate(Pantallas.modificarAnuncio.name)
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.Edit,
+                        contentDescription = "edit",
+                        tint = AzulAguaOscuro
+                    )
+                }
+            }
         }
+
 
     )
 }

@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.app
+package com.dam2.proyectocliente.ui.menus.consumidor
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -42,7 +42,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -79,8 +79,12 @@ import com.example.proyectocliente.ui.theme.subtitulo
 @Composable
 fun MenuPrincipal(navController: NavHostController, vm: AppViewModel, estado: UiState) {
     Scaffold(
-        topBar = { BarraSuperiorMPrincipal(navController, vm, estado) },
-        content = { innerPadding -> ContenidoInicio(innerPadding, vm, estado, navController) }
+        topBar = {
+            BarraSuperiorMPrincipal(navController, vm, estado)
+        },
+        content = { innerPadding ->
+            ContenidoInicio(innerPadding, vm, estado, navController)
+        }
     )
 }
 
@@ -154,8 +158,20 @@ fun ContenidoInicio(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            item(span = { GridItemSpan(2) }) { Categorias(navController, vm, estado) }
-            item(span = { GridItemSpan(2) }) { DestacadosyRecientes(vm, estado, navController) }
+            item(span = { GridItemSpan(2) }) {
+                Categorias(
+                    navController,
+                    vm,
+                    estado
+                )
+            }
+            item(span = { GridItemSpan(2) }) {
+                DestacadosyRecientes(
+                    vm,
+                    estado,
+                    navController
+                )
+            }
 
             //Descubre:
             items(DatosPrueba.actividades) { a ->
@@ -278,11 +294,11 @@ fun MiniaturaScrollLateral(
         modifier = Modifier.padding(end = 12.dp)
     ) {
         // Define un estado mutable para actuar como un disparador de recomposición
-        val recomposeTrigger = remember { mutableStateOf(0) }
+        val recomposeTrigger = remember { mutableIntStateOf(0) }
 
         // Función para refrescar manualmente la componible
         fun refreshComposable() {
-            recomposeTrigger.value++
+            recomposeTrigger.intValue++
         }
         Card(//shape = RectangleShape, /*cuadrado*/
             onClick = {
@@ -323,7 +339,7 @@ fun MiniaturaScrollLateral(
 
                         )
                     if (!mostrarMenos) {
-                        Text(text = a.ubicacion ?: "", fontSize = pequena)
+                        Text(text = a.ubicacion, fontSize = pequena)
                     }
                 }
 
@@ -353,7 +369,7 @@ fun MiniaturaScrollLateral(
                 }
             }
         }
-        LaunchedEffect(recomposeTrigger.value) {
+        LaunchedEffect(recomposeTrigger.intValue) {
             // Esta parte se ejecutará cada vez que cambie el valor de recomposeTrigger
             // Puedes colocar aquí el contenido que quieres refrescar manualmente
             // por ejemplo, otras composables o lógica que desees ejecutar nuevamente
@@ -400,10 +416,9 @@ fun MiniaturaActividad(a: Actividad, vm: AppViewModel, navController: NavHostCon
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     fontWeight = FontWeight.Bold,
-
-                    )
+                )
                 Text(
-                    text = a.ubicacion ?: "",
+                    text = a.ubicacion,
                     fontSize = pequena,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -428,8 +443,21 @@ fun MenuInicioPreview() {
     val vm: AppViewModel = viewModel()
     val estado by vm.uiState.collectAsState()
     Scaffold(
-        topBar = { BarraSuperiorMPrincipal(navController, vm, estado) },
-        content = { innerPadding -> ContenidoInicio(innerPadding, vm, estado, navController) },
+        topBar = {
+            BarraSuperiorMPrincipal(
+                navController,
+                vm,
+                estado
+            )
+        },
+        content = { innerPadding ->
+            ContenidoInicio(
+                innerPadding,
+                vm,
+                estado,
+                navController
+            )
+        },
         //llama a una función de AppPrincipal:
         bottomBar = { PanelNavegacion(navController = navController, vm, estado) }
     )

@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.app
+package com.dam2.proyectocliente.ui.vistas
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -237,7 +237,6 @@ fun MiniaturaActividadUnaLinea(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
 fun ListaAPreview() {

@@ -255,6 +255,17 @@ class AppViewModel : ViewModel() {
             )
         _uiState.update { e -> e.copy(nuevoAnuncio = anuncio) }
     }
+
+    fun modAnuncio(titulo: String, localidad: String, contenido: String, anuncio: Anuncio) {
+        anuncio.titulo = titulo
+        anuncio.localidad = localidad
+        anuncio.contenido = contenido
+    }
+
+    fun selectModAnuncio(anuncio: Anuncio){
+        _uiState.update { e -> e.copy(modAnuncio = anuncio) }
+    }
+
     fun resetNuevoAnuncio(){
 //        _uiState.update { e -> e.copy(nuevoAnuncio = null) }
         //TODO peta cuando llama a esta función

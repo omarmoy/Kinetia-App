@@ -53,13 +53,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.controlador.AppViewModel
-import com.dam2.proyectocliente.controlador.DatosPrueba
 import com.dam2.proyectocliente.controlador.UiState
 import com.dam2.proyectocliente.model.Actividad
 import com.dam2.proyectocliente.ui.PanelNavegacionPro
 import com.dam2.proyectocliente.ui.Pantallas
 import com.dam2.proyectocliente.ui.menus.DesplegableConfiguarion
 import com.dam2.proyectocliente.ui.menus.consumidor.Titulo
+import com.dam2.proyectocliente.ui.recursos.DialogoInfo
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
@@ -72,12 +72,27 @@ import com.example.proyectocliente.ui.theme.pequena
 @Composable
 fun MenuPrincipalPro(navController: NavHostController, vm: AppViewModel, estado: UiState) {
 
+    var borrarActividad by remember { mutableStateOf<Actividad?>(null) }
+    val setBorrarActividad: (Actividad?) -> Unit = { actividad -> borrarActividad = actividad }
+
     Scaffold(
         topBar = { BarraSuperiorPro(navController, vm, estado) },
         content = { innerPadding ->
-            ContenidoPrincipalPro(innerPadding, navController, vm, estado)
+            ContenidoPrincipalPro(innerPadding, navController, vm, estado, setBorrarActividad)
         }
     )
+
+    if (borrarActividad != null) {
+        DialogoInfo(
+            onDismissRequest = { setBorrarActividad(null) },
+            onConfirmation = { vm.borrarActividad(borrarActividad!!); setBorrarActividad(null) },
+            dialogTitle = borrarActividad!!.titulo,
+            dialogText = "¿Quieres borrar este actividad?",
+            buttonConfirm = "Aceptar",
+            buttonDismiss = "Cancelar"
+        )
+    }
+
 }
 
 
@@ -133,7 +148,8 @@ fun ContenidoPrincipalPro(
     innerPadding: PaddingValues,
     navController: NavHostController,
     vm: AppViewModel,
-    estado: UiState
+    estado: UiState,
+    setBorrarActividad: (Actividad?) -> Unit
 ) {
 
     Scaffold(
@@ -142,10 +158,23 @@ fun ContenidoPrincipalPro(
             Column(modifier = Modifier.padding(paddinHijo)) {
                 DatosPerfilPro(estado)
                 LazyColumn(modifier = Modifier.padding(8.dp)) {
+
                     item { Titulo(texto = "Mis Actividades") }
-//                    items(estado.usuario.actividadesOfertadas) { actividad ->
-                    items(DatosPrueba.actividades) { actividad -> //TODO quitar
-                        MiniaturaActividadOfertada(actividad, vm, navController, estado)
+
+                    if (estado.usuario.actividadesOfertadas.size == 0) {
+                        item {
+                            Text(
+                                text = "Todavía no has publicado ninguna actividad",
+                                modifier = Modifier.padding(top = 40.dp)
+                            )
+                        }
+                    } else {
+                        items(estado.usuario.actividadesOfertadas) { actividad ->
+//                    items(DatosPrueba.actividades) { actividad -> //TODO quitar
+                            MiniaturaActividadOfertada(
+                                actividad, vm, navController, estado, setBorrarActividad
+                            )
+                        }
                     }
                 }
             }
@@ -218,7 +247,8 @@ fun MiniaturaActividadOfertada(
     actividad: Actividad,
     vm: AppViewModel,
     navController: NavHostController,
-    estado: UiState
+    estado: UiState,
+    setBorrarActividad: (Actividad?) -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -298,7 +328,7 @@ fun MiniaturaActividadOfertada(
                     )
                 },
                 onClick = {
-                    /*TODO edit*/
+                    setBorrarActividad(actividad)
                 })
 
         }
@@ -323,7 +353,8 @@ fun PrincipalProPreview() {
                 innerPadding,
                 navController,
                 vm,
-                estado
+                estado,
+                { }
             )
         },
         //llama a una función de navegación:

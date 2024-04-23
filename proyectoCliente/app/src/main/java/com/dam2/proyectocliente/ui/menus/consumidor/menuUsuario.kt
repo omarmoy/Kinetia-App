@@ -222,7 +222,7 @@ fun ContenidoUsuario(
     estado: UiState,
     setBorrarAnuncio: (Anuncio) -> Unit
 ) {
-    var verPerfil by rememberSaveable { mutableStateOf(true) }
+    var verPerfil by rememberSaveable { mutableStateOf(false) }
     Scaffold(
         modifier = Modifier.padding(innerPadding),
         content = { paddinHijo ->

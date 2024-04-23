@@ -5,8 +5,8 @@ import androidx.annotation.StringRes
 import com.example.proyectocliente.R
 
 data class Actividad(
-    val id: Int,
-    @DrawableRes val imagen: Int,
+    val id: Int =0, // TODO el id viene de la api
+    @DrawableRes val imagen: Int = R.drawable.noimagen,
     var titulo: String,
     @StringRes var contenidoPrueba: Int = R.string.vacio, //TODO BORRAR
     var contenido: String ="",

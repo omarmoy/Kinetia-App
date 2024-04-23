@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.vistas
+package com.dam2.proyectocliente.ui.vistas.pro
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Edit
@@ -64,6 +65,7 @@ import com.dam2.proyectocliente.controlador.AppViewModel
 import com.dam2.proyectocliente.controlador.DatosPrueba
 import com.dam2.proyectocliente.controlador.UiState
 import com.dam2.proyectocliente.model.Actividad
+import com.dam2.proyectocliente.ui.Pantallas
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
@@ -73,12 +75,12 @@ import com.example.proyectocliente.ui.theme.Gris2
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VistaActividad(
+fun VistaActividadPro(
     navController: NavHostController,
     actividad: Actividad,
     vm: AppViewModel,
     estado: UiState,
-    vistaPrevia: Boolean = false
+    vistaPrevia: Boolean = false,
 ) {
 
     Scaffold(
@@ -86,16 +88,10 @@ fun VistaActividad(
             if (vistaPrevia)
                 BarraSuperiorActividadVistaPrevia()
             else
-                BarraSuperiorActividad(navController, actividad, vm, estado)
+                BarraSuperiorActividad(navController, vm, actividad)
         },
         content = { innerPadding ->
-            ContenidoActividad(
-                innerPadding,
-                navController,
-                actividad,
-                vm,
-                estado
-            )
+            ContenidoActividad(innerPadding, actividad)
         },
         bottomBar = {
             if (vistaPrevia)
@@ -108,18 +104,9 @@ fun VistaActividad(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BarraSuperiorActividad(
-    navController: NavHostController, actividad: Actividad, vm: AppViewModel, estado: UiState
+    navController: NavHostController, vm: AppViewModel, actividad: Actividad
 ) {
-    // Define un estado mutable para actuar como un disparador de recomposición
-    val recomposeTrigger = remember { mutableStateOf(0) }
 
-    // Función para refrescar manualmente la componible
-    fun refreshComposable() {
-        recomposeTrigger.value++
-    }
-    LaunchedEffect(recomposeTrigger.value) {
-        // Esta parte se ejecutará cada vez que cambie el valor de recomposeTrigger
-    }
     TopAppBar(
         title = {
             //Text(actividad.titulo, overflow = TextOverflow.Ellipsis)
@@ -131,26 +118,22 @@ fun BarraSuperiorActividad(
                 navController.navigateUp()
             }) {
                 Icon(
-                    imageVector = Icons.Filled.Close,
+                    imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "Cerrar"
                 )
             }
         },
         actions = {
             IconButton(onClick = {
-                if (estado.esFavorita(actividad))
-                    vm.eliminarFavorito(actividad)
-                else
-                    vm.addFavorito(actividad)
-                refreshComposable()
+                vm.selectModActividad(actividad)
+                navController.navigate(Pantallas.modificarActividad.name)
             }) {
                 Icon(
-                    imageVector = if (estado.esFavorita(actividad)) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                    imageVector = Icons.Filled.Edit,
                     contentDescription = "Fav",
                     tint = AzulAguaOscuro
                 )
             }
-
         }
     )
 }
@@ -159,10 +142,7 @@ fun BarraSuperiorActividad(
 @Composable
 fun ContenidoActividad(
     innerPadding: PaddingValues,
-    navController: NavHostController,
-    actividad: Actividad,
-    vm: AppViewModel,
-    estado: UiState
+    actividad: Actividad
 ) {
     Column(
         modifier = Modifier
@@ -171,13 +151,6 @@ fun ContenidoActividad(
             .verticalScroll(rememberScrollState())
             .background(color = BlancoFondo)
     ) {
-
-
-        val recomposeTrigger = remember { mutableStateOf(0) }
-        val refreshComposable: () -> Unit = { recomposeTrigger.value++ }
-        LaunchedEffect(recomposeTrigger.value) {
-            // Esta parte se ejecutará cada vez que cambie el valor de recomposeTrigger
-        }
 
         Image(
             painter = painterResource(id = actividad.imagen),
@@ -188,15 +161,15 @@ fun ContenidoActividad(
             contentScale = ContentScale.Crop
         )
 
-        PanelTitulo(navController, actividad, vm)
-        PanelDatos(navController, actividad, vm)
-        PanelBotones(navController, actividad, vm, estado, refreshComposable)
-        PanelContenido(navController, actividad, vm, estado, refreshComposable)
+        PanelTitulo(actividad)
+        PanelDatos(actividad)
+        PanelBotones()
+        PanelContenido(actividad)
     }
 }
 
 @Composable
-fun PanelTitulo(navController: NavHostController, actividad: Actividad, vm: AppViewModel) {
+fun PanelTitulo(actividad: Actividad) {
 
     Column(modifier = Modifier.padding(top = 12.dp, end = 12.dp, start = 12.dp, bottom = 1.dp)) {
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -215,17 +188,11 @@ fun PanelTitulo(navController: NavHostController, actividad: Actividad, vm: AppV
                     color = AzulAguaClaro, fontSize = 14.sp
                 )
             }
-            IconButton(
-                modifier = Modifier.weight(.2f),
-                onClick = {
-                    /*TODO botón compartir*/
-                }) {
-                Icon(
-                    imageVector = Icons.Filled.Share, contentDescription = "compartir",
-                    tint = AzulAguaOscuro,
-                    modifier = Modifier.size(30.dp)
-                )
-            }
+            Icon(
+                imageVector = Icons.Filled.Share, contentDescription = "compartir",
+                tint = AzulAguaOscuro,
+                modifier = Modifier.size(30.dp)
+            )
         }
         Text(
             text = "publicado: " + actividad.fechaPublicacion.mostrarFecha(),
@@ -237,7 +204,7 @@ fun PanelTitulo(navController: NavHostController, actividad: Actividad, vm: AppV
 }
 
 @Composable
-fun PanelDatos(navController: NavHostController, actividad: Actividad, vm: AppViewModel) {
+fun PanelDatos(actividad: Actividad) {
     Surface(
         modifier = Modifier
             .background(color = AmarilloPastel)
@@ -297,13 +264,7 @@ fun PanelDatos(navController: NavHostController, actividad: Actividad, vm: AppVi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PanelBotones(
-    navController: NavHostController,
-    actividad: Actividad,
-    vm: AppViewModel,
-    estado: UiState,
-    refreshComposable: () -> Unit
-) {
+fun PanelBotones() {
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically,
@@ -312,26 +273,19 @@ fun PanelBotones(
             .padding(top = 40.dp, start = 70.dp, end = 70.dp, bottom = 12.dp)
     ) {
         Button(
-            onClick = { vm.reservar(actividad); refreshComposable() },
+            onClick = { },
             shape = RoundedCornerShape(4.dp),
             colors = ButtonDefaults.buttonColors(AmarilloPastel),
-            contentPadding = PaddingValues(8.dp, 0.dp),
-            enabled = actividad.plazasDisponibles != 0
-                    && !estado.usuario.actividadesReservadas.contains(actividad)
+            contentPadding = PaddingValues(8.dp, 0.dp)
         ) {
-            val texto =
-                if (estado.usuario.actividadesReservadas.contains(actividad))
-                    "Reservado"
-                else
-                    "Reservar"
-            Text(text = texto, color = Color.Black)
+            Text(text = "Reservar", color = Color.Black)
         }
 
         Card(
             shape = CircleShape,
             colors = CardDefaults.cardColors(containerColor = AzulAguaOscuro),
             modifier = Modifier.size(50.dp),
-            onClick = { /*TODO*/ }
+            onClick = { }
         ) {
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -350,13 +304,7 @@ fun PanelBotones(
 }
 
 @Composable
-fun PanelContenido(
-    navController: NavHostController,
-    actividad: Actividad,
-    vm: AppViewModel,
-    estado: UiState,
-    refreshComposable: () -> Unit
-) {
+fun PanelContenido(actividad: Actividad) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(8.dp)
@@ -376,32 +324,13 @@ fun PanelContenido(
         if (actividad.contenido.length > 1399) {
             Spacer(modifier = Modifier.height(24.dp))
             Button(
-                onClick = { vm.reservar(actividad); refreshComposable() },
+                onClick = {  },
                 shape = RoundedCornerShape(4.dp),
                 colors = ButtonDefaults.buttonColors(AmarilloPastel),
-                contentPadding = PaddingValues(8.dp, 0.dp),
-                enabled = actividad.plazasDisponibles != 0
-                        && !estado.usuario.actividadesReservadas.contains(actividad)
-            ) {
-                val texto =
-                    if (estado.usuario.actividadesReservadas.contains(actividad))
-                        "Reservado"
-                    else
-                        "Reservar"
-                Text(text = texto, color = Color.Black)
-            }
-
-        }
-
-        if (estado.usuario.actividadesReservadas.contains(actividad)) {
-            Spacer(modifier = Modifier.height(24.dp))
-            Button(
-                onClick = { vm.cancelarReserva(actividad); refreshComposable() },
-                shape = RoundedCornerShape(4.dp),
-                colors = ButtonDefaults.buttonColors(AzulAguaOscuro),
                 contentPadding = PaddingValues(8.dp, 0.dp)
             ) {
-                Text(text = "Cancelar Reserva", color = Color.White)
+
+                Text(text = "Reservar", color = Color.Black)
             }
         }
         Spacer(modifier = Modifier.height(24.dp))
@@ -426,15 +355,11 @@ fun BarraSuperiorActividadVistaPrevia() {
             }
         },
         actions = {
-            IconButton(onClick = {
-                //TODO
-            }) {
-                Icon(
-                    imageVector = Icons.Filled.Edit,
-                    contentDescription = "edid",
-                    tint = AzulAguaOscuro
-                )
-            }
+            Icon(
+                imageVector = Icons.Filled.FavoriteBorder,
+                contentDescription = "fav",
+                tint = AzulAguaOscuro
+            )
         }
     )
 }
@@ -458,16 +383,21 @@ fun BarraInferiorActividadVP(
                 .background(BlancoFondo)
         ) {
             TextButton(onClick = {
-
-                //TODO
-
+                navController.navigateUp()
             }) {
                 Text(text = "Editar", color = AzulAguaOscuro, fontSize = 16.sp)
             }
 
             TextButton(onClick = {
-
-                //TODO
+                vm.mostrarPanelNavegacion()
+                navController.navigate(Pantallas.menuPrincipalPro.name)
+            }) {
+                Text(text = "Cancelar", color = AzulAguaOscuro, fontSize = 16.sp)
+            }
+            TextButton(onClick = {
+                vm.publicarActividad()
+                vm.mostrarPanelNavegacion()
+                navController.navigate(Pantallas.menuPrincipalPro.name)
 
             }) {
                 Text(text = "Publicar", color = AzulAguaOscuro, fontSize = 16.sp)
@@ -488,5 +418,5 @@ fun ActividadPreview() {
     val navController = rememberNavController()
     val a = DatosPrueba.actividades[0]
     val estado by vm.uiState.collectAsState()
-    VistaActividad(navController = navController, actividad = a, vm, estado)
+    VistaActividadPro(navController = navController, actividad = a, vm, estado)
 }

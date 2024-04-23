@@ -47,11 +47,11 @@ class Usuario(
         return actividadesFav.contains(actividad)
     }
 
-    fun addOfertaActividad(actividad: Actividad): Boolean {
+    fun addActividadOferta(actividad: Actividad): Boolean {
         return actividadesOfertadas.add(actividad)
     }
 
-    fun eliminarOfertaActividad(actividad: Actividad): Boolean {
+    fun eliminarActividadOferta(actividad: Actividad): Boolean {
         return actividadesOfertadas.remove(actividad)
     }
 

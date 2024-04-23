@@ -55,6 +55,7 @@ import com.dam2.proyectocliente.controlador.UiState
 import com.dam2.proyectocliente.controlador.texfieldVacio
 import com.dam2.proyectocliente.controlador.validarFechaActividad
 import com.dam2.proyectocliente.model.Categoria
+import com.dam2.proyectocliente.ui.Pantallas
 import com.dam2.proyectocliente.ui.recursos.DialogoInfo
 import com.dam2.proyectocliente.ui.recursos.TextFieldConCabecera
 import com.dam2.proyectocliente.ui.recursos.TextFieldIntroducirNumero
@@ -69,13 +70,9 @@ import java.time.LocalDate
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormularioActividad(
-    navController: NavHostController = rememberNavController(),
-    vm: AppViewModel = viewModel()
-//    navController: NavHostController,
-//    vm: AppViewModel, estado: UiState
+    navController: NavHostController,
+    vm: AppViewModel
 ) {
-    val estado by vm.uiState.collectAsState()
-
 
     val categorias: ArrayList<Categoria> =
         ArrayList(Categoria.values().filter { it != Categoria.Todo })
@@ -126,7 +123,7 @@ fun FormularioActividad(
         topBar = { BarraSuperiorFA(navController) },
         bottomBar = {
             BarraInferiorFA(
-                vm, estado, titulo, precioT, ubicacion, categoria, destacado,
+                vm, navController, titulo, precioT, ubicacion, categoria, destacado,
                 contenido, diaT, mesT, anioT, horaT, minutosT, nPlazasT, setError
             )
         }
@@ -160,7 +157,7 @@ fun FormularioActividad(
                     ) {
                         IconButton(
                             onClick = {
-                                /*TODO*/
+                                /*TODO: add imagen */
                             }
                         ) {
                             Icon(
@@ -388,7 +385,7 @@ fun BarraSuperiorFA(navController: NavHostController) {
 @Composable
 fun BarraInferiorFA(
     vm: AppViewModel,
-    estado: UiState,
+    navController: NavHostController,
     titulo: String,
     precioT: String,
     ubicacion: String,
@@ -413,7 +410,7 @@ fun BarraInferiorFA(
 
     val campos = arrayListOf<String>(
         titulo, precioT, ubicacion, categoria?.toString() ?: "", diaT, mesT, anioT, horaT,
-        minutosT, contenido, nPlazasT
+        minutosT, contenido, nPlazasT, destacado.toString()
     )
 
     Box(
@@ -437,6 +434,8 @@ fun BarraInferiorFA(
                 else if (nPlazasT.toIntOrNull() == null){
                     setError("plazasNoInt")
                 }else{
+                    vm.nuevaActividad(campos)
+                    navController.navigate(Pantallas.previewNuevaActividad.name)
                     //TODO crear Actividad y pasar a vista previa
                 }
 
@@ -454,5 +453,5 @@ fun MenuInicioPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
     val estado by vm.uiState.collectAsState()
-    FormularioActividad(navController, vm)//, estado)
+    FormularioActividad(navController, vm)
 }

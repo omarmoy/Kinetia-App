@@ -45,14 +45,6 @@ class AppViewModel : ViewModel() {
         _uiState.value.formularioRegistro[campo] = valor
     }
 
-    fun addCampoFormularioActividad(campo: String, valor: String) {
-
-//        _uiState.value.formularioActividad[campo] = valor
-//        var formulario =_uiState.value.formularioActividad
-//        formulario[campo] = valor
-//        _uiState.update { e -> e.copy(formularioActividad = formulario) }
-
-    }
 
     /**
     ACTIVIDADES
@@ -173,6 +165,40 @@ class AppViewModel : ViewModel() {
         }
     }
 
+    fun nuevaActividad(campos: ArrayList<String>){
+
+        val fechayHora = LocalDateTime.of(
+            campos[6].toInt(),
+            campos[5].toInt(),
+            campos[4].toInt(),
+            campos[7].toInt(),
+            campos[8].toInt()
+        )
+
+        val actividad = Actividad(
+            titulo = campos[0],
+            precio = campos[1].toFloat(),
+            ubicacion = campos[2],
+            categoria = stringToCategoria(campos[3]),
+            fecha = Fecha(fechayHora),
+            contenido = campos[9],
+            plazas = campos[10].toInt(),
+            destacado = campos[11].toBoolean(),
+            anuncianteID = _uiState.value.usuario.id,
+            anunciante = _uiState.value.usuario.nombreCompleto()
+        )
+        _uiState.update { e -> e.copy(nuevaActividad = actividad) }
+    }
+
+    fun publicarActividad() {
+        val actividad = _uiState.value.nuevaActividad
+        _uiState.value.usuario.addActividadOferta(actividad!!)
+    }
+
+    fun borrarActividad(actividad: Actividad){
+        _uiState.value.usuario.eliminarActividadOferta(actividad)
+    }
+
     /**
     MENSAJES
      */
@@ -291,7 +317,7 @@ class AppViewModel : ViewModel() {
     fun nuevoAnuncio(titulo: String, localidad: String, contenido: String) {
         val anuncio =
             Anuncio(
-                id = 100,
+                id = 100, //TODO API ID
                 fotoAnunciante = _uiState.value.usuario.foto,
                 titulo = titulo,
                 contenido = contenido,

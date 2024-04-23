@@ -34,13 +34,13 @@ import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.controlador.AppViewModel
 import com.dam2.proyectocliente.controlador.UiState
 import com.dam2.proyectocliente.model.Categoria
-import com.dam2.proyectocliente.ui.vistas.ListaActividades
+import com.dam2.proyectocliente.ui.vistas.consumidor.ListaActividades
 import com.dam2.proyectocliente.ui.menus.consumidor.MenuBusqueda
 import com.dam2.proyectocliente.ui.menus.MenuConversaciones
 import com.dam2.proyectocliente.ui.menus.consumidor.MenuPrincipal
 import com.dam2.proyectocliente.ui.menus.consumidor.MenuUsuario
-import com.dam2.proyectocliente.ui.vistas.VistaActividad
-import com.dam2.proyectocliente.ui.vistas.VistaAnuncio
+import com.dam2.proyectocliente.ui.vistas.consumidor.VistaActividad
+import com.dam2.proyectocliente.ui.vistas.consumidor.VistaAnuncio
 import com.dam2.proyectocliente.ui.vistas.VistaChat
 import com.dam2.proyectocliente.ui.formularios.FormularioActividad
 import com.dam2.proyectocliente.ui.formularios.FormularioAnuncio
@@ -56,6 +56,7 @@ import com.dam2.proyectocliente.ui.registro.ElegirTipoPro
 import com.dam2.proyectocliente.ui.registro.NuevaEmpresaDatos
 import com.dam2.proyectocliente.ui.registro.NuevoUsuarioDatos
 import com.dam2.proyectocliente.ui.registro.NuevoUsuario
+import com.dam2.proyectocliente.ui.vistas.pro.VistaActividadPro
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
@@ -186,15 +187,13 @@ fun Contenido(
 
         //formularios y previstas ACTIVIDAD
         composable(route = Pantallas.formularioActividad.name) {
-//            FormularioActividad (navController = navController, vm, estado)
-            FormularioActividad()
-//            TODO
+            FormularioActividad (navController = navController, vm)
         }
         composable(route = Pantallas.previewNuevaActividad.name) {
-            VistaActividad(navController, estado.nuevaActividad!!, vm, estado, true)
+            VistaActividadPro(navController, estado.nuevaActividad!!, vm, estado, true)
         }
         composable(route = Pantallas.vistaActividadPro.name) {
-            VistaActividad(navController, estado.actividadSeleccionada, vm, estado, true)
+            VistaActividadPro(navController, estado.actividadSeleccionada, vm, estado)
         }
 
         composable(route = Pantallas.modificarActividad.name) {

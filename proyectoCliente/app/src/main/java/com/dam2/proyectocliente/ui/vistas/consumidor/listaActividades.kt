@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.vistas
+package com.dam2.proyectocliente.ui.vistas.consumidor
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -229,7 +229,7 @@ fun MiniaturaActividadUnaLinea(
                 fontWeight = FontWeight.Bold,
             )
 
-            Text(text = a.ubicacion ?: "", fontSize = pequena)
+            Text(text = a.ubicacion, fontSize = pequena)
 
         }
 

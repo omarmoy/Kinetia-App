@@ -35,7 +35,7 @@ fun DesplegableConfiguarion(
         onDismissRequest = onDismissRequest,
         modifier = Modifier.background(BlancoFondo)
     ) {
-        if (estado.usuario.rol == Rol.OFERTANTE || estado.usuario.rol == Rol.ADMINISTRADOR) {
+        if (estado.usuario!!.rol == Rol.OFERTANTE || estado.usuario.rol == Rol.ADMINISTRADOR) {
             DropdownMenuItem(
                 text = {
                     if (estado.modoPro)
@@ -59,7 +59,7 @@ fun DesplegableConfiguarion(
                 Icon(imageVector = Icons.Filled.AccountBox, contentDescription = "edit")
             },
             onClick = {
-                /*TODO*/
+                /*TODO: editar perfil*/
             })
         DropdownMenuItem(
             text = { Text(text = "Cerrar sesión") },

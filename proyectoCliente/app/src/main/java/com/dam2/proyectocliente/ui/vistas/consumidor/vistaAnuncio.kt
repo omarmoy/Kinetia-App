@@ -77,7 +77,7 @@ fun VistaAnuncio(
         },
         content = { innerPadding -> ContenidoAnuncio(innerPadding, anuncio) },
         bottomBar = {
-            if (anuncio.anuncianteID != vm.usuario().id)
+            if (anuncio.anuncianteID != vm.usuario()!!.id)
                 BotonContactar(navController, anuncio, vm)
             if (vistaPrevia)
                 BarraInferiorAnuncioVP(navController, vm)
@@ -131,7 +131,7 @@ fun BarraSuperiorAnuncio(
             }
         },
         actions = {
-            if (anuncio.anuncianteID == vm.usuario().id) {
+            if (anuncio.anuncianteID == vm.usuario()!!.id) {
                 IconButton(onClick = {
                     vm.selectModAnuncio(anuncio)
                     navController.navigate(Pantallas.modificarAnuncio.name)

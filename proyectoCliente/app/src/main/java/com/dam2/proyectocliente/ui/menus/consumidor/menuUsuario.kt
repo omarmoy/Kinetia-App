@@ -123,7 +123,7 @@ fun BarraSuperiorPerfil(navController: NavHostController, vm: AppViewModel, esta
         title = { /*sin título*/ },
         actions = {
             IconButton(onClick = {
-                if (estado.usuario.tieneMensajesSinLeer()) {
+                if (estado.usuario!!.tieneMensajesSinLeer()) {
                     vm.filtrarMensajesNoleidos()
                     vm.cambiarBotonNav(2)
                     navController.navigate(Pantallas.menuMensajes.name)
@@ -134,7 +134,7 @@ fun BarraSuperiorPerfil(navController: NavHostController, vm: AppViewModel, esta
                 Icon(
                     imageVector = Icons.Filled.Notifications,
                     contentDescription = "notificacion",
-                    tint = if (estado.usuario.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
+                    tint = if (estado.usuario!!.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
                 )
             }
             //Spacer(modifier = Modifier.width(12.dp))
@@ -222,7 +222,7 @@ fun ContenidoUsuario(
     estado: UiState,
     setBorrarAnuncio: (Anuncio) -> Unit
 ) {
-    var verPerfil by rememberSaveable { mutableStateOf(false) }
+    var verPerfil by rememberSaveable { mutableStateOf(true) }
     Scaffold(
         modifier = Modifier.padding(innerPadding),
         content = { paddinHijo ->
@@ -296,7 +296,7 @@ fun ContenidoUsuario(
                                 )
                             }
                         }
-                        items(estado.usuario.anunciosPublicados) { anuncio ->
+                        items(estado.usuario!!.anunciosPublicados) { anuncio ->
                             MiniaturaAnuncio(
                                 anuncio,
                                 navController,
@@ -305,7 +305,7 @@ fun ContenidoUsuario(
                             )
                         }
 
-                        if (estado.usuario.anunciosPublicados.size == 0) {
+                        if (estado.usuario!!.anunciosPublicados.size == 0) {
                             item {
                                 Text(
                                     text = "No ha publicado ningún anuncio todavía",
@@ -380,7 +380,7 @@ fun PanelPerfil(navController: NavHostController, vm: AppViewModel, estado: UiSt
         }
     }
     LazyRow {
-        items(estado.usuario.actividadesReservadas) { a ->
+        items(estado.usuario!!.actividadesReservadas) { a ->
             MiniaturaScrollLateral(
                 a,
                 vm,
@@ -389,7 +389,7 @@ fun PanelPerfil(navController: NavHostController, vm: AppViewModel, estado: UiSt
                 true
             )
         }
-        if (estado.usuario.actividadesReservadas.size == 0) {
+        if (estado.usuario!!.actividadesReservadas.size == 0) {
             item {
                 Text(
                     text = "No ha reservado ninguna actividad",
@@ -427,7 +427,7 @@ fun PanelPerfil(navController: NavHostController, vm: AppViewModel, estado: UiSt
         }
     }
     LazyRow {
-        items(estado.usuario.actividadesFav) { a ->
+        items(estado.usuario!!.actividadesFav) { a ->
             MiniaturaScrollLateral(
                 a,
                 vm,
@@ -462,8 +462,8 @@ fun DatosPerfil(estado: UiState) {
     ) {
         Card(shape = CircleShape) {
             Image(
-                painter = painterResource(id = estado.usuario.foto),
-                contentDescription = estado.usuario.nombre,
+                painter = painterResource(id = estado.usuario!!.foto),
+                contentDescription = estado.usuario!!.nombre,
                 modifier = Modifier.fillMaxHeight(),
                 contentScale = ContentScale.Crop
             )
@@ -475,7 +475,7 @@ fun DatosPerfil(estado: UiState) {
                 .padding(8.dp)
         ) {
             Text(
-                text = estado.usuario.nombreCompleto(),
+                text = estado.usuario!!.nombreCompleto(),
                 fontSize = 18.sp
             )
         }

@@ -108,7 +108,7 @@ fun BarraSuperiorMPrincipal(navController: NavHostController, vm: AppViewModel, 
         actions = {
 
             IconButton(onClick = {
-                if (estado.usuario.tieneMensajesSinLeer()) {
+                if (estado.usuario!!.tieneMensajesSinLeer()) {
                     vm.filtrarMensajesNoleidos()
                     vm.cambiarBotonNav(2)
                     navController.navigate(Pantallas.menuMensajes.name)
@@ -119,7 +119,7 @@ fun BarraSuperiorMPrincipal(navController: NavHostController, vm: AppViewModel, 
                 Icon(
                     imageVector = Icons.Filled.Notifications,
                     contentDescription = "notificacion",
-                    tint = if (estado.usuario.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
+                    tint = if (estado.usuario!!.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
                 )
             }
             //Spacer(modifier = Modifier.width(12.dp))

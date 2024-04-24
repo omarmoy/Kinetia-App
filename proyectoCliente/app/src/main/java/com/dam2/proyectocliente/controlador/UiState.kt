@@ -10,7 +10,7 @@ import com.example.proyectocliente.R
 
 data class UiState(
 
-    val usuario: Usuario = DatosPrueba.usuario,
+    val usuario: Usuario? = DatosPrueba.usuario,
 
     //Formulario inscripción
     val formularioRegistro: MutableMap<String, String> = mutableMapOf(
@@ -83,6 +83,7 @@ data class UiState(
     //Entradas de texto
     val mensajeEnviar: String = "",
     val actividadBuscar: String = "",
+    val anuncioBuscar: String = "",
     val contactosBuscar: String = "",
     val actividadUsuarioBuscar: String = "",
 
@@ -92,9 +93,9 @@ data class UiState(
 
 ) {
     fun esFavorita(actividad: Actividad): Boolean {
-        if (usuario.actividadesFav.size == 0)
+        if (usuario!!.actividadesFav.size == 0)
             return false
-        return usuario.actividadesFav.contains(actividad)
+        return usuario!!.actividadesFav.contains(actividad)
     }
 
 }

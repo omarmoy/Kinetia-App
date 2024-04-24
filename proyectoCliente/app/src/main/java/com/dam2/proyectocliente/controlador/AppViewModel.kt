@@ -21,7 +21,7 @@ class AppViewModel : ViewModel() {
     /**
      * usuario
      */
-    fun usuario(): Usuario {
+    fun usuario(): Usuario? {
         return _uiState.value.usuario
     }
 
@@ -184,19 +184,19 @@ class AppViewModel : ViewModel() {
             contenido = campos[9],
             plazas = campos[10].toInt(),
             destacado = campos[11].toBoolean(),
-            anuncianteID = _uiState.value.usuario.id,
-            anunciante = _uiState.value.usuario.nombreCompleto()
+            anuncianteID = _uiState.value.usuario!!.id,
+            anunciante = _uiState.value.usuario!!.nombreCompleto()
         )
         _uiState.update { e -> e.copy(nuevaActividad = actividad) }
     }
 
     fun publicarActividad() {
         val actividad = _uiState.value.nuevaActividad
-        _uiState.value.usuario.addActividadOferta(actividad!!)
+        _uiState.value.usuario!!.addActividadOferta(actividad!!)
     }
 
     fun borrarActividad(actividad: Actividad){
-        _uiState.value.usuario.eliminarActividadOferta(actividad)
+        _uiState.value.usuario!!.eliminarActividadOferta(actividad)
     }
 
     /**
@@ -210,7 +210,7 @@ class AppViewModel : ViewModel() {
     }
 
     private fun marcarLeido() {
-        _uiState.value.usuario.marcarMensajeLeido(_uiState.value.contactoSeleccionado)
+        _uiState.value.usuario!!.marcarMensajeLeido(_uiState.value.contactoSeleccionado)
     }
 
     fun setMensaje(mensaje: String) {
@@ -220,16 +220,16 @@ class AppViewModel : ViewModel() {
     fun enviarMensaje() {
 
         val mensajeNuevo = Mensaje(
-            _uiState.value.usuario.id, Fecha.ahora(), _uiState.value.mensajeEnviar, true
+            _uiState.value.usuario!!.id, Fecha.ahora(), _uiState.value.mensajeEnviar, true
         )
-        _uiState.value.usuario.addMensaje(_uiState.value.contactoSeleccionado, mensajeNuevo)
+        _uiState.value.usuario!!.addMensaje(_uiState.value.contactoSeleccionado, mensajeNuevo)
         _uiState.update { e -> e.copy(mensajeEnviar = "") }
         //TODO("enviar mensaje")
 
     }
 
     fun filtrarMensajesNoleidos() {
-        if (_uiState.value.usuario.tieneMensajesSinLeer()) {
+        if (_uiState.value.usuario!!.tieneMensajesSinLeer()) {
             _uiState.update { e -> e.copy(filtroMensajesNoleidosActivo = true) }
         }
     }
@@ -244,7 +244,7 @@ class AppViewModel : ViewModel() {
         val listaContactos = if (uiState.value.contactosBuscar != "") {
             resultadoBusquedaContacto()
         } else {
-            uiState.value.usuario.contactos
+            uiState.value.usuario!!.contactos
         }
 
         return if (uiState.value.filtroMensajesNoleidosActivo)
@@ -258,7 +258,7 @@ class AppViewModel : ViewModel() {
     }
 
     fun resultadoBusquedaContacto(contactoBuscar: String = uiState.value.contactosBuscar): ArrayList<Contacto> {
-        return buscarContacto(uiState.value.usuario.contactos, contactoBuscar)
+        return buscarContacto(uiState.value.usuario!!.contactos, contactoBuscar)
     }
 
 
@@ -289,12 +289,12 @@ class AppViewModel : ViewModel() {
     FAVORITOS
      */
     fun addFavorito(actividad: Actividad) {
-        if (!_uiState.value.usuario.actividadesFav.contains(actividad))
-            _uiState.value.usuario.addActividadFav(actividad)
+        if (!_uiState.value.usuario!!.actividadesFav.contains(actividad))
+            _uiState.value.usuario!!.addActividadFav(actividad)
     }
 
     fun eliminarFavorito(actividad: Actividad) {
-        _uiState.value.usuario.actividadesFav.remove(actividad)
+        _uiState.value.usuario!!.actividadesFav.remove(actividad)
     }
 
     /**
@@ -318,11 +318,11 @@ class AppViewModel : ViewModel() {
         val anuncio =
             Anuncio(
                 id = 100, //TODO API ID
-                fotoAnunciante = _uiState.value.usuario.foto,
+                fotoAnunciante = _uiState.value.usuario!!.foto,
                 titulo = titulo,
                 contenido = contenido,
-                anuncianteID = _uiState.value.usuario.id,
-                anunciante = _uiState.value.usuario.nombreCompleto(),
+                anuncianteID = _uiState.value.usuario!!.id,
+                anunciante = _uiState.value.usuario!!.nombreCompleto(),
                 fecha = Fecha.ahora(),
                 localidad = localidad
             )
@@ -346,24 +346,55 @@ class AppViewModel : ViewModel() {
 
     fun publicarAnuncio() {
         val anuncio = _uiState.value.nuevoAnuncio
-        _uiState.value.usuario.addAnuncio(anuncio!!)
+        _uiState.value.usuario!!.addAnuncio(anuncio!!)
         resetNuevoAnuncio()
     }
 
     fun borrarAnuncio(anuncio: Anuncio) {
-        _uiState.value.usuario.eliminarAnuncio(anuncio)
+        _uiState.value.usuario!!.eliminarAnuncio(anuncio)
     }
+
+
+    fun listaAnuncios(): ArrayList<Anuncio> {
+
+//        val listaActividades = if (uiState.value.actividadBuscar != "") {
+//            resultadoBusquedaActividad()
+//        } else {
+//            uiState.value.actividades
+//        }
+//
+//        return if (uiState.value.categoriaSelecciononada == Categoria.Todo)
+//            listaActividades
+//        else
+//            ArrayList(listaActividades.filter {
+//                it.categoria == uiState.value.categoriaSelecciononada
+//            })
+        //TODO
+        return _uiState.value.anuncios
+    }
+
+    fun setAuncioBuscar(anuncio: String) {
+        _uiState.update { e -> e.copy(anuncioBuscar = anuncio) }
+    }
+
+    //TODO resultadoBusquedaAnuncio
+//    fun resultadoBusquedaActividad(tituloBuscar: String = uiState.value.actividadBuscar): ArrayList<Actividad> {
+//        return buscarActividad(uiState.value.actividades, tituloBuscar)
+//    }
+
+
+
 
     /**
     RESERVAS CONSUMIDOR
      */
     fun reservar(actividad: Actividad) {
-        _uiState.value.usuario.reseservar(actividad)
+        _uiState.value.usuario!!.reseservar(actividad)
 
     }
 
     fun cancelarReserva(actividad: Actividad) {
-        _uiState.value.usuario.cancelarReserva(actividad)
+        _uiState.value.usuario!!.cancelarReserva(actividad)
     }
 
 

@@ -308,10 +308,10 @@ fun PanelBotones(
             colors = ButtonDefaults.buttonColors(AmarilloPastel),
             contentPadding = PaddingValues(8.dp, 0.dp),
             enabled = actividad.plazasDisponibles != 0
-                    && !estado.usuario.actividadesReservadas.contains(actividad)
+                    && !estado.usuario!!.actividadesReservadas.contains(actividad)
         ) {
             val texto =
-                if (estado.usuario.actividadesReservadas.contains(actividad))
+                if (estado.usuario!!.actividadesReservadas.contains(actividad))
                     "Reservado"
                 else
                     "Reservar"
@@ -372,10 +372,10 @@ fun PanelContenido(
                 colors = ButtonDefaults.buttonColors(AmarilloPastel),
                 contentPadding = PaddingValues(8.dp, 0.dp),
                 enabled = actividad.plazasDisponibles != 0
-                        && !estado.usuario.actividadesReservadas.contains(actividad)
+                        && !estado.usuario!!.actividadesReservadas.contains(actividad)
             ) {
                 val texto =
-                    if (estado.usuario.actividadesReservadas.contains(actividad))
+                    if (estado.usuario!!.actividadesReservadas.contains(actividad))
                         "Reservado"
                     else
                         "Reservar"
@@ -384,7 +384,7 @@ fun PanelContenido(
 
         }
 
-        if (estado.usuario.actividadesReservadas.contains(actividad)) {
+        if (estado.usuario!!.actividadesReservadas.contains(actividad)) {
             Spacer(modifier = Modifier.height(24.dp))
             Button(
                 onClick = { vm.cancelarReserva(actividad); refreshComposable() },

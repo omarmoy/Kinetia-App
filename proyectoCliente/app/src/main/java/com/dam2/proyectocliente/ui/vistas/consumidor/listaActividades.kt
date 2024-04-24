@@ -151,7 +151,7 @@ fun ContenidoListaActividades(
     ) {
 
         LazyColumn(state = estadoLista) {
-            //Bucador TODO(agregar funcionalidad buscador)
+
             item {
                 TextField(
                     value = estado.actividadUsuarioBuscar,

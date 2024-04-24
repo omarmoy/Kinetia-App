@@ -128,7 +128,7 @@ fun AddImagen(navController: NavHostController, vm: AppViewModel, estado: UiStat
             Card(shape = CircleShape, modifier = Modifier.size(300.dp)) {
                 Image(
                     painter = painterResource(id = imagePorDefecto),
-                    contentDescription = estado.usuario.nombre,
+                    contentDescription = estado.usuario!!.nombre,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )

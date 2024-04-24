@@ -127,7 +127,7 @@ fun BarraSuperiorPerfil2(navController: NavHostController, vm: AppViewModel, est
         title = { /*sin título*/ },
         actions = {
             IconButton(onClick = {
-                if (estado.usuario.tieneMensajesSinLeer()) {
+                if (estado.usuario!!.tieneMensajesSinLeer()) {
                     vm.filtrarMensajesNoleidos()
                     vm.cambiarBotonNav(2)
                     navController.navigate(Pantallas.menuMensajes.name)
@@ -138,7 +138,7 @@ fun BarraSuperiorPerfil2(navController: NavHostController, vm: AppViewModel, est
                 Icon(
                     imageVector = Icons.Filled.Notifications,
                     contentDescription = "notificacion",
-                    tint = if (estado.usuario.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
+                    tint = if (estado.usuario!!.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
                 )
             }
             //Spacer(modifier = Modifier.width(12.dp))
@@ -156,7 +156,7 @@ fun BarraSuperiorPerfil2(navController: NavHostController, vm: AppViewModel, est
                 onDismissRequest = { mostrarMenu = false },
                 modifier = Modifier.background(BlancoFondo)
             ) {
-                if (estado.usuario.rol == Rol.OFERTANTE || estado.usuario.rol == Rol.ADMINISTRADOR) {
+                if (estado.usuario!!.rol == Rol.OFERTANTE || estado.usuario.rol == Rol.ADMINISTRADOR) {
                     DropdownMenuItem(
                         text = {
                             Row(
@@ -296,7 +296,7 @@ fun ContenidoUsuario2(
                                 )
                             }
                         }
-                        items(estado.usuario.anunciosPublicados) { anuncio ->
+                        items(estado.usuario!!.anunciosPublicados) { anuncio ->
                             MiniaturaAnuncio2(
                                 anuncio,
                                 navController,
@@ -378,7 +378,7 @@ fun PanelPerfil2(navController: NavHostController, vm: AppViewModel, estado: UiS
         }
     }
     LazyRow {
-        items(estado.usuario.actividadesReservadas) { a ->
+        items(estado.usuario!!.actividadesReservadas) { a ->
             MiniaturaScrollLateral(
                 a,
                 vm,
@@ -387,7 +387,7 @@ fun PanelPerfil2(navController: NavHostController, vm: AppViewModel, estado: UiS
                 true
             )
         }
-        if (estado.usuario.actividadesReservadas.size == 0) {
+        if (estado.usuario!!.actividadesReservadas.size == 0) {
             item {
                 Text(
                     text = "No ha reservado ninguna actividad",
@@ -423,7 +423,7 @@ fun PanelPerfil2(navController: NavHostController, vm: AppViewModel, estado: UiS
         }
     }
     LazyRow {
-        items(estado.usuario.actividadesFav) { a ->
+        items(estado.usuario!!.actividadesFav) { a ->
             MiniaturaScrollLateral(
                 a,
                 vm,
@@ -432,7 +432,7 @@ fun PanelPerfil2(navController: NavHostController, vm: AppViewModel, estado: UiS
                 true
             )
         }
-        if (estado.usuario.actividadesFav.size == 0) {
+        if (estado.usuario!!.actividadesFav.size == 0) {
             item {
                 Text(
                     text = "No ha marcado ninguna actividad como favorita",
@@ -456,8 +456,8 @@ fun DatosPerfil2(estado: UiState) {
     ) {
         Card(shape = CircleShape) {
             Image(
-                painter = painterResource(id = estado.usuario.foto),
-                contentDescription = estado.usuario.nombre,
+                painter = painterResource(id = estado.usuario!!.foto),
+                contentDescription = estado.usuario!!.nombre,
                 modifier = Modifier.fillMaxHeight(),
                 contentScale = ContentScale.Crop
             )
@@ -469,7 +469,7 @@ fun DatosPerfil2(estado: UiState) {
                 .padding(8.dp)
         ) {
             Text(
-                text = estado.usuario.nombreCompleto(),
+                text = estado.usuario!!.nombreCompleto(),
                 fontSize = 18.sp
             )
         }

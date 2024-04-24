@@ -111,7 +111,7 @@ fun BarraSuperiorPro(navController: NavHostController, vm: AppViewModel, estado:
         },
         actions = {
             IconButton(onClick = {
-                if (estado.usuario.tieneMensajesSinLeer()) {
+                if (estado.usuario!!.tieneMensajesSinLeer()) {
                     vm.filtrarMensajesNoleidos()
                     vm.cambiarBotonNav(2)
                     navController.navigate(Pantallas.menuMensajes.name)
@@ -122,7 +122,7 @@ fun BarraSuperiorPro(navController: NavHostController, vm: AppViewModel, estado:
                 Icon(
                     imageVector = Icons.Filled.Notifications,
                     contentDescription = "notificacion",
-                    tint = if (estado.usuario.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
+                    tint = if (estado.usuario!!.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
                 )
             }
             //Spacer(modifier = Modifier.width(12.dp))
@@ -161,7 +161,7 @@ fun ContenidoPrincipalPro(
 
                     item { Titulo(texto = "Mis Actividades") }
 
-                    if (estado.usuario.actividadesOfertadas.size == 0) {
+                    if (estado.usuario!!.actividadesOfertadas.size == 0) {
                         item {
                             Text(
                                 text = "Todavía no has publicado ninguna actividad",
@@ -169,7 +169,7 @@ fun ContenidoPrincipalPro(
                             )
                         }
                     } else {
-                        items(estado.usuario.actividadesOfertadas) { actividad ->
+                        items(estado.usuario!!.actividadesOfertadas) { actividad ->
 //                    items(DatosPrueba.actividades) { actividad -> //TODO quitar
                             MiniaturaActividadOfertada(
                                 actividad, vm, navController, estado, setBorrarActividad
@@ -224,14 +224,14 @@ fun DatosPerfilPro(estado: UiState) {
         ) {
             Card(shape = CircleShape) {
                 Image(
-                    painter = painterResource(id = estado.usuario.foto),
-                    contentDescription = estado.usuario.nombre,
+                    painter = painterResource(id = estado.usuario!!.foto),
+                    contentDescription = estado.usuario!!.nombre,
                     modifier = Modifier.fillMaxHeight(),
                     contentScale = ContentScale.Crop
                 )
             }
             Text(
-                text = estado.usuario.nombreCompleto(),
+                text = estado.usuario!!.nombreCompleto(),
                 fontSize = 18.sp,
                 modifier = Modifier
                     .fillMaxWidth()

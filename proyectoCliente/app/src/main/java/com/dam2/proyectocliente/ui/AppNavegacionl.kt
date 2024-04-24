@@ -48,6 +48,7 @@ import com.dam2.proyectocliente.ui.formularios.ModificarActividad
 import com.dam2.proyectocliente.ui.formularios.ModificarAnuncio
 import com.dam2.proyectocliente.ui.inicio.Inicio
 import com.dam2.proyectocliente.ui.inicio.Login
+import com.dam2.proyectocliente.ui.menus.pro.MenuBusquedaAnuncio
 import com.dam2.proyectocliente.ui.menus.pro.MenuPrincipalPro
 import com.dam2.proyectocliente.ui.registro.AddImagen
 import com.dam2.proyectocliente.ui.registro.ConfirmarRegistro
@@ -86,16 +87,16 @@ fun Contenido(
     innerPadding: PaddingValues, navController: NavHostController, vm: AppViewModel, estado: UiState
 ) {
     NavHost(
+
+        modifier = Modifier.padding(innerPadding),
         navController = navController,
-//        startDestination = if (estado.usuario == null) //TODO: cambiar condición
-//            Pantallas.menuPrincipal.name
-//        else
-//            Pantallas.inicio.name,
-        startDestination = if (estado.modoPro) //TODO: cambiar condición
+        startDestination =
+        if (estado.usuario == null) //TODO: cambiar condición
+            Pantallas.inicio.name
+        else if (estado.modoPro) //TODO: cambiar condición
             Pantallas.menuPrincipalPro.name
         else
-            Pantallas.inicio.name,
-        modifier = Modifier.padding(innerPadding)
+            Pantallas.menuPrincipal.name
     ) {
         //Pantallas principales
         composable(route = Pantallas.menuPrincipal.name) {
@@ -124,14 +125,14 @@ fun Contenido(
             //TODO: falta funcionalidad reservas
             ListaActividades(
                 "Mis reservas",
-                estado.usuario.actividadesReservadas,
+                estado.usuario!!.actividadesReservadas,
                 navController,
                 vm,
                 estado
             )
         }
         composable(route = Pantallas.listaFavoritos.name) {
-            ListaActividades("Favoritos", estado.usuario.actividadesFav, navController, vm, estado)
+            ListaActividades("Favoritos", estado.usuario!!.actividadesFav, navController, vm, estado)
         }
         composable(route = Pantallas.vistaActividad.name) {
             VistaActividad(navController, estado.actividadSeleccionada, vm, estado)
@@ -187,7 +188,7 @@ fun Contenido(
 
         //formularios y previstas ACTIVIDAD
         composable(route = Pantallas.formularioActividad.name) {
-            FormularioActividad (navController = navController, vm)
+            FormularioActividad(navController = navController, vm)
         }
         composable(route = Pantallas.previewNuevaActividad.name) {
             VistaActividadPro(navController, estado.nuevaActividad!!, vm, estado, true)
@@ -203,6 +204,9 @@ fun Contenido(
         //Menus Pro
         composable(route = Pantallas.menuPrincipalPro.name) {
             MenuPrincipalPro(navController, vm, estado)
+        }
+        composable(route = Pantallas.menuBusquedaAnuncios.name) {
+            MenuBusquedaAnuncio(navController, vm, estado)
         }
 
 
@@ -325,7 +329,7 @@ fun PanelNavegacionPro(navController: NavHostController, vm: AppViewModel, estad
                 }
                 IconButton(onClick = {
                     vm.cambiarBotonNav(3)
-                    navController.navigate(Pantallas.menuBusquedaAnunciosPro.name)
+                    navController.navigate(Pantallas.menuBusquedaAnuncios.name)
                 }) {
                     Icon(
                         imageVector = Icons.Filled.Search,

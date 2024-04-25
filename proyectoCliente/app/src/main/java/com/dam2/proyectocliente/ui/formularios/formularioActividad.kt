@@ -51,7 +51,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.controlador.AppViewModel
-import com.dam2.proyectocliente.controlador.UiState
 import com.dam2.proyectocliente.controlador.texfieldVacio
 import com.dam2.proyectocliente.controlador.validarFechaActividad
 import com.dam2.proyectocliente.model.Categoria
@@ -120,7 +119,7 @@ fun FormularioActividad(
     val setError: (String) -> Unit = { e -> error = e }
 
     Scaffold(
-        topBar = { BarraSuperiorFA(navController) },
+        topBar = { BarraSuperiorFA(navController, vm) },
         bottomBar = {
             BarraInferiorFA(
                 vm, navController, titulo, precioT, ubicacion, categoria, destacado,
@@ -366,12 +365,15 @@ fun FormularioActividad(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorFA(navController: NavHostController) {
+fun BarraSuperiorFA(navController: NavHostController, vm: AppViewModel) {
     TopAppBar(
         title = { Text(text = "Formulario Actividad") },
         colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = BlancoFondo),
         navigationIcon = {
-            IconButton(onClick = { navController.navigateUp() }) {
+            IconButton(onClick = {
+                navController.navigateUp()
+                vm.mostrarPanelNavegacion()
+            }) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "volver",

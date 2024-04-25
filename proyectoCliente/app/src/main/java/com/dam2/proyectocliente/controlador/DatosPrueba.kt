@@ -92,7 +92,16 @@ object DatosPrueba {
         return arrayListOf<Actividad>(
             Actividad(
                 id = 1, titulo = "Titulo Actividad 1", imagen = R.drawable.architecture, contenidoPrueba = R.string.t1,
-                anunciante = "Crash Bandicoot", fecha = Fecha.ahora(), categoria = Categoria.Arte,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina",  anuncianteID = 1 ))
+                anunciante = "Crash Bandicoot", fecha = Fecha.ahora(), categoria = Categoria.Arte,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina",  anuncianteID = 1,
+                plazas = 15, reservas = arrayListOf(
+                    Contacto(3, "Cortex N. Bandicoot", R.drawable.cortex),
+                    Contacto(5, "Coco Bandicoot", R.drawable.coco),
+                    Contacto(4, "Crunch. Bandicoot", R.drawable.crunch),
+                    Contacto(32, "Gin. Bandicoot", R.drawable.gin),
+                    Contacto(31, "Nina. Bandicoot", R.drawable.nina)
+                )
+            )
+        )
     }
 
     fun cargarAnuncios(): ArrayList<Anuncio>{

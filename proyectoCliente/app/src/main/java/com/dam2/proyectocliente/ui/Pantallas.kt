@@ -25,10 +25,11 @@ enum class Pantallas {
     menuUsuario,
 
     menuPrincipalPro,
-    menuReservasGestionPro,
+    menuReservas,
     menuBusquedaAnuncios,
     vistaActividadPro,
     vistaAnuncioPro,
+    vistaReservasActividad,
 
     vistaActividad,
     vistaAnuncio,

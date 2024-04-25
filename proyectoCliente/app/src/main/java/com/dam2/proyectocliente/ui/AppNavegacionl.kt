@@ -49,6 +49,7 @@ import com.dam2.proyectocliente.ui.formularios.ModificarAnuncio
 import com.dam2.proyectocliente.ui.inicio.Inicio
 import com.dam2.proyectocliente.ui.inicio.Login
 import com.dam2.proyectocliente.ui.menus.pro.MenuBusquedaAnuncio
+import com.dam2.proyectocliente.ui.menus.pro.MenuReservas
 import com.dam2.proyectocliente.ui.menus.pro.MenuPrincipalPro
 import com.dam2.proyectocliente.ui.registro.AddImagen
 import com.dam2.proyectocliente.ui.registro.ConfirmarRegistro
@@ -58,6 +59,8 @@ import com.dam2.proyectocliente.ui.registro.NuevaEmpresaDatos
 import com.dam2.proyectocliente.ui.registro.NuevoUsuarioDatos
 import com.dam2.proyectocliente.ui.registro.NuevoUsuario
 import com.dam2.proyectocliente.ui.vistas.pro.VistaActividadPro
+import com.dam2.proyectocliente.ui.vistas.pro.VistaAnuncioPro
+import com.dam2.proyectocliente.ui.vistas.pro.VistaReservas
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
@@ -132,7 +135,13 @@ fun Contenido(
             )
         }
         composable(route = Pantallas.listaFavoritos.name) {
-            ListaActividades("Favoritos", estado.usuario!!.actividadesFav, navController, vm, estado)
+            ListaActividades(
+                "Favoritos",
+                estado.usuario!!.actividadesFav,
+                navController,
+                vm,
+                estado
+            )
         }
         composable(route = Pantallas.vistaActividad.name) {
             VistaActividad(navController, estado.actividadSeleccionada, vm, estado)
@@ -208,7 +217,15 @@ fun Contenido(
         composable(route = Pantallas.menuBusquedaAnuncios.name) {
             MenuBusquedaAnuncio(navController, vm, estado)
         }
-
+        composable(route = Pantallas.vistaAnuncioPro.name) {
+            VistaAnuncioPro(navController, estado.anuncioSeleccionado, vm)
+        }
+        composable(route = Pantallas.menuReservas.name) {
+            MenuReservas(navController, vm, estado)
+        }
+        composable(route = Pantallas.vistaReservasActividad.name) {
+            VistaReservas(navController, vm, estado.actividadSeleccionada)
+        }
 
     }
 }
@@ -308,7 +325,7 @@ fun PanelNavegacionPro(navController: NavHostController, vm: AppViewModel, estad
                 }
                 IconButton(onClick = {
                     vm.cambiarBotonNav(1)
-                    navController.navigate(Pantallas.menuReservasGestionPro.name)
+                    navController.navigate(Pantallas.menuReservas.name)
                 }) {
                     Icon(
                         imageVector = Icons.Filled.DateRange,

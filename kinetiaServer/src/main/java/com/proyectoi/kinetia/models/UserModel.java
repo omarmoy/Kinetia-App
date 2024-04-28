@@ -1,187 +1,254 @@
 package com.proyectoi.kinetia.models;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "users")
 public class UserModel {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@Column	
-	private String email;
-	@Column
-	private String rol;
-	@Column
-	private String password;
-	@Column
-	private String name;
-	@Column
-	private String surmane;
-	@Column
-	private String secondSurmane;
-	@Column
-	private String birthDate;
-	@Column
-	private String profilePicture;
-	@Column
-	private String company;
-	@Column
-	private String cif;
-	@Column
-	private String adress;
+    @Column(unique = true, nullable = false)
+    private String email;
 
-//	private ArrayList<Activity> activitiesReserved;
-//	private ArrayList<Activity> activitiesFav;
-//	private ArrayList<Activity> activitiesOffered;
-//	private ArrayList<Advertisement> advertisements;
-//	private ArrayList<Chat> chats;
+    @OneToOne
+    @JoinColumn(name = "rol", referencedColumnName = "rolType")
+    private RolModel rol;
+
+    @Column
+    private String password;
+    @Column
+    private String name;
+    @Column
+    private String surname;
+    @Column
+    private String secondSurname;
+    @Column
+    private LocalDate birthDate;
+    @Column
+    private String profilePicture;
+    @Column
+    private String company;
+    @Column(unique = true)
+    private String cif;
+    @Column
+    private String adress;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<ActivityModel> activitiesOffered = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "favorite_user_activities",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "activity_id")
+    )
+    private List<ActivityModel> activitiesFav = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "reservations", fetch = FetchType.LAZY)
+	private List<ActivityModel> activitiesReserved = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<AdvertisementModel> advertisements = new ArrayList<>();
+
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
+    private List<MessageModel> sentMessages = new ArrayList<>();
+
+    @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL)
+    private List<MessageModel> receivedMessages = new ArrayList<>();
+
+
+    // Setter y Getter
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public RolModel getRol() {
+        return rol;
+    }
+
+    public void setRol(RolModel rol) {
+        this.rol = rol;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getSecondSurname() {
+        return secondSurname;
+    }
+
+    public void setSecondSurname(String secondSurname) {
+        this.secondSurname = secondSurname;
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getCif() {
+        return cif;
+    }
+
+    public void setCif(String cif) {
+        this.cif = cif;
+    }
+
+    public String getAdress() {
+        return adress;
+    }
+
+    public void setAdress(String adress) {
+        this.adress = adress;
+    }
+
+    public List<ActivityModel> getActivitiesOffered() {
+        return activitiesOffered;
+    }
+
+    public void setActivitiesOffered(List<ActivityModel> activitiesOffered) {
+        this.activitiesOffered = activitiesOffered;
+    }
+
+//    public List<ActivityModel> getActivitiesFav() {
+//        return new List<>(activitiesFav) ;
+//    }
 //
+//    public void setActivitiesFav(List<ActivityModel> activitiesFav) {
+//        this.activitiesFav = activitiesFav;
+//    }
 
-	public Long getId() {
-		return id;
-	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public List<ActivityModel> getActivitiesFav() {
+        return activitiesFav;
+    }
 
-	public String getemail() {
-		return email;
-	}
+    public void setActivitiesFav(List<ActivityModel> activitiesFav) {
+        this.activitiesFav = activitiesFav;
+    }
 
-	public void setemail(String email) {
-		this.email = email;
-	}
+    public List<ActivityModel> getActivitiesReserved() {
+        return activitiesReserved;
+    }
 
-	public String getRol() {
-		return rol;
-	}
+    public void setActivitiesReserved(List<ActivityModel> activitiesReserved) {
+        this.activitiesReserved = activitiesReserved;
+    }
 
-	public void setRol(String rol) {
-		this.rol = rol;
-	}
+    public List<AdvertisementModel> getAdvertisements() {
+        return advertisements;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public void setAdvertisements(List<AdvertisementModel> advertisements) {
+        this.advertisements = advertisements;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public List<MessageModel> getSentMessages() {
+        return sentMessages;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setSentMessages(List<MessageModel> sentMessages) {
+        this.sentMessages = sentMessages;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public List<MessageModel> getReceivedMessages() {
+        return receivedMessages;
+    }
 
-	public String getSurmane() {
-		return surmane;
-	}
+    public void setReceivedMessages(List<MessageModel> receivedMessages) {
+        this.receivedMessages = receivedMessages;
+    }
 
-	public void setSurmane(String surmane) {
-		this.surmane = surmane;
-	}
+    public String fullName(){
+        if(this.company==null || this.company.isEmpty())
+            return this.name + " " + this.surname + " " + this.secondSurname;
+        else
+            return this.company;
+    }
 
-	public String getSecondSurmane() {
-		return secondSurmane;
-	}
-
-	public void setSecondSurmane(String secondSurmane) {
-		this.secondSurmane = secondSurmane;
-	}
-
-	public String getBirthDate() {
-		return birthDate;
-	}
-
-	public void setBirthDate(String birthDate) {
-		this.birthDate = birthDate;
-	}
-
-	public String getProfilePicture() {
-		return profilePicture;
-	}
-
-	public void setProfilePicture(String profilePicture) {
-		this.profilePicture = profilePicture;
-	}
-
-	public String getCompany() {
-		return company;
-	}
-
-	public void setCompany(String company) {
-		this.company = company;
-	}
-
-	public String getCif() {
-		return cif;
-	}
-
-	public void setCif(String cif) {
-		this.cif = cif;
-	}
-
-	public String getAdress() {
-		return adress;
-	}
-
-	public void setAdress(String adress) {
-		this.adress = adress;
-	}
-
-//	public ArrayList<Activity> getActivitiesReserved() {
-//		return activitiesReserved;
-//	}
-//
-//	public void setActivitiesReserved(ArrayList<Activity> activitiesReserved) {
-//		this.activitiesReserved = activitiesReserved;
-//	}
-//
-//	public ArrayList<Activity> getActivitiesFav() {
-//		return activitiesFav;
-//	}
-//
-//	public void setActivitiesFav(ArrayList<Activity> activitiesFav) {
-//		this.activitiesFav = activitiesFav;
-//	}
-//
-//	public ArrayList<Activity> getActivitiesOffered() {
-//		return activitiesOffered;
-//	}
-//
-//	public void setActivitiesOffered(ArrayList<Activity> activitiesOffered) {
-//		this.activitiesOffered = activitiesOffered;
-//	}
-//
-//	public ArrayList<Advertisement> getAdvertisements() {
-//		return advertisements;
-//	}
-//
-//	public void setAdvertisements(ArrayList<Advertisement> advertisements) {
-//		this.advertisements = advertisements;
-//	}
-//	
-//	public ArrayList<Chat> getChats() {
-//		return chats;
-//	}
-//
-//	public void setChats(ArrayList<Chat> chats) {
-//		this.chats = chats;
-//	}
-
+    @Override
+    public String toString() {
+        return "UserModel{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", rol=" + rol +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", secondSurname='" + secondSurname + '\'' +
+                ", birthDate=" + birthDate +
+                ", profilePicture='" + profilePicture + '\'' +
+                ", company='" + company + '\'' +
+                ", cif='" + cif + '\'' +
+                ", adress='" + adress + '\'' +
+                ", activitiesOffered=" + activitiesOffered.size() +
+                ", activitiesFav=" + activitiesFav.size() +
+                ", activitiesReserved=" + activitiesReserved.size() +
+                ", advertisements=" + advertisements.size() +
+                ", sentMessages=" + sentMessages.size() +
+                ", receivedMessages=" + receivedMessages.size() +
+                '}';
+    }
 }

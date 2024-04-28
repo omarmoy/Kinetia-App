@@ -10,3 +10,6 @@ https://openwebinars.net/academia/aprende/apps-escritorio-javafx/?enroll=1&from_
 
 
 evento de navegación para cambiar entre las pantallas
+
+
+consumir API kotlin Retrofit

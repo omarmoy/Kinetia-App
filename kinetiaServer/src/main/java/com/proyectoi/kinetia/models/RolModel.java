@@ -7,33 +7,48 @@ import jakarta.persistence.*;
 @Table(name = "roles")
 public class RolModel {
 
-    public enum Rol {
-        CONSUMER,
+    public enum RolType {
+        ADMIN,
         PROVIDER,
-        ADMIN
+        CONSUMER
+    }
+
+    public RolModel() { }
+
+    public RolModel(String rol) {
+        this.rolType = RolType.valueOf(rol);
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
-    @Column
-    private Rol rol;
+    @Column(unique = true, nullable = false)
+    @Enumerated(EnumType.STRING)
+    private RolType rolType;
 
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Rol getRol() {
-        return rol;
+    public RolType getRolType() {
+        return rolType;
     }
 
-    public void setRol(Rol rol) {
-        this.rol = rol;
+    public void setRolType(RolType rolType) {
+        this.rolType = rolType;
+    }
+
+    @Override
+    public String toString() {
+        return "RolModel{" +
+                "id=" + id +
+                ", rol=" + rolType +
+                '}';
     }
 }

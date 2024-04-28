@@ -260,7 +260,7 @@ fun PanelNavegacion(navController: NavHostController, vm: AppViewModel, estado: 
                 }
                 IconButton(onClick = {
                     vm.cambiarBotonNav(1)
-                    vm.selectCategoria(Categoria.Todo)
+                    vm.selectCategoria(Categoria.TODO)
                     navController.navigate(Pantallas.menuBuscar.name)
                 }) {
                     Icon(

@@ -126,7 +126,7 @@ fun BarraSuperiorMPrincipal(navController: NavHostController, vm: AppViewModel, 
             IconButton(onClick = {
                 vm.cambiarBotonNav(1)
                 vm.setIndiceCategoria()
-                vm.selectCategoria(Categoria.Todo)
+                vm.selectCategoria(Categoria.TODO)
                 navController.navigate(Pantallas.menuBusquedaDirecta.name)
             }) {
                 Icon(
@@ -201,7 +201,7 @@ fun Categorias(
 
         LazyRow(state = estadoLista) {
             items(estado.categorias) { categoria ->
-                if (!(categoria == Categoria.Todo && estado.botoneraNav[0])) {
+                if (!(categoria == Categoria.TODO && estado.botoneraNav[0])) {
                     val colorBoton: Color
                     val colorTexto: Color
                     if (categoria == estado.categoriaSelecciononada && !estado.botoneraNav[0]) {

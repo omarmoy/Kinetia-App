@@ -77,7 +77,7 @@ fun ModificarActividad(
 ) {
 
     val categorias: ArrayList<Categoria> =
-        ArrayList(Categoria.values().filter { it != Categoria.Todo })
+        ArrayList(Categoria.values().filter { it != Categoria.TODO })
     val listaHoras = arrayListOf<String>(
         "00",
         "01",

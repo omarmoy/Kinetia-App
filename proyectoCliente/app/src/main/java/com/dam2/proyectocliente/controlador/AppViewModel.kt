@@ -91,7 +91,7 @@ class AppViewModel : ViewModel() {
             uiState.value.actividades
         }
 
-        return if (uiState.value.categoriaSelecciononada == Categoria.Todo)
+        return if (uiState.value.categoriaSelecciononada == Categoria.TODO)
             listaActividades
         else
             ArrayList(listaActividades.filter {
@@ -148,19 +148,19 @@ class AppViewModel : ViewModel() {
 
     private fun stringToCategoria(cadena: String): Categoria? {
         return when (cadena) {
-            "Todo" -> Categoria.Todo
-            "Aire Libre" -> Categoria.AireLibre
-            "Arte" -> Categoria.Arte
-            "Aventura" -> Categoria.Aventura
-            "Bares" -> Categoria.Bares
-            "Cursos" -> Categoria.CursosYTalleres
-            "Deporte" -> Categoria.Deporte
-            "Experiencias" -> Categoria.Experiencias
-            "Gastronomía" -> Categoria.Gastronomia
-            "Música" -> Categoria.Musica
-            "Ocio" -> Categoria.Ocio
-            "Ofertas" -> Categoria.Ofertas
-            "Salud y Bienestar" -> Categoria.SaludYBienestar
+            "Todo" -> Categoria.TODO
+            "Aire Libre" -> Categoria.AIRE_LIBRE
+            "Arte" -> Categoria.ARTE
+            "Aventura" -> Categoria.AVENTURA
+            "Bares" -> Categoria.BARES
+            "Cursos" -> Categoria.CURSOS_Y_TALLERES
+            "Deporte" -> Categoria.DEPORTE
+            "Experiencias" -> Categoria.EXPERIENCIAS
+            "Gastronomía" -> Categoria.GASTRONOMIA
+            "Música" -> Categoria.MUSICA
+            "Ocio" -> Categoria.OCIO
+            "Ofertas" -> Categoria.OFERTAS
+            "Salud y Bienestar" -> Categoria.SALUD_Y_BIENESTAR
             else -> null
         }
     }

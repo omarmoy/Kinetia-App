@@ -73,7 +73,7 @@ data class UiState(
         contenido = ""
     ),
     val contactoSeleccionado: Contacto = Contacto(0, "nombre", R.drawable.nofoto, ArrayList()),
-    val categoriaSelecciononada: Categoria = Categoria.Todo,
+    val categoriaSelecciononada: Categoria = Categoria.TODO,
     //val busquedaActiva: Boolean = false,
 
     val mostrarPanelNavegacion: Boolean = true, //TODO gestionar

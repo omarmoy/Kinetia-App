@@ -15,62 +15,62 @@ object DatosPrueba {
     val actividades = arrayListOf<Actividad>(
         Actividad(
             id = 1, titulo = "Titulo Actividad 1", imagen = R.drawable.architecture, contenidoPrueba = R.string.t1,
-            anunciante = "Crash Bandicoot", fecha = Fecha.ahora(), categoria = Categoria.Arte,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina",  anuncianteID = 1 ),
+            anunciante = "Crash Bandicoot", fecha = Fecha.ahora(), categoria = Categoria.ARTE,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina",  anuncianteID = 1 ),
         Actividad(
             id = 2, titulo = "Titulo Actividad 2", imagen = R.drawable.business, contenidoPrueba = R.string.t2,
-            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.AireLibre,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina",  anuncianteID = 1),
+            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.AIRE_LIBRE,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina",  anuncianteID = 1),
         Actividad(
             id = 3, titulo = "Un Titulo Actividad largo, pero bastante largo, largísimo, tela de largo", imagen = R.drawable.design, contenidoPrueba = R.string.t4,
-            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.Aventura,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina",  anuncianteID = 1) ,
+            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.AVENTURA,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina",  anuncianteID = 1) ,
         Actividad(
             id = 4, titulo = "Titulo Actividad 3", imagen = R.drawable.crafts, contenidoPrueba = R.string.t3,
-            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.Bares,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina",  anuncianteID = 1),
+            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.BARES,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina",  anuncianteID = 1),
         Actividad(
             id = 5, titulo = "Titulo Actividad 5", imagen = R.drawable.culinary, contenidoPrueba = R.string.t5,
-            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.Deporte,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" , anuncianteID = 1),
+            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.DEPORTE,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" , anuncianteID = 1),
         Actividad(
             id = 6, titulo = "Titulo Actividad 6", imagen = R.drawable.drawing, contenidoPrueba = R.string.t1,
-            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.CursosYTalleres,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" , anuncianteID = 1),
+            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.CURSOS_Y_TALLERES,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" , anuncianteID = 1),
         Actividad(
             id = 7, titulo = "Titulo Actividad 7", imagen = R.drawable.fashion, contenidoPrueba = R.string.t5,
-            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.Experiencias,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" ,  anuncianteID = 1),
+            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.EXPERIENCIAS,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" ,  anuncianteID = 1),
         Actividad(
             id =8, titulo = "Titulo Actividad 8", imagen = R.drawable.film, contenidoPrueba = R.string.t5,
-            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.Gastronomia,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" ,  anuncianteID = 1, destacado = true),
+            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.GASTRONOMIA,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" ,  anuncianteID = 1, destacado = true),
         Actividad(
             id = 9, titulo = "Titulo Actividad 9", imagen = R.drawable.gaming, contenidoPrueba = R.string.t5,
-            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.CursosYTalleres,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina",  anuncianteID = 1 ),
+            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.CURSOS_Y_TALLERES,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina",  anuncianteID = 1 ),
         Actividad(
             id = 10, titulo = "Titulo Actividad 10", imagen = R.drawable.lifestyle, contenidoPrueba = R.string.t5,
-            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.Musica,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" ,  anuncianteID = 1, destacado = true),
+            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.MUSICA,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" ,  anuncianteID = 1, destacado = true),
         Actividad(
             id = 11, titulo = "Titulo Actividad 11", imagen = R.drawable.music, contenidoPrueba = R.string.t5,
-            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.Ocio,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" ,  anuncianteID = 1, destacado = true),
+            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.OCIO,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" ,  anuncianteID = 1, destacado = true),
         Actividad(
             id = 12, titulo = "Titulo Actividad 12", imagen = R.drawable.photography, contenidoPrueba = R.string.t5,
-            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.SaludYBienestar,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" ,  anuncianteID = 1),
+            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.SALUD_Y_BIENESTAR,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" ,  anuncianteID = 1),
         Actividad(
             id = 13, titulo = "Titulo Actividad 13", imagen = R.drawable.painting, contenidoPrueba = R.string.t5,
-            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.Experiencias,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" ,  anuncianteID = 1),
+            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.EXPERIENCIAS,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" ,  anuncianteID = 1),
         Actividad(
             id = 14, titulo = "Titulo Actividad 14", imagen = R.drawable.tech, contenidoPrueba = R.string.t14,
-            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.Aventura,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" ,  anuncianteID = 1, destacado = true)
+            anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.AVENTURA,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" ,  anuncianteID = 1, destacado = true)
     )
 
     val categorias = arrayListOf<Categoria>(
-        Categoria.Todo,
-        Categoria.AireLibre,
-        Categoria.Arte,
-        Categoria.Aventura,
-        Categoria.Bares,
-        Categoria.CursosYTalleres,
-        Categoria.Deporte,
-        Categoria.Experiencias,
-        Categoria.Gastronomia,
-        Categoria.Musica,
-        Categoria.Ocio,
-        Categoria.Ofertas,
-        Categoria.SaludYBienestar
+        Categoria.TODO,
+        Categoria.AIRE_LIBRE,
+        Categoria.ARTE,
+        Categoria.AVENTURA,
+        Categoria.BARES,
+        Categoria.CURSOS_Y_TALLERES,
+        Categoria.DEPORTE,
+        Categoria.EXPERIENCIAS,
+        Categoria.GASTRONOMIA,
+        Categoria.MUSICA,
+        Categoria.OCIO,
+        Categoria.OFERTAS,
+        Categoria.SALUD_Y_BIENESTAR
     )
 
     val anuncios = arrayListOf<Anuncio>(
@@ -92,7 +92,7 @@ object DatosPrueba {
         return arrayListOf<Actividad>(
             Actividad(
                 id = 1, titulo = "Titulo Actividad 1", imagen = R.drawable.architecture, contenidoPrueba = R.string.t1,
-                anunciante = "Crash Bandicoot", fecha = Fecha.ahora(), categoria = Categoria.Arte,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina",  anuncianteID = 1,
+                anunciante = "Crash Bandicoot", fecha = Fecha.ahora(), categoria = Categoria.ARTE,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina",  anuncianteID = 1,
                 plazas = 15, reservas = arrayListOf(
                     Contacto(3, "Cortex N. Bandicoot", R.drawable.cortex),
                     Contacto(5, "Coco Bandicoot", R.drawable.coco),
@@ -113,13 +113,13 @@ object DatosPrueba {
         return arrayListOf(
             Actividad(
                 id = 10, titulo = "Titulo Actividad 10", imagen = R.drawable.lifestyle, contenidoPrueba = R.string.t5,
-                anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.Musica,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" ,  anuncianteID = 1),
+                anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.MUSICA,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" ,  anuncianteID = 1),
             Actividad(
                 id = 11, titulo = "Titulo Actividad 11", imagen = R.drawable.music, contenidoPrueba = R.string.t5,
-                anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.Ocio,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" ,  anuncianteID = 1),
+                anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.OCIO,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" ,  anuncianteID = 1),
             Actividad(
                 id = 13, titulo = "Titulo Actividad 13", imagen = R.drawable.painting, contenidoPrueba = R.string.t5,
-                anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.Experiencias,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" ,  anuncianteID = 1),
+                anunciante = "Ofertante de Prueba", fecha = Fecha.ahora(), categoria = Categoria.EXPERIENCIAS,   precio = 10.5f, ubicacion = "C/ Melancolia 7, 41001 Sabina" ,  anuncianteID = 1),
         )
     }
 

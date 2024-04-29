@@ -1,5 +1,6 @@
 package com.proyectoi.kinetia.services;
 
+import com.proyectoi.kinetia.dto.User;
 import com.proyectoi.kinetia.models.UserModel;
 import com.proyectoi.kinetia.repositories.IRolRepository;
 import com.proyectoi.kinetia.repositories.IUserRepository;
@@ -18,10 +19,12 @@ public class AppService {
     IRolRepository rolRepository;
 
 
-    public Optional<UserModel> logIn(String email, String password) {
+    public Optional<User> logIn(String email, String password) {
         try {
-            UserModel user = userRepository.findByEmail(email);
-            if (user.getPassword().equals(password)) {
+            UserModel userModel = userRepository.findByEmail(email);
+            User user = new User(userModel);
+            System.out.println(user);
+            if (userModel.getPassword().equals(password)) {
                 return Optional.of(user);
             }
         } catch (Exception e) {
@@ -41,9 +44,9 @@ public class AppService {
         return user != null;
     }
 
-    public UserModel createUser(UserModel user) {
-        user.setRol(rolRepository.findByRolType(user.getRol().getRolType()));
-        return userRepository.save(user);
+    public User createUser(UserModel userModel) {
+        userModel.setRol(rolRepository.findByRolType(userModel.getRol().getRolType()));
+        return new User(userRepository.save(userModel));
     }
 
 

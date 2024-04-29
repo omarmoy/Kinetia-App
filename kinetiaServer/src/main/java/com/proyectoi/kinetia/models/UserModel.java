@@ -3,7 +3,7 @@ package com.proyectoi.kinetia.models;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.List;
+import java.util.Objects;
 
 import jakarta.persistence.*;
 
@@ -41,10 +41,10 @@ public class UserModel {
     @Column
     private String adress;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<ActivityModel> activitiesOffered = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany (fetch = FetchType.LAZY)
     @JoinTable(
             name = "favorite_user_activities",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -250,5 +250,18 @@ public class UserModel {
                 ", sentMessages=" + sentMessages.size() +
                 ", receivedMessages=" + receivedMessages.size() +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserModel userModel = (UserModel) o;
+        return Objects.equals(id, userModel.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

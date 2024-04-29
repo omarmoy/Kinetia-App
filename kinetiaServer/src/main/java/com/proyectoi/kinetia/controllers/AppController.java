@@ -1,5 +1,6 @@
 package com.proyectoi.kinetia.controllers;
 
+import com.proyectoi.kinetia.dto.User;
 import com.proyectoi.kinetia.models.UserModel;
 import com.proyectoi.kinetia.services.AppService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class AppController {
 		String email = requestBody.get("email");
 		String password = requestBody.get("password");
 
-		Optional<UserModel> user = appService.logIn(email, password);
+		Optional<User> user = appService.logIn(email, password);
 
 		if (user.isPresent()) {
 			return ResponseEntity.ok(user.get());
@@ -43,7 +44,7 @@ public class AppController {
 	}
 
 	@PostMapping(path = "/signUp/user")
-	public UserModel signUp(@RequestBody UserModel user) {
+	public User signUp(@RequestBody UserModel user) {
 		return this.appService.createUser(user);
 	}
 	

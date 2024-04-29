@@ -1,5 +1,6 @@
 package com.proyectoi.kinetia.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -64,7 +65,7 @@ public class ActivityModel {
     private List<UserModel> usersWhoFav = new ArrayList<>();
 
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "reservations",
             joinColumns = @JoinColumn(name = "user_id"),

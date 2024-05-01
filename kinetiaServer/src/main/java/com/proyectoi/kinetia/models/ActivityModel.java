@@ -1,17 +1,16 @@
 package com.proyectoi.kinetia.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table (name = "activities")
 public class ActivityModel {
+
     public enum Category {
         AIRE_LIBRE,
         ARTE,
@@ -44,7 +43,7 @@ public class ActivityModel {
     private LocalDateTime date;
 
     @CreatedDate
-    private Instant createdAt;
+    private Instant createdAt = Instant.now();
 
     @Column
     private Float price;
@@ -53,6 +52,7 @@ public class ActivityModel {
     private String location;
 
     @Column (nullable = false)
+    @Enumerated(EnumType.STRING)
     private Category category;
 
     @Column (nullable = false)
@@ -61,17 +61,17 @@ public class ActivityModel {
     @Column (nullable = false)
     private int vacancies;
 
-    @ManyToMany(mappedBy = "activitiesFav", fetch = FetchType.LAZY)
-    private List<UserModel> usersWhoFav = new ArrayList<>();
+    @ManyToMany(mappedBy = "activitiesFav", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<UserModel> usersWhoFav = new HashSet<>();
 
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "reservations",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "activity_id")
+            joinColumns = @JoinColumn(name = "activity_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private List<UserModel> reservations = new ArrayList<>();
+    private Set<UserModel> reservations = new HashSet<>();
 
 
     // GETTER AND SETTER
@@ -164,19 +164,19 @@ public class ActivityModel {
         this.vacancies = vacancies;
     }
 
-    public List<UserModel> getUsersWhoFav() {
+    public Set<UserModel> getUsersWhoFav() {
         return usersWhoFav;
     }
 
-    public void setUsersWhoFav(List<UserModel> usersWhoFav) {
+    public void setUsersWhoFav(Set<UserModel> usersWhoFav) {
         this.usersWhoFav = usersWhoFav;
     }
 
-    public List<UserModel> getReservations() {
+    public Set<UserModel> getReservations() {
         return reservations;
     }
 
-    public void setReservations(List<UserModel> reservations) {
+    public void setReservations(Set<UserModel> reservations) {
         this.reservations = reservations;
     }
 
@@ -197,5 +197,26 @@ public class ActivityModel {
                 ", usersWhoFav=" + usersWhoFav.size() +
                 ", reservations=" + reservations.size() +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ActivityModel that = (ActivityModel) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
+    public Boolean addReservation(UserModel user) {
+        return reservations.add(user);
+    }
+
+    public void cancelReservation(UserModel user) {
+        reservations.remove(user);
     }
 }

@@ -17,8 +17,8 @@ public class MessageModel {
     private UserModel sender;
 
     @ManyToOne
-    @JoinColumn(name = "recipient_id", nullable = false)
-    private UserModel recipient;
+    @JoinColumn(name = "receiver_id", nullable = false)
+    private UserModel receiver;
 
     @Column(nullable = false)
     private String content;
@@ -27,7 +27,13 @@ public class MessageModel {
     private LocalDateTime sentAt;
 
     @Column(nullable = false)
-    private Boolean isRead;
+    private Boolean isRead = false;
+
+    @Column(nullable = false)
+    private Boolean senderHasDeleted  = false;
+
+    @Column(nullable = false)
+    private Boolean receiverHasDeleted = false;
 
     public Long getId() {
         return id;
@@ -45,12 +51,12 @@ public class MessageModel {
         this.sender = sender;
     }
 
-    public UserModel getRecipient() {
-        return recipient;
+    public UserModel getReceiver() {
+        return receiver;
     }
 
-    public void setRecipient(UserModel recipient) {
-        this.recipient = recipient;
+    public void setReceiver(UserModel recipient) {
+        this.receiver = recipient;
     }
 
     public String getContent() {
@@ -77,12 +83,28 @@ public class MessageModel {
         isRead = read;
     }
 
+    public Boolean getSenderHasDeleted() {
+        return senderHasDeleted;
+    }
+
+    public void setSenderHasDeleted(Boolean senderHasDeleted) {
+        this.senderHasDeleted = senderHasDeleted;
+    }
+
+    public Boolean getReceiverHasDeleted() {
+        return receiverHasDeleted;
+    }
+
+    public void setReceiverHasDeleted(Boolean recipientHasDeleted) {
+        this.receiverHasDeleted = recipientHasDeleted;
+    }
+
     @Override
     public String toString() {
         return "MessageModel{" +
                 "id=" + id +
                 ", sender=" + sender.fullName() +
-                ", recipient=" + recipient.fullName() +
+                ", recipient=" + receiver.fullName() +
                 ", content='" + content + '\'' +
                 ", sentAt=" + sentAt +
                 ", isRead=" + isRead +

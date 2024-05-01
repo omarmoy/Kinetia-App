@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 
-public class User {
+public class SympleUser {
 
     @JsonProperty("id")
     private Long id;
@@ -35,17 +35,17 @@ public class User {
     @JsonProperty("adress")
     private String adress;
     @JsonProperty("advertisements")
-    private List<Advertisement> advertisements = new ArrayList<>();
+    private int advertisements;
     @JsonProperty("activitiesOfered")
-    private List<UserActivity> activitiesOffered = new ArrayList<>();
+    private int activitiesOffered;
     @JsonProperty("activitiesFav")
-    private List<Activity> activitiesFav = new ArrayList<>();
+    private int activitiesFav;
     @JsonProperty("activitiesReserved")
-    private List<Activity> activitiesReserved = new ArrayList<>();
+    private int activitiesReserved;
     @JsonProperty("chats")
-    private List<UserChat> chats = new ArrayList<>();
+    private int chats;
 
-    public User(UserModel user) {
+    public SympleUser(UserModel user) {
         this.id = user.getId();
         this.email = user.getEmail();
         this.rol = user.getRol().getRolType();
@@ -57,20 +57,10 @@ public class User {
         this.company = user.getCompany();
         this.cif = user.getCif();
         this.adress = user.getAdress();
-
-        for (AdvertisementModel am : user.getAdvertisements()) {
-            this.advertisements.add(new Advertisement(am));
-        }
-
-        for (ActivityModel activity : user.getActivitiesOffered()) {
-            this.activitiesOffered.add(new UserActivity(activity));
-        }
-        for (ActivityModel activity : user.getActivitiesFav()) {
-            this.activitiesFav.add(new Activity(activity));
-        }
-        for (ActivityModel activity : user.getActivitiesReserved()) {
-            this.activitiesReserved.add(new Activity(activity));
-        }
+        this.advertisements = user.getAdvertisements().size();
+        this.activitiesOffered = user.getActivitiesOffered().size();
+        this.activitiesFav = user.getActivitiesFav().size();
+        this.activitiesReserved = user.getActivitiesReserved().size();
 
         Set<UserModel> contacts = new HashSet<>();
 
@@ -83,9 +73,7 @@ public class User {
                 contacts.add(message.getSender());
         }
 
-        for (UserModel contact : contacts) {
-            this.chats.add(new UserChat(user, contact));
-        }
+        this.chats = contacts.size();
 
 
     }
@@ -104,11 +92,11 @@ public class User {
                 ", company='" + company + '\'' +
                 ", cif='" + cif + '\'' +
                 ", adress='" + adress + '\'' +
-                ", advertisements=" + advertisements.size() +
-                ", activitiesOffered=" + activitiesOffered.size() +
-                ", activitiesFav=" + activitiesFav.size() +
-                ", activitiesReserved=" + activitiesReserved.size() +
-                ", contacts=" + chats.size() +
+                ", advertisements=" + advertisements +
+                ", activitiesOffered=" + activitiesOffered +
+                ", activitiesFav=" + activitiesFav +
+                ", activitiesReserved=" + activitiesReserved +
+                ", contacts=" + chats +
                 '}';
     }
 }

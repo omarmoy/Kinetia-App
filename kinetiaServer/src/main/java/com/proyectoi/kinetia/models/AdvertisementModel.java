@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.Instant;
+import java.time.InstantSource;
 
 @Entity
 @Table(name = "advertisements")
@@ -16,7 +17,6 @@ public class AdvertisementModel {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
     private UserModel user;
 
     @Column(nullable = false)
@@ -29,11 +29,10 @@ public class AdvertisementModel {
     private String location;
 
     @CreatedDate
-    private Instant creationDate;
+    private Instant creationDate = Instant.now();
 
 
     // GETTER AND SETTER
-
 
     public Long getId() {
         return id;

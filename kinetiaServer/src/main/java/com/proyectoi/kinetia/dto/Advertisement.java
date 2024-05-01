@@ -1,6 +1,7 @@
 package com.proyectoi.kinetia.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.proyectoi.kinetia.models.AdvertisementModel;
 
 import java.time.Instant;
 
@@ -11,17 +12,26 @@ public class Advertisement {
     private Long id;
     @JsonProperty("userId")
     private Long userId;
-@JsonProperty("title")
+    @JsonProperty("userPhoto")
+    private String userPhoto;
+    @JsonProperty("title")
     private String title;
-@JsonProperty("description")
+    @JsonProperty("description")
     private String description;
-@JsonProperty("location")
+    @JsonProperty("location")
     private String location;
-
-
+    @JsonProperty("creationDate")
     private Instant creationDate;
 
-
+    public Advertisement(AdvertisementModel advertisementModel) {
+        this.id = advertisementModel.getId();
+        this.userId = advertisementModel.getUser().getId();
+        this.userPhoto = advertisementModel.getUser().getProfilePicture();
+        this.title = advertisementModel.getTitle();
+        this.description = advertisementModel.getDescription();
+        this.location = advertisementModel.getLocation();
+        this.creationDate = advertisementModel.getCreationDate();
+    }
 
 
     @Override

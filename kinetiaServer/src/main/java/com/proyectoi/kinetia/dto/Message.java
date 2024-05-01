@@ -21,7 +21,7 @@ public class Message {
 
     public Message(MessageModel message) {
         this.sender = message.getSender().getId();
-        this.recipient = message.getRecipient().getId();
+        this.recipient = message.getReceiver().getId();
         this.content = message.getContent();
         this.sentAt = message.getSentAt();
         this.isRead = message.getRead();

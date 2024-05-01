@@ -23,7 +23,6 @@ public class AppService {
         try {
             UserModel userModel = userRepository.findByEmail(email);
             User user = new User(userModel);
-            System.out.println(user);
             if (userModel.getPassword().equals(password)) {
                 return Optional.of(user);
             }

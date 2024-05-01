@@ -1,0 +1,68 @@
+[
+  {
+    "email": "juan@correo.es",
+    "rol": "CONSUMER",
+    "password": "juan",
+    "name": "Juan",
+    "surname": "Garcia",
+    "secondSurname": "Lopez",
+    "birthDate": "1990-05-15",
+    "profilePicture": "profile1.jpg",
+    "company": "",
+    "cif": null,
+    "adress": "Calle Mayor 123"
+  },
+  {
+    "email": "antonia@correo.es",
+    "rol": "PROVIDER",
+    "password": "antonia",
+    "name": "Antonia",
+    "surname": "Martinez",
+    "secondSurname": "Rodriguez",
+    "birthDate": "1985-08-20",
+    "profilePicture": "profile2.jpg",
+    "company": "Empresa XYZ",
+    "cif": "B12345678",
+    "adress": "Avenida Libertad 45"
+  },
+  {
+    "email": "carlos@correo.es",
+    "rol": "ADMIN",
+    "password": "carlos",
+    "name": "Carlos",
+    "surname": "Sanchez",
+    "secondSurname": "",
+    "birthDate": "1978-12-10",
+    "profilePicture": "profile3.jpg",
+    "company": "",
+    "cif": null,
+    "adress": "Plaza España 8"
+  }
+  
+    {
+    "email": "laura@correo.es",
+    "rol": "CONSUMER",
+    "password": "laura",
+    "name": "Laura",
+    "surname": "Gomez",
+    "secondSurname": "Jimenez",
+    "birthDate": "1992-07-25",
+    "profilePicture": "profile4.jpg",
+    "company": "",
+    "cif": null,
+    "adress": "Calle Real 67"
+  },
+  {
+    "email": "pablo@correo.es",
+    "rol": "PROVIDER",
+    "password": "pablo",
+    "name": "Pablo",
+    "surname": "Lopez",
+    "secondSurname": "",
+    "birthDate": "1987-04-30",
+    "profilePicture": "profile5.jpg",
+    "company": "PabloTech",
+    "cif": "A98765432",
+    "adress": "Avenida Principal 23"
+  }
+]

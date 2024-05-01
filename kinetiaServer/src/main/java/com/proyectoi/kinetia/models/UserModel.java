@@ -1,9 +1,7 @@
 package com.proyectoi.kinetia.models;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import jakarta.persistence.*;
 
@@ -18,8 +16,8 @@ public class UserModel {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @OneToOne
-    @JoinColumn(name = "rol", referencedColumnName = "rolType")
+    @ManyToOne
+    @JoinColumn(name = "rol", referencedColumnName = "rolType", nullable = false)
     private RolModel rol;
 
     @Column
@@ -42,31 +40,30 @@ public class UserModel {
     private String adress;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private List<ActivityModel> activitiesOffered = new ArrayList<>();
+    private List<ActivityModel> activitiesOffered = new ArrayList<>();
 
-    @ManyToMany (fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "favorite_user_activities",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "activity_id")
     )
-    private List<ActivityModel> activitiesFav = new ArrayList<>();
+    private Set<ActivityModel> activitiesFav = new HashSet<>();
 
     @ManyToMany(mappedBy = "reservations", fetch = FetchType.LAZY)
-	private List<ActivityModel> activitiesReserved = new ArrayList<>();
+    private Set<ActivityModel> activitiesReserved = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	private List<AdvertisementModel> advertisements = new ArrayList<>();
+    private List<AdvertisementModel> advertisements = new ArrayList<>();
 
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
     private List<MessageModel> sentMessages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private List<MessageModel> receivedMessages = new ArrayList<>();
 
 
     // Setter y Getter
-
 
     public Long getId() {
         return id;
@@ -172,28 +169,19 @@ public class UserModel {
         this.activitiesOffered = activitiesOffered;
     }
 
-//    public List<ActivityModel> getActivitiesFav() {
-//        return new List<>(activitiesFav) ;
-//    }
-//
-//    public void setActivitiesFav(List<ActivityModel> activitiesFav) {
-//        this.activitiesFav = activitiesFav;
-//    }
-
-
-    public List<ActivityModel> getActivitiesFav() {
+    public Set<ActivityModel> getActivitiesFav() {
         return activitiesFav;
     }
 
-    public void setActivitiesFav(List<ActivityModel> activitiesFav) {
+    public void setActivitiesFav(Set<ActivityModel> activitiesFav) {
         this.activitiesFav = activitiesFav;
     }
 
-    public List<ActivityModel> getActivitiesReserved() {
+    public Set<ActivityModel> getActivitiesReserved() {
         return activitiesReserved;
     }
 
-    public void setActivitiesReserved(List<ActivityModel> activitiesReserved) {
+    public void setActivitiesReserved(Set<ActivityModel> activitiesReserved) {
         this.activitiesReserved = activitiesReserved;
     }
 
@@ -221,8 +209,8 @@ public class UserModel {
         this.receivedMessages = receivedMessages;
     }
 
-    public String fullName(){
-        if(this.company==null || this.company.isEmpty())
+    public String fullName() {
+        if (this.company == null || this.company.isEmpty())
             return this.name + " " + this.surname + " " + this.secondSurname;
         else
             return this.company;
@@ -264,4 +252,22 @@ public class UserModel {
     public int hashCode() {
         return Objects.hashCode(id);
     }
+
+    public Boolean addFav(ActivityModel activity) {
+        return activitiesFav.add(activity);
+    }
+
+    public void deleteFav(ActivityModel activity) {
+        activitiesFav.remove(activity);
+    }
+
+    public Boolean addReservation(ActivityModel activity) {
+        return activitiesReserved.add(activity);
+    }
+
+    public void cancelReservation(ActivityModel activity) {
+        activitiesReserved.remove(activity);
+    }
+
+
 }

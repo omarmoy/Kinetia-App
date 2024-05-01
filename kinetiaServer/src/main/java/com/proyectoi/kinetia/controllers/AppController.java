@@ -12,13 +12,13 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/kinetia")
+@RequestMapping("/app")
 public class AppController {
 	
 	@Autowired
 	private AppService appService;
 
-	@PostMapping
+	@PostMapping(path = "/login")
 	public ResponseEntity<?> login(@RequestBody Map<String, String> requestBody) {
 		String email = requestBody.get("email");
 		String password = requestBody.get("password");
@@ -32,18 +32,18 @@ public class AppController {
 		}
 	}
 
-	@GetMapping(path = "/signUp/{email}")
+	@GetMapping(path = "/verify/{email}")
 	public Boolean emailExists(@PathVariable String email) {
 		return appService.emailExists(email);
 	}
 
-	@PostMapping(path = "/signUp")
+	@PostMapping(path = "/verify")
 	public Boolean cifExists(@RequestBody Map<String, String> requestBody) {
 		String cif = requestBody.get("cif");
 		return appService.cifExists(cif);
 	}
 
-	@PostMapping(path = "/signUp/user")
+	@PostMapping(path = "/signUp")
 	public User signUp(@RequestBody UserModel user) {
 		return this.appService.createUser(user);
 	}

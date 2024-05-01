@@ -5,6 +5,7 @@ import com.proyectoi.kinetia.models.ActivityModel;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 
 public class Activity {
@@ -52,4 +53,107 @@ public class Activity {
         this.availableVacancies = activity.getVacancies() - activity.getReservations().size();
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Float getPrice() {
+        return price;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public ActivityModel.Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(ActivityModel.Category category) {
+        this.category = category;
+    }
+
+    public Boolean getFeatured() {
+        return featured;
+    }
+
+    public void setFeatured(Boolean featured) {
+        this.featured = featured;
+    }
+
+    public int getVacancies() {
+        return vacancies;
+    }
+
+    public void setVacancies(int vacancies) {
+        this.vacancies = vacancies;
+    }
+
+    public int getAvailableVacancies() {
+        return availableVacancies;
+    }
+
+    public void setAvailableVacancies(int availableVacancies) {
+        this.availableVacancies = availableVacancies;
+    }
 }

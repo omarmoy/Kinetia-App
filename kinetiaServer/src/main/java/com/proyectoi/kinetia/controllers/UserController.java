@@ -1,20 +1,11 @@
 package com.proyectoi.kinetia.controllers;
 
-import java.util.ArrayList;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.proyectoi.kinetia.models.UserModel;
+import com.proyectoi.kinetia.models.ActivityModel;
+import com.proyectoi.kinetia.models.AdvertisementModel;
+import com.proyectoi.kinetia.models.MessageModel;
 import com.proyectoi.kinetia.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -22,34 +13,93 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
-	
-	@GetMapping("/s")
-	public ArrayList<UserModel> getUsers(){
-		return this.userService.getUsers();
+
+	@DeleteMapping(path = "deleteUser/{id}")
+	public Boolean deleteUser(@PathVariable Long id) {
+		return userService.deleteUser(id);
+	}
+
+	/*CRUD ACTIVITY*/
+
+	@PostMapping(path = "/addActivity")
+	public Long addActivity(@RequestBody ActivityModel activity) {
+		System.out.println(activity);
+		return this.userService.createActivity(activity);
+	}
+
+	@DeleteMapping(path = "/deleteActivity/{id}")
+	public Boolean deleteActivity(@PathVariable("id") Long id) {
+		return userService.deleteActivity(id);
+	}
+
+	@PutMapping(path = "/updateActivity")
+	public Boolean updateActivity(@RequestBody ActivityModel activity) {
+		return userService.updateActivity(activity);
+	}
+
+
+	/*FAV*/
+
+	@PostMapping(path = "fav/{idUser}/{idActivity}")
+	public Boolean favActivity(@PathVariable("idUser") Long idUser, @PathVariable("idActivity") Long idActivity) {
+		return userService.addFav(idUser, idActivity);
 	}
 	
-	@PostMapping("/add") 
-	public UserModel saveUser(@RequestBody UserModel user) {
-		return this.userService.saveUser(user);
+	@DeleteMapping(path = "noFav/{idUser}/{idActivity}")
+	public Boolean noFavActivity(@PathVariable("idUser") Long idUser, @PathVariable("idActivity") Long idActivity) {
+		return userService.deleteFav(idUser, idActivity);
 	}
-	
-	@GetMapping (path = "/{id}")
-	public Optional<UserModel> getUserById(@PathVariable("id") Long id){
-		return this.userService.getById(id);
+
+
+	/*RESERVAS*/
+
+	@PostMapping(path = "reserveActivity/{idUser}/{idActivity}")
+	public Boolean reserveActivity(@PathVariable("idUser") Long idUser, @PathVariable("idActivity") Long idActivity) {
+		//TODO: avisar al otro usuario
+		return userService.addReservation(idUser, idActivity);
 	}
-	
-	@PutMapping (path = "/{id}")
-	public UserModel updateUserById(@RequestBody UserModel request, @PathVariable("id") Long id) {
-		return this.userService.updateById(request, id);
+
+	@DeleteMapping(path = "cancelReservation/{idUser}/{idActivity}")
+	public Boolean cancelReservation(@PathVariable("idUser") Long idUser, @PathVariable("idActivity") Long idActivity) {
+		//TODO: avisar al otro usuario, dependiéndo de quién cancele, ofertante o consumidor
+		return userService.cancelReservation(idUser, idActivity);
 	}
-	
-	@DeleteMapping (path = "/{id}")
-	public String deleteUserById(@PathVariable("id") Long id) {
-		Boolean ok = this.userService.deleteUser(id);		
-		return ok.toString();
-		
+
+
+	/*CRUD DE ANUNCIOS*/
+
+	@PostMapping(path = "/addAdvertisement")
+	public Long addAdvertisement(@RequestBody AdvertisementModel advertisement) {
+		return userService.createAdvertisement(advertisement);
 	}
-	
-	
+
+	@DeleteMapping(path = "/deleteAdvertisement/{id}")
+	public Boolean deleteAdvertisement(@PathVariable("id") Long id) {
+		return userService.deleteAdvertisement(id);
+	}
+
+	@PutMapping(path = "/updateAdvertisement")
+	public Boolean updateAdvertisement(@RequestBody AdvertisementModel advertisement) {
+		return userService.updateAdvertisement(advertisement);
+	}
+
+
+	/*CRUD DE MENSAJES*/
+
+	@PostMapping(path = "/sendMessage")
+	public Boolean sendMessage(@RequestBody MessageModel message) {
+		return userService.saveMessage(message);
+	}
+
+	@DeleteMapping(path = "/deleteChat/{idUser}/{idContact}")
+	public Boolean deleteChat(@PathVariable("idUser") Long idUser, @PathVariable("idContact") Long idContact) {
+		return userService.deleteChat(idUser, idContact);
+	}
+
+	@PutMapping(path = "/readMessage/{id}")
+	public Boolean readMessage(@PathVariable("id") Long idMessage) {
+		return userService.updateMessage(idMessage);
+	}
+
 
 }

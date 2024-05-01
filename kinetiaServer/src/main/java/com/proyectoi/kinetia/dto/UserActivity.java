@@ -34,7 +34,8 @@ public class UserActivity {
     private int vacancies;
     @JsonProperty("availableVacancies")
     private int availableVacancies ;
-//    private List<Long> usersWhoFav = new ArrayList<>();
+    @JsonProperty ("favs")
+    private int favs;
     @JsonProperty("reservations")
     private List<Long> reservations = new ArrayList<>();
 
@@ -49,11 +50,12 @@ public class UserActivity {
         this.category = activity.getCategory();
         this.featured = activity.getFeatured();
         this.vacancies = activity.getVacancies();
-
+        this.availableVacancies = activity.getVacancies() - activity.getReservations().size();
+        this.favs = activity.getUsersWhoFav().size();
         for(UserModel reservation :activity.getReservations()) {
             this.reservations.add(reservation.getId());
         }
-        this.availableVacancies = activity.getVacancies() - activity.getReservations().size();
+
     }
 
     @Override

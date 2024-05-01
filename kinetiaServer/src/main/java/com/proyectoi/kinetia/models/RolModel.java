@@ -1,6 +1,5 @@
 package com.proyectoi.kinetia.models;
 
-
 import jakarta.persistence.*;
 
 @Entity
@@ -26,7 +25,6 @@ public class RolModel {
     @Column(unique = true, nullable = false)
     @Enumerated(EnumType.STRING)
     private RolType rolType;
-
 
     public int getId() {
         return id;

@@ -1,5 +1,7 @@
 package com.proyectoi.kinetia.controllers;
 
+import com.proyectoi.kinetia.dto.Activity;
+import com.proyectoi.kinetia.dto.Advertisement;
 import com.proyectoi.kinetia.dto.User;
 import com.proyectoi.kinetia.models.UserModel;
 import com.proyectoi.kinetia.services.AppService;
@@ -8,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -22,9 +25,7 @@ public class AppController {
 	public ResponseEntity<?> login(@RequestBody Map<String, String> requestBody) {
 		String email = requestBody.get("email");
 		String password = requestBody.get("password");
-
 		Optional<User> user = appService.logIn(email, password);
-
 		if (user.isPresent()) {
 			return ResponseEntity.ok(user.get());
 		} else {
@@ -47,7 +48,15 @@ public class AppController {
 	public User signUp(@RequestBody UserModel user) {
 		return this.appService.createUser(user);
 	}
-	
-	
+
+	@GetMapping(path = "/activities")
+	public List<Activity> activities() {
+		return appService.activities();
+	}
+
+	@GetMapping(path = "/advertisement")
+	public List<Advertisement> advertisements() {
+		return appService.advertisements();
+	}
 
 }

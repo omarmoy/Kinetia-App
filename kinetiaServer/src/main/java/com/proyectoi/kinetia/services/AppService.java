@@ -1,12 +1,20 @@
 package com.proyectoi.kinetia.services;
 
+import com.proyectoi.kinetia.dto.Activity;
+import com.proyectoi.kinetia.dto.Advertisement;
 import com.proyectoi.kinetia.dto.User;
+import com.proyectoi.kinetia.models.ActivityModel;
+import com.proyectoi.kinetia.models.AdvertisementModel;
 import com.proyectoi.kinetia.models.UserModel;
+import com.proyectoi.kinetia.repositories.IActivityRepository;
+import com.proyectoi.kinetia.repositories.IAdvertisementRepository;
 import com.proyectoi.kinetia.repositories.IRolRepository;
 import com.proyectoi.kinetia.repositories.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,6 +26,12 @@ public class AppService {
 	@Autowired
     IRolRepository rolRepository;
 
+    @Autowired
+    IActivityRepository activityRepository;
+
+    @Autowired
+    IAdvertisementRepository advertisementRepository;
+
 
     public Optional<User> logIn(String email, String password) {
         try {
@@ -26,7 +40,7 @@ public class AppService {
             if (userModel.getPassword().equals(password)) {
                 return Optional.of(user);
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 
@@ -49,5 +63,21 @@ public class AppService {
     }
 
 
+    public List<Activity> activities() {
+        List<ActivityModel> activityModels = activityRepository.findAll();
+        List<Activity> activities = new ArrayList<>();
+        for (ActivityModel activityModel : activityModels) {
+            activities.add(new Activity(activityModel));
+        }
+        return activities;
+    }
 
+    public List<Advertisement> advertisements() {
+        List<AdvertisementModel> advertisementModels = advertisementRepository.findAll();
+        List<Advertisement> advertisements = new ArrayList<>();
+        for (AdvertisementModel advertisementModel : advertisementModels) {
+            advertisements.add(new Advertisement(advertisementModel));
+        }
+        return advertisements;
+    }
 }

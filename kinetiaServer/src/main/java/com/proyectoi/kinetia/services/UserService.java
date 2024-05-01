@@ -48,8 +48,6 @@ public class UserService {
         try {
             Optional <UserModel> userOptional = userRepository.findById(id);
             if (userOptional.isPresent()) {
-//                userOptional.get().setActivitiesOffered(new ArrayList<>());
-//                userRepository.save(userOptional.get());
                 userRepository.delete(userOptional.get());
                 return true;
             }

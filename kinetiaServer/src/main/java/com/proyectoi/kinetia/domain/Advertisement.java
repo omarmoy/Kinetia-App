@@ -1,4 +1,4 @@
-package com.proyectoi.kinetia.dto;
+package com.proyectoi.kinetia.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.proyectoi.kinetia.models.AdvertisementModel;

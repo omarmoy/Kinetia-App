@@ -4,18 +4,12 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "roles")
-public class RolModel {
+public class RoleModel {
 
-    public enum RolType {
+    public enum RoleType {
         ADMIN,
         PROVIDER,
         CONSUMER
-    }
-
-    public RolModel() { }
-
-    public RolModel(String rol) {
-        this.rolType = RolType.valueOf(rol);
     }
 
     @Id
@@ -24,7 +18,7 @@ public class RolModel {
 
     @Column(unique = true, nullable = false)
     @Enumerated(EnumType.STRING)
-    private RolType rolType;
+    private RoleType roleType;
 
     public int getId() {
         return id;
@@ -34,19 +28,19 @@ public class RolModel {
         this.id = id;
     }
 
-    public RolType getRolType() {
-        return rolType;
+    public RoleType getRoleType() {
+        return roleType;
     }
 
-    public void setRolType(RolType rolType) {
-        this.rolType = rolType;
+    public void setRoleType(RoleType roleType) {
+        this.roleType = roleType;
     }
 
     @Override
     public String toString() {
-        return "RolModel{" +
+        return "RoleModel{" +
                 "id=" + id +
-                ", rol=" + rolType +
+                ", rol=" + roleType +
                 '}';
     }
 }

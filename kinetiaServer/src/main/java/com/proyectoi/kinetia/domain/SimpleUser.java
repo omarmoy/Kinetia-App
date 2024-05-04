@@ -1,23 +1,21 @@
-package com.proyectoi.kinetia.dto;
+package com.proyectoi.kinetia.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.proyectoi.kinetia.models.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 
-public class SympleUser {
+public class SimpleUser {
 
     @JsonProperty("id")
     private Long id;
     @JsonProperty("email")
     private String email;
-    @JsonProperty("rol")
-    private RolModel.RolType rol;
+    @JsonProperty("role")
+    private RoleModel.RoleType role;
     @JsonProperty("name")
     private String name;
     @JsonProperty("surname")
@@ -45,10 +43,12 @@ public class SympleUser {
     @JsonProperty("chats")
     private int chats;
 
-    public SympleUser(UserModel user) {
+
+
+    public SimpleUser(UserModel user) {
         this.id = user.getId();
         this.email = user.getEmail();
-        this.rol = user.getRol().getRolType();
+        this.role = user.getRole().getRoleType();
         this.name = user.getName();
         this.surname = user.getSurname();
         this.secondSurname = user.getSecondSurname();
@@ -83,7 +83,7 @@ public class SympleUser {
         return "User{" +
                 "id=" + id +
                 ", email='" + email + '\'' +
-                ", rol=" + rol +
+                ", role=" + role +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", secondSurname='" + secondSurname + '\'' +

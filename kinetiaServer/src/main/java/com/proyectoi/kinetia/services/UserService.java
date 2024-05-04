@@ -1,38 +1,86 @@
 package com.proyectoi.kinetia.services;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
-import com.proyectoi.kinetia.models.ActivityModel;
-import com.proyectoi.kinetia.models.AdvertisementModel;
-import com.proyectoi.kinetia.models.MessageModel;
+import com.proyectoi.kinetia.api.request.SignUpRequest;
+import com.proyectoi.kinetia.domain.SimpleUser;
+import com.proyectoi.kinetia.domain.User;
+import com.proyectoi.kinetia.models.*;
 import com.proyectoi.kinetia.repositories.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.proyectoi.kinetia.models.UserModel;
 
 @Service
 public class UserService {
 
-    @Autowired
-    IUserRepository userRepository;
+    private final IUserRepository userRepository;
+    private final IRolRepository rolRepository;
+    private final IActivityRepository activityRepository;
 
-    @Autowired
-    IRolRepository rolRepository;
+    public UserService(
+            IUserRepository userRepository,
+            IRolRepository rolRepository,
+            IActivityRepository activityRepository
+    ) {
+        this.userRepository = userRepository;
+        this.rolRepository = rolRepository;
+        this.activityRepository = activityRepository;
+    }
 
-    @Autowired
-    IActivityRepository activityRepository;
+    public List<SimpleUser> getAll() {
+        List<UserModel> users = userRepository.findAll();
+        List<SimpleUser> usersArray = new ArrayList<>();
+        for (UserModel user : users) {
+            usersArray.add(new SimpleUser(user));
+        }
+        return usersArray;
+    }
 
-    @Autowired
-    IAdvertisementRepository advertisementRepository;
+    public Optional<User> logIn(String email, String password) {
+        try {
+            UserModel userModel = userRepository.findByEmail(email);
+            User user = new User(userModel);
+            if (userModel.getPassword().equals(password)) {
+                return Optional.of(user);
+            }
+        } catch (Exception ignored) {
+        }
 
-    @Autowired
-    IMessageRepository messageRepository;
+        return Optional.empty();
+    }
 
+    public User createUser(SignUpRequest signUpRequest) {
 
-    /*BORRAR Y MODIFICAR USUARIO*/
+        RoleModel role = rolRepository.findByRoleType(signUpRequest.getRole());
+        User user;
+        try {
+            UserModel userModel = new UserModel(
+                    signUpRequest.getEmail(),
+                    role,
+                    signUpRequest.getPassword(),
+                    signUpRequest.getName(),
+                    signUpRequest.getSurname(),
+                    signUpRequest.getSecondSurname(),
+                    signUpRequest.getBirthDate(),
+                    signUpRequest.getProfilePicture(),
+                    signUpRequest.getCompany(),
+                    signUpRequest.getCif(),
+                    signUpRequest.getAddress()
+            );
+            user = new User(userRepository.save(userModel));
+        } catch (Exception e) {
+            user = null;
+        }
+
+        return user;
+    }
+
+    public Boolean verify(String word) {
+        UserModel userEmail = userRepository.findByEmail(word);
+        UserModel userCif = userRepository.findByCif(word);
+        return userCif != null || userEmail != null;
+    }
 
     public Boolean updateUser(UserModel user) {
         //TODO: falta fronted, y creo que así borra todo los datos de las listas?¿?
@@ -46,7 +94,7 @@ public class UserService {
 
     public Boolean deleteUser(Long id) {
         try {
-            Optional <UserModel> userOptional = userRepository.findById(id);
+            Optional<UserModel> userOptional = userRepository.findById(id);
             if (userOptional.isPresent()) {
                 userRepository.delete(userOptional.get());
                 return true;
@@ -58,178 +106,65 @@ public class UserService {
     }
 
 
-    /*CRUD ACTIVITY Y FAV*/
+    /*FAVORITES*/
 
-    public Long createActivity(ActivityModel activity) {
+    public Boolean addFav(Long userId, Long activityId) {
         try {
-            activityRepository.save(activity);
-            return activity.getId();
-        } catch (Exception e) {
-            return -1L;
-        }
-    }
-
-    public Boolean updateActivity(ActivityModel activity) {
-        Optional<ActivityModel> activityOptional = activityRepository.findById(activity.getId());
-        if (activityOptional.isPresent()) {
-            activityRepository.save(activity);
-            return true;
-        }
-        return false;
-    }
-
-    public Boolean deleteActivity(Long id) {
-        try {
-            activityRepository.deleteById(id);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-
-    /*FAVORITOS*/
-
-    public Boolean addFav(Long idUser, Long idActivity) {
-        try {
-            UserModel user = userRepository.findById(idUser).get();
-            ActivityModel activity = activityRepository.findById(idActivity).get();
-            if (user.addFav(activity)) {
-                userRepository.save(user);
+            Optional<UserModel> user = userRepository.findById(userId);
+            Optional<ActivityModel> activity = activityRepository.findById(activityId);
+            if (user.isPresent() && activity.isPresent() && user.get().addFav(activity.get())) {
+                userRepository.save(user.get());
                 return true;
-            }else
+            } else
                 return false;
         } catch (Exception e) {
             return false;
         }
     }
 
-    public Boolean deleteFav(Long idUser, Long idActivity) {
+    public Boolean deleteFav(Long userId, Long activityId) {
         try {
-            UserModel user = userRepository.findById(idUser).get();
-            ActivityModel activity = activityRepository.findById(idActivity).get();
-            user.deleteFav(activity);
-            userRepository.save(user);
+            Optional<UserModel> user = userRepository.findById(userId);
+            Optional<ActivityModel> activity = activityRepository.findById(activityId);
+            if (user.isPresent() && activity.isPresent()) {
+                user.get().deleteFav(activity.get());
+                userRepository.save(user.get());
+            }
             return true;
         } catch (Exception e) {
             return false;
         }
     }
 
-    /*RESERVAS*/
-    public Boolean addReservation(Long idUser, Long idActivity) {
+
+    /*RESERVATION*/
+
+    public Boolean addReservation(Long userId, Long idActivity) {
         try {
-            UserModel user = userRepository.findById(idUser).get();
-            ActivityModel activity = activityRepository.findById(idActivity).get();
-            if (activity.addReservation(user)) {
-                activityRepository.save(activity);
+            Optional<UserModel> user = userRepository.findById(userId);
+            Optional<ActivityModel> activity = activityRepository.findById(idActivity);
+            if (user.isPresent() && activity.isPresent() && activity.get().addReservation(user.get())) {
+                activityRepository.save(activity.get());
                 return true;
-            }else
+            } else
                 return false;
         } catch (Exception e) {
             return false;
         }
     }
 
-    public Boolean cancelReservation(Long idUser, Long idActivity) {
+    public Boolean cancelReservation(Long userId, Long idActivity) {
         try {
-            UserModel user = userRepository.findById(idUser).get();
-            ActivityModel activity = activityRepository.findById(idActivity).get();
-            activity.cancelReservation(user);
-            activityRepository.save(activity);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-
-    /*CRUD DE ANUNCIOS*/
-
-    public Long createAdvertisement(AdvertisementModel advertisement) {
-        try {
-            advertisementRepository.save(advertisement);
-            return advertisement.getId();
-        } catch (Exception e) {
-            return -1L;
-        }
-    }
-
-    public Boolean updateAdvertisement(AdvertisementModel advertisement) {
-        Optional<AdvertisementModel> optional = advertisementRepository.findById(advertisement.getId());
-        if (optional.isPresent()) {
-            advertisementRepository.save(advertisement);
-            return true;
-        }
-        return false;
-    }
-
-    public Boolean deleteAdvertisement(Long id) {
-        try {
-            advertisementRepository.deleteById(id);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-
-    /*CRUD DE MENSAJES*/
-
-    public Boolean saveMessage(MessageModel message) {
-        try {
-            messageRepository.save(message);
-            //TODO: enviar al otro usuario
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public Boolean updateMessage(Long id) {
-        try {
-            Optional<MessageModel> optional = messageRepository.findById(id);
-            if (optional.isPresent()) {
-                optional.get().setRead(true);
-                messageRepository.save(optional.get());
-                return true;
-            }
-        } catch (Exception ignored) {
-        }
-        return false;
-    }
-
-    public Boolean deleteChat(Long idUser, Long idContact) {
-
-        try {
-            UserModel user = userRepository.findById(idUser).get();
-            UserModel contact = userRepository.findById(idContact).get();
-
-            ArrayList<MessageModel> messagesSent = messageRepository.findBySenderAndReceiver(user, contact);
-            for (MessageModel message : messagesSent) {
-                message.setSenderHasDeleted(true);
-                if (message.getSenderHasDeleted() && message.getReceiverHasDeleted())
-                    messageRepository.delete(message);
-                else
-                    messageRepository.save(message);
-            }
-
-            ArrayList<MessageModel> messagesReceived = messageRepository.findBySenderAndReceiver(contact, user);
-            for (MessageModel message : messagesReceived) {
-                message.setReceiverHasDeleted(true);
-                if (message.getSenderHasDeleted() && message.getReceiverHasDeleted())
-                    messageRepository.delete(message);
-                else
-                    messageRepository.save(message);
+            Optional<UserModel> user = userRepository.findById(userId);
+            Optional<ActivityModel> activity = activityRepository.findById(idActivity);
+            if (user.isPresent() && activity.isPresent()) {
+                activity.get().cancelReservation(user.get());
+                activityRepository.save(activity.get());
             }
             return true;
         } catch (Exception e) {
             return false;
         }
-
-
     }
-
-
 
 }

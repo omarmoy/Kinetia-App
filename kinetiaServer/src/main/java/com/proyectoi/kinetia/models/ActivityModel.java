@@ -3,6 +3,7 @@ package com.proyectoi.kinetia.models;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -46,7 +47,7 @@ public class ActivityModel {
     private Instant createdAt = Instant.now();
 
     @Column
-    private Float price;
+    private BigDecimal price;
 
     @Column (nullable = false)
     private String location;
@@ -124,11 +125,11 @@ public class ActivityModel {
         this.createdAt = createdAt;
     }
 
-    public Float getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Float price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

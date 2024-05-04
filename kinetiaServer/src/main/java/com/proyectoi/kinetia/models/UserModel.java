@@ -17,8 +17,8 @@ public class UserModel {
     private String email;
 
     @ManyToOne
-    @JoinColumn(name = "rol", referencedColumnName = "rolType", nullable = false)
-    private RolModel rol;
+    @JoinColumn(name = "role", referencedColumnName = "roleType", nullable = false)
+    private RoleModel rol;
 
     @Column
     private String password;
@@ -62,6 +62,32 @@ public class UserModel {
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private List<MessageModel> receivedMessages = new ArrayList<>();
 
+    public UserModel() {}
+
+    public UserModel(String email, RoleModel rol, String password, String name, String surname,
+                     String secondSurname, LocalDate birthDate, String profilePicture, String company,
+                     String cif, String address) {
+        this.email = email;
+        this.rol = rol;
+        this.password = password;
+        this.name = name;
+        this.surname = surname;
+        this.secondSurname = secondSurname;
+        this.birthDate = birthDate;
+        this.profilePicture = profilePicture;
+        this.company = company;
+        this.cif = cif;
+        this.adress = address;
+    }
+
+    public Boolean addFav(ActivityModel activity) {
+        return activitiesFav.add(activity);
+    }
+
+    public void deleteFav(ActivityModel activity) {
+        activitiesFav.remove(activity);
+    }
+
 
     // Setter y Getter
 
@@ -81,11 +107,11 @@ public class UserModel {
         this.email = email;
     }
 
-    public RolModel getRol() {
+    public RoleModel getRole() {
         return rol;
     }
 
-    public void setRol(RolModel rol) {
+    public void setRole(RoleModel rol) {
         this.rol = rol;
     }
 
@@ -253,21 +279,9 @@ public class UserModel {
         return Objects.hashCode(id);
     }
 
-    public Boolean addFav(ActivityModel activity) {
-        return activitiesFav.add(activity);
-    }
 
-    public void deleteFav(ActivityModel activity) {
-        activitiesFav.remove(activity);
-    }
 
-    public Boolean addReservation(ActivityModel activity) {
-        return activitiesReserved.add(activity);
-    }
 
-    public void cancelReservation(ActivityModel activity) {
-        activitiesReserved.remove(activity);
-    }
 
 
 }

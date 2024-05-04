@@ -1,12 +1,12 @@
 package com.proyectoi.kinetia.repositories;
 
-import com.proyectoi.kinetia.models.RolModel;
+import com.proyectoi.kinetia.models.RoleModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IRolRepository extends JpaRepository<RolModel, Integer>{
+public interface IRolRepository extends JpaRepository<RoleModel, Integer>{
 
-    RolModel findByRolType(RolModel.RolType rol);
+    RoleModel findByRoleType(RoleModel.RoleType role);
 
 }

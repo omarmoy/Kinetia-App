@@ -1,11 +1,11 @@
-package com.proyectoi.kinetia.dto;
+package com.proyectoi.kinetia.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.proyectoi.kinetia.models.ActivityModel;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 
 public class Activity {
@@ -25,7 +25,7 @@ public class Activity {
     @JsonProperty("createdAt")
     private Instant createdAt;
     @JsonProperty("price")
-    private Float price;
+    private BigDecimal price;
     @JsonProperty("location")
     private String location;
     @JsonProperty("category")
@@ -35,7 +35,7 @@ public class Activity {
     @JsonProperty("vacancies")
     private int vacancies;
     @JsonProperty("availableVacancies")
-    private int availableVacancies ;
+    private int availableVacancies;
 
     public Activity(ActivityModel activity) {
         this.id = activity.getId();
@@ -109,11 +109,11 @@ public class Activity {
         this.createdAt = createdAt;
     }
 
-    public Float getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Float price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

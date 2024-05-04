@@ -1,4 +1,4 @@
-package com.proyectoi.kinetia.dto;
+package com.proyectoi.kinetia.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.proyectoi.kinetia.models.*;
@@ -6,10 +6,10 @@ import com.proyectoi.kinetia.models.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserChat {
+public class Chat {
 
     @JsonProperty("id")
-    private Long id;
+    private Long contactId;
     @JsonProperty("contactName")
     private String contactName;
     @JsonProperty("contactPicture")
@@ -19,8 +19,8 @@ public class UserChat {
     @JsonProperty("messages")
     private List<Message> messages = new ArrayList<>();
 
-    public UserChat(UserModel user, UserModel contact) {
-        this.id = contact.getId();
+    public Chat(UserModel user, UserModel contact) {
+        this.contactId = contact.getId();
         this.contactName = contact.fullName();
         this.contactPicture = contact.getProfilePicture();
 

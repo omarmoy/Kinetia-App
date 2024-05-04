@@ -1,7 +1,6 @@
 front:
--Modo Empresa
--formularios: actividad-plazas ¿ya?
--modificar actividad. 
+
+-formularios: actividad-plazas ¿ya? 
 -dar de baja usuario
 
 funcionalidad:
@@ -11,5 +10,6 @@ funcionalidad:
 *Contactar
 
 
-BACK:
-todo
+Modo admin
+
+Enchufar la api

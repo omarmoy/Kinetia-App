@@ -36,7 +36,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -50,7 +49,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -59,35 +57,35 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.controlador.AppViewModel
-import com.dam2.proyectocliente.controlador.DatosPrueba
-import com.dam2.proyectocliente.controlador.UiState
-import com.dam2.proyectocliente.model.Actividad
+import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.ui.UiState
+import com.dam2.proyectocliente.models.Activity
+import com.dam2.proyectocliente.utils.toStringFecha
+import com.dam2.proyectocliente.utils.toStringHora
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
-import com.example.proyectocliente.ui.theme.Gris2
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VistaActividad(
     navController: NavHostController,
-    actividad: Actividad,
+    activity: Activity,
     vm: AppViewModel,
     estado: UiState
 ) {
 
     Scaffold(
         topBar = {
-            BarraSuperiorActividad(navController, actividad, vm, estado)
+            BarraSuperiorActividad(navController, activity, vm, estado)
         },
         content = { innerPadding ->
             ContenidoActividad(
                 innerPadding,
                 navController,
-                actividad,
+                activity,
                 vm,
                 estado
             )
@@ -99,7 +97,7 @@ fun VistaActividad(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BarraSuperiorActividad(
-    navController: NavHostController, actividad: Actividad, vm: AppViewModel, estado: UiState
+    navController: NavHostController, activity: Activity, vm: AppViewModel, estado: UiState
 ) {
     // Define un estado mutable para actuar como un disparador de recomposición
     val recomposeTrigger = remember { mutableStateOf(0) }
@@ -129,14 +127,14 @@ fun BarraSuperiorActividad(
         },
         actions = {
             IconButton(onClick = {
-                if (estado.esFavorita(actividad))
-                    vm.eliminarFavorito(actividad)
+                if (estado.esFavorita(activity))
+                    vm.eliminarFavorito(activity)
                 else
-                    vm.addFavorito(actividad)
+                    vm.addFavorito(activity)
                 refreshComposable()
             }) {
                 Icon(
-                    imageVector = if (estado.esFavorita(actividad)) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                    imageVector = if (estado.esFavorita(activity)) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                     contentDescription = "Fav",
                     tint = AzulAguaOscuro
                 )
@@ -151,7 +149,7 @@ fun BarraSuperiorActividad(
 fun ContenidoActividad(
     innerPadding: PaddingValues,
     navController: NavHostController,
-    actividad: Actividad,
+    activity: Activity,
     vm: AppViewModel,
     estado: UiState
 ) {
@@ -171,38 +169,38 @@ fun ContenidoActividad(
         }
 
         Image(
-            painter = painterResource(id = actividad.imagen),
-            contentDescription = actividad.titulo,
+            painter = painterResource(id = R.drawable.noimagen),
+            contentDescription = activity.title,
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(3f / 2f),
             contentScale = ContentScale.Crop
         )
 
-        PanelTitulo(navController, actividad, vm)
-        PanelDatos(navController, actividad, vm)
-        PanelBotones(navController, actividad, vm, estado, refreshComposable)
-        PanelContenido(navController, actividad, vm, estado, refreshComposable)
+        PanelTitulo(navController, activity, vm)
+        PanelDatos(navController, activity, vm)
+        PanelBotones(navController, activity, vm, estado, refreshComposable)
+        PanelContenido(navController, activity, vm, estado, refreshComposable)
     }
 }
 
 @Composable
-fun PanelTitulo(navController: NavHostController, actividad: Actividad, vm: AppViewModel) {
+fun PanelTitulo(navController: NavHostController, activity: Activity, vm: AppViewModel) {
 
     Column(modifier = Modifier.padding(top = 12.dp, end = 12.dp, start = 12.dp, bottom = 1.dp)) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = actividad.titulo, color = AzulAguaOscuro, fontWeight = FontWeight.Bold,
+                    text = activity.title, color = AzulAguaOscuro, fontWeight = FontWeight.Bold,
                     fontSize = 28.sp
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = actividad.ubicacion, color = AzulAguaClaro, fontSize = 16.sp)
+                Text(text = activity.location, color = AzulAguaClaro, fontSize = 16.sp)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = actividad.anunciante, color = AzulAguaClaro, fontSize = 14.sp)
+                Text(text = activity.userName, color = AzulAguaClaro, fontSize = 14.sp)
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Plazas disponibles: " + actividad.plazasDisponibles,
+                    text = "Plazas disponibles: " + activity.availableVacancies,
                     color = AzulAguaClaro, fontSize = 14.sp
                 )
             }
@@ -219,7 +217,7 @@ fun PanelTitulo(navController: NavHostController, actividad: Actividad, vm: AppV
             }
         }
         Text(
-            text = "publicado: " + actividad.fechaPublicacion.mostrarFecha(),
+            text = "publicado: " + activity.createdAt.toString(),
             textAlign = TextAlign.End, color = AzulAguaClaro, fontSize = 14.sp,
             modifier = Modifier.fillMaxWidth()
         )
@@ -228,7 +226,7 @@ fun PanelTitulo(navController: NavHostController, actividad: Actividad, vm: AppV
 }
 
 @Composable
-fun PanelDatos(navController: NavHostController, actividad: Actividad, vm: AppViewModel) {
+fun PanelDatos(navController: NavHostController, activity: Activity, vm: AppViewModel) {
     Surface(
         modifier = Modifier
             .background(color = AmarilloPastel)
@@ -249,7 +247,7 @@ fun PanelDatos(navController: NavHostController, actividad: Actividad, vm: AppVi
                     modifier = Modifier.size(tamIcon)
                 )
                 Text(
-                    text = actividad.fecha.toStringFecha(),
+                    text = toStringFecha(activity.date),
                     color = AzulAguaClaro,
                     fontSize = 14.sp
                 )
@@ -263,7 +261,7 @@ fun PanelDatos(navController: NavHostController, actividad: Actividad, vm: AppVi
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = actividad.fecha.toStringHora(),
+                    text = toStringHora(activity.date),
                     color = AzulAguaClaro,
                     fontSize = 14.sp
                 )
@@ -276,7 +274,7 @@ fun PanelDatos(navController: NavHostController, actividad: Actividad, vm: AppVi
                     modifier = Modifier.size(tamIcon)
                 )
                 Text(
-                    text = actividad.precio.toString() + " euros",
+                    text = activity.price.toString() + " euros",
                     color = AzulAguaClaro,
                     fontSize = 14.sp
                 )
@@ -290,7 +288,7 @@ fun PanelDatos(navController: NavHostController, actividad: Actividad, vm: AppVi
 @Composable
 fun PanelBotones(
     navController: NavHostController,
-    actividad: Actividad,
+    activity: Activity,
     vm: AppViewModel,
     estado: UiState,
     refreshComposable: () -> Unit
@@ -303,15 +301,15 @@ fun PanelBotones(
             .padding(top = 40.dp, start = 70.dp, end = 70.dp, bottom = 12.dp)
     ) {
         Button(
-            onClick = { vm.reservar(actividad); refreshComposable() },
+            onClick = { vm.reservar(activity); refreshComposable() },
             shape = RoundedCornerShape(4.dp),
             colors = ButtonDefaults.buttonColors(AmarilloPastel),
             contentPadding = PaddingValues(8.dp, 0.dp),
-            enabled = actividad.plazasDisponibles != 0
-                    && !estado.usuario!!.actividadesReservadas.contains(actividad)
+            enabled = activity.availableVacancies != 0
+                    && !estado.user!!.activitiesReserved.contains(activity)
         ) {
             val texto =
-                if (estado.usuario!!.actividadesReservadas.contains(actividad))
+                if (estado.user!!.activitiesReserved.contains(activity))
                     "Reservado"
                 else
                     "Reservar"
@@ -343,7 +341,7 @@ fun PanelBotones(
 @Composable
 fun PanelContenido(
     navController: NavHostController,
-    actividad: Actividad,
+    activity: Activity,
     vm: AppViewModel,
     estado: UiState,
     refreshComposable: () -> Unit
@@ -355,27 +353,24 @@ fun PanelContenido(
 
         Box(modifier = Modifier.fillMaxWidth()) {
             Text(
-                text = if (stringResource(actividad.contenidoPrueba) == "vacio") //TODO QUITAR ESTA MIERDA
-                    actividad.contenido
-                else
-                    stringResource(actividad.contenidoPrueba),
+                text = activity.description,
                 textAlign = TextAlign.Justify,
                 fontSize = 14.sp
             )
         }
 
-        if (actividad.contenido.length > 1399) {
+        if (activity.description.length > 1399) {
             Spacer(modifier = Modifier.height(24.dp))
             Button(
-                onClick = { vm.reservar(actividad); refreshComposable() },
+                onClick = { vm.reservar(activity); refreshComposable() },
                 shape = RoundedCornerShape(4.dp),
                 colors = ButtonDefaults.buttonColors(AmarilloPastel),
                 contentPadding = PaddingValues(8.dp, 0.dp),
-                enabled = actividad.plazasDisponibles != 0
-                        && !estado.usuario!!.actividadesReservadas.contains(actividad)
+                enabled = activity.availableVacancies != 0
+                        && !estado.user!!.activitiesReserved.contains(activity)
             ) {
                 val texto =
-                    if (estado.usuario!!.actividadesReservadas.contains(actividad))
+                    if (estado.user!!.activitiesReserved.contains(activity))
                         "Reservado"
                     else
                         "Reservar"
@@ -384,10 +379,10 @@ fun PanelContenido(
 
         }
 
-        if (estado.usuario!!.actividadesReservadas.contains(actividad)) {
+        if (estado.user!!.activitiesReserved.contains(activity)) {
             Spacer(modifier = Modifier.height(24.dp))
             Button(
-                onClick = { vm.cancelarReserva(actividad); refreshComposable() },
+                onClick = { vm.cancelarReserva(activity); refreshComposable() },
                 shape = RoundedCornerShape(4.dp),
                 colors = ButtonDefaults.buttonColors(AzulAguaOscuro),
                 contentPadding = PaddingValues(8.dp, 0.dp)
@@ -408,7 +403,7 @@ fun PanelContenido(
 fun ActividadPreview() {
     val vm: AppViewModel = viewModel()
     val navController = rememberNavController()
-    val a = DatosPrueba.actividades[0]
+//    val a = DatosPrueba.actividades[0]
     val estado by vm.uiState.collectAsState()
-    VistaActividad(navController = navController, actividad = a, vm, estado)
+//    VistaActividad(navController = navController, activity = a, vm, estado)
 }

@@ -30,8 +30,8 @@ public class SimpleUser {
     private String company;
     @JsonProperty("cif")
     private String cif;
-    @JsonProperty("adress")
-    private String adress;
+    @JsonProperty("address")
+    private String address;
     @JsonProperty("advertisements")
     private int advertisements;
     @JsonProperty("activitiesOfered")
@@ -56,7 +56,7 @@ public class SimpleUser {
         this.profilePicture = user.getProfilePicture();
         this.company = user.getCompany();
         this.cif = user.getCif();
-        this.adress = user.getAdress();
+        this.address = user.getAddress();
         this.advertisements = user.getAdvertisements().size();
         this.activitiesOffered = user.getActivitiesOffered().size();
         this.activitiesFav = user.getActivitiesFav().size();
@@ -91,7 +91,7 @@ public class SimpleUser {
                 ", profilePicture='" + profilePicture + '\'' +
                 ", company='" + company + '\'' +
                 ", cif='" + cif + '\'' +
-                ", adress='" + adress + '\'' +
+                ", adress='" + address + '\'' +
                 ", advertisements=" + advertisements +
                 ", activitiesOffered=" + activitiesOffered +
                 ", activitiesFav=" + activitiesFav +

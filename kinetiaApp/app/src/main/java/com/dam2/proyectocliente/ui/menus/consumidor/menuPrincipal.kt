@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -57,11 +56,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.controlador.AppViewModel
-import com.dam2.proyectocliente.controlador.DatosPrueba
-import com.dam2.proyectocliente.controlador.UiState
-import com.dam2.proyectocliente.model.Actividad
-import com.dam2.proyectocliente.model.Categoria
+import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.ui.UiState
+import com.dam2.proyectocliente.models.Activity
+import com.dam2.proyectocliente.models.Category
 import com.dam2.proyectocliente.ui.PanelNavegacion
 import com.dam2.proyectocliente.ui.Pantallas
 import com.example.proyectocliente.R
@@ -108,7 +106,7 @@ fun BarraSuperiorMPrincipal(navController: NavHostController, vm: AppViewModel, 
         actions = {
 
             IconButton(onClick = {
-                if (estado.usuario!!.tieneMensajesSinLeer()) {
+                if (estado.user!!.tieneMensajesSinLeer()) {
                     vm.filtrarMensajesNoleidos()
                     vm.cambiarBotonNav(2)
                     navController.navigate(Pantallas.menuMensajes.name)
@@ -119,14 +117,14 @@ fun BarraSuperiorMPrincipal(navController: NavHostController, vm: AppViewModel, 
                 Icon(
                     imageVector = Icons.Filled.Notifications,
                     contentDescription = "notificacion",
-                    tint = if (estado.usuario!!.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
+                    tint = if (estado.user!!.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
                 )
             }
             //Spacer(modifier = Modifier.width(12.dp))
             IconButton(onClick = {
                 vm.cambiarBotonNav(1)
                 vm.setIndiceCategoria()
-                vm.selectCategoria(Categoria.TODO)
+                vm.selectCategoria(Category.TODO)
                 navController.navigate(Pantallas.menuBusquedaDirecta.name)
             }) {
                 Icon(
@@ -173,10 +171,10 @@ fun ContenidoInicio(
                 )
             }
 
-            //Descubre:
-            items(DatosPrueba.actividades) { a ->
-                MiniaturaActividad(a, vm, navController)
-            }
+            //Descubre: //TODO
+//            items(DatosPrueba.actividades) { a ->
+//                MiniaturaActividad(a, vm, navController)
+//            }
         }
 
 
@@ -200,11 +198,11 @@ fun Categorias(
     ) {
 
         LazyRow(state = estadoLista) {
-            items(estado.categorias) { categoria ->
-                if (!(categoria == Categoria.TODO && estado.botoneraNav[0])) {
+            items(Category.values()) { categoria ->
+                if (!(categoria == Category.TODO && estado.botoneraNav[0])) {
                     val colorBoton: Color
                     val colorTexto: Color
-                    if (categoria == estado.categoriaSelecciononada && !estado.botoneraNav[0]) {
+                    if (categoria == estado.categorySelecciononada && !estado.botoneraNav[0]) {
                         colorBoton = AmarilloPastel
                         colorTexto = NegroClaro
                     } else {
@@ -282,7 +280,7 @@ fun Titulo(texto: String) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MiniaturaScrollLateral(
-    a: Actividad,
+    a: Activity,
     vm: AppViewModel,
     navController: NavHostController,
     estado: UiState,
@@ -307,8 +305,8 @@ fun MiniaturaScrollLateral(
                 navController.navigate(Pantallas.vistaActividad.name)
             }) {
             Image(
-                painter = painterResource(id = a.imagen),
-                contentDescription = a.titulo,
+                painter = painterResource(id = R.drawable.noimagen),
+                contentDescription = a.title,
                 modifier = Modifier
                     .width(tam)
                     .height(tam * 2 / 3),
@@ -332,14 +330,14 @@ fun MiniaturaScrollLateral(
 
                 Column(modifier = Modifier.widthIn(max = tam * 8 / 10)) {
                     Text(
-                        text = a.titulo,
+                        text = a.title,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                         fontWeight = FontWeight.Bold,
 
                         )
                     if (!mostrarMenos) {
-                        Text(text = a.ubicacion, fontSize = pequena)
+                        Text(text = a.location, fontSize = pequena)
                     }
                 }
 
@@ -382,7 +380,7 @@ fun MiniaturaScrollLateral(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MiniaturaActividad(a: Actividad, vm: AppViewModel, navController: NavHostController) {
+fun MiniaturaActividad(a: Activity, vm: AppViewModel, navController: NavHostController) {
     val tam = 150.dp
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -395,8 +393,8 @@ fun MiniaturaActividad(a: Actividad, vm: AppViewModel, navController: NavHostCon
                 navController.navigate(Pantallas.vistaActividad.name)
             }) {
             Image(
-                painter = painterResource(id = a.imagen),
-                contentDescription = a.titulo,
+                painter = painterResource(id = R.drawable.noimagen),
+                contentDescription = a.title,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(tam),
@@ -412,13 +410,13 @@ fun MiniaturaActividad(a: Actividad, vm: AppViewModel, navController: NavHostCon
         ) {
             Column(modifier = Modifier.padding(8.dp)) {
                 Text(
-                    text = a.titulo,
+                    text = a.title,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
-                    text = a.ubicacion,
+                    text = a.location,
                     fontSize = pequena,
                     overflow = TextOverflow.Ellipsis,
                 )

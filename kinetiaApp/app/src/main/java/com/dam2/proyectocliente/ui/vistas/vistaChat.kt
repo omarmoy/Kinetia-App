@@ -38,7 +38,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,14 +53,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.controlador.AppViewModel
-import com.dam2.proyectocliente.controlador.DatosPrueba
-import com.dam2.proyectocliente.controlador.UiState
-import com.dam2.proyectocliente.model.Contacto
-import com.dam2.proyectocliente.model.Mensaje
+import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.ui.UiState
+import com.dam2.proyectocliente.models.Chat
+import com.dam2.proyectocliente.models.Message
+import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulFondo
 import com.example.proyectocliente.ui.theme.AzulLogo
 import com.example.proyectocliente.ui.theme.BlancoFondo
@@ -72,14 +69,14 @@ import com.example.proyectocliente.ui.theme.Rojo
 @Composable
 fun VistaChat(
     navController: NavHostController,
-    contacto: Contacto,
+    chat: Chat,
     vm: AppViewModel,
     estado: UiState
 ) {
 
     Scaffold(
-        topBar = { BarraSuperiorChat(navController, contacto, vm) },
-        content = { innerPadding -> ContenidoChat(innerPadding, contacto) },
+        topBar = { BarraSuperiorChat(navController, chat, vm) },
+        content = { innerPadding -> ContenidoChat(innerPadding, chat) },
         bottomBar = { EntradaDeTexto(vm, estado) }
     )
 }
@@ -88,7 +85,7 @@ fun VistaChat(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BarraSuperiorChat(
-    navController: NavHostController, contacto: Contacto, vm: AppViewModel
+    navController: NavHostController, chat: Chat, vm: AppViewModel
 ) {
     var mostrarMenu by remember{ mutableStateOf(false) }
     TopAppBar(
@@ -96,8 +93,8 @@ fun BarraSuperiorChat(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Card(shape = CircleShape) {
                     Image(
-                        painter = painterResource(contacto.foto),
-                        contentDescription = contacto.nombre,
+                        painter = painterResource(R.drawable.nofoto),
+                        contentDescription = chat.contactName,
                         modifier = Modifier
                             .height(50.dp)
                             .width(50.dp),
@@ -105,7 +102,7 @@ fun BarraSuperiorChat(
                     )
                 }
                 Spacer(modifier = Modifier.width(20.dp))
-                Text(text = contacto.nombre)
+                Text(text = chat.contactName)
             }
         },
         colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = BlancoFondo),
@@ -147,7 +144,7 @@ fun BarraSuperiorChat(
 }
 
 @Composable
-fun ContenidoChat(innerPadding: PaddingValues, contacto: Contacto) {
+fun ContenidoChat(innerPadding: PaddingValues, chat: Chat) {
     LazyColumn(
         reverseLayout = true,
         modifier = Modifier
@@ -155,21 +152,21 @@ fun ContenidoChat(innerPadding: PaddingValues, contacto: Contacto) {
             .padding(innerPadding)
 
     ) {
-        items(contacto.mensajes.reversed()) { m ->
-            VistaMensaje(mensaje = m, contacto.id)
+        items(chat.messages.reversed()) { m ->
+            VistaMensaje(mensaje = m, chat.id)
         }
     }
 }
 
 @Composable
-fun VistaMensaje(mensaje: Mensaje, idContacto: Int) {
+fun VistaMensaje(mensaje: Message, idContacto: Long) {
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 20.dp, end = 20.dp, bottom = 10.dp, top = 10.dp),
         horizontalArrangement = if (
-            mensaje.idContacto == idContacto) Arrangement.Start else Arrangement.End
+            mensaje.recipient.toLong() == idContacto) Arrangement.Start else Arrangement.End
     ) {
 
         Card(
@@ -177,8 +174,8 @@ fun VistaMensaje(mensaje: Mensaje, idContacto: Int) {
             colors = CardDefaults.cardColors(AzulFondo)
         ) {
             Column(modifier = Modifier.padding(8.dp)) {
-                Text(text = mensaje.fecha.mostrarFecha(), fontSize = 10.sp, textAlign = TextAlign.End)
-                Text(text = mensaje.contenido)
+                Text(text = mensaje.sentAt.toString(), fontSize = 10.sp, textAlign = TextAlign.End)
+                Text(text = mensaje.content)
             }
         }
     }
@@ -238,9 +235,9 @@ fun EntradaDeTexto(vm: AppViewModel, estado: UiState) {
 @Preview(showBackground = true)
 @Composable
 fun ChatPreview() {
-    val vm: AppViewModel = viewModel()
-    val navController = rememberNavController()
-    val a = DatosPrueba.cargarConversaciones()[0]
-    val estado by vm.uiState.collectAsState()
-    VistaChat(navController = navController, a, vm, estado)
+//    val vm: AppViewModel = viewModel()
+//    val navController = rememberNavController()
+//    val a = DatosPrueba.cargarConversaciones()[0]
+//    val estado by vm.uiState.collectAsState()
+//    VistaChat(navController = navController, a, vm, estado)
 }

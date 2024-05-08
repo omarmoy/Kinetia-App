@@ -48,11 +48,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.controlador.AppViewModel
-import com.dam2.proyectocliente.controlador.UiState
-import com.dam2.proyectocliente.model.Contacto
+import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.ui.UiState
+import com.dam2.proyectocliente.models.Chat
 import com.dam2.proyectocliente.ui.PanelNavegacion
 import com.dam2.proyectocliente.ui.Pantallas
+import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAgua
 import com.example.proyectocliente.ui.theme.AzulAguaFondo
@@ -154,7 +155,7 @@ fun Conversaciones(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MiniaturaContacto(c: Contacto, navController: NavHostController, vm: AppViewModel) {
+fun MiniaturaContacto(c: Chat, navController: NavHostController, vm: AppViewModel) {
     Card(
         onClick = {
             vm.selectContacto(c)
@@ -171,8 +172,8 @@ fun MiniaturaContacto(c: Contacto, navController: NavHostController, vm: AppView
         Row(verticalAlignment = Alignment.CenterVertically) {
             Card(shape = CircleShape) {
                 Image(
-                    painter = painterResource(id = c.foto),
-                    contentDescription = c.nombre,
+                    painter = painterResource(id = R.drawable.noimagen),
+                    contentDescription = c.contactName,
                     modifier = Modifier.fillMaxHeight(),
                     contentScale = ContentScale.Crop
                 )
@@ -183,8 +184,8 @@ fun MiniaturaContacto(c: Contacto, navController: NavHostController, vm: AppView
                     .fillMaxWidth()
                     .padding(8.dp)
             ) {
-                Text(text = c.nombre, fontSize = 20.sp)
-                if (c.mensajeNuevo) {
+                Text(text = c.contactName, fontSize = 20.sp)
+                if (c.newMessage) {
                     Icon(
                         imageVector = Icons.Filled.Email,
                         contentDescription = "buscar",

@@ -43,14 +43,15 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.controlador.AppViewModel
-import com.dam2.proyectocliente.controlador.UiState
-import com.dam2.proyectocliente.model.Actividad
+import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.ui.UiState
+import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.ui.PanelNavegacionPro
 import com.dam2.proyectocliente.ui.Pantallas
 import com.dam2.proyectocliente.ui.menus.DesplegableConfiguarion
 import com.dam2.proyectocliente.ui.menus.consumidor.Titulo
 import com.dam2.proyectocliente.ui.recursos.DialogoInfo
+import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
@@ -61,8 +62,8 @@ import com.example.proyectocliente.ui.theme.pequena
 @Composable
 fun MenuReservas(navController: NavHostController, vm: AppViewModel, estado: UiState) {
 
-    var borrarActividad by remember { mutableStateOf<Actividad?>(null) }
-    val setBorrarActividad: (Actividad?) -> Unit = { actividad -> borrarActividad = actividad }
+    var borrarActivity by remember { mutableStateOf<Activity?>(null) }
+    val setBorrarActividad: (Activity?) -> Unit = { actividad -> borrarActivity = actividad }
 
     Scaffold(
         topBar = { BarraSuperiorGR(navController, vm, estado) },
@@ -71,11 +72,11 @@ fun MenuReservas(navController: NavHostController, vm: AppViewModel, estado: UiS
         }
     )
 
-    if (borrarActividad != null) {
+    if (borrarActivity != null) {
         DialogoInfo(
             onDismissRequest = { setBorrarActividad(null) },
-            onConfirmation = { vm.borrarActividad(borrarActividad!!); setBorrarActividad(null) },
-            dialogTitle = borrarActividad!!.titulo,
+            onConfirmation = { vm.borrarActividad(borrarActivity!!); setBorrarActividad(null) },
+            dialogTitle = borrarActivity!!.title,
             dialogText = "¿Quieres borrar este actividad?",
             buttonConfirm = "Aceptar",
             buttonDismiss = "Cancelar"
@@ -99,7 +100,7 @@ fun BarraSuperiorGR(navController: NavHostController, vm: AppViewModel, estado: 
             title = { Titulo(texto = "Mis Reservas") },
             actions = {
                 IconButton(onClick = {
-                    if (estado.usuario!!.tieneMensajesSinLeer()) {
+                    if (estado.user!!.tieneMensajesSinLeer()) {
                         vm.filtrarMensajesNoleidos()
                         vm.cambiarBotonNav(2)
                         navController.navigate(Pantallas.menuMensajes.name)
@@ -110,7 +111,7 @@ fun BarraSuperiorGR(navController: NavHostController, vm: AppViewModel, estado: 
                     Icon(
                         imageVector = Icons.Filled.Notifications,
                         contentDescription = "notificacion",
-                        tint = if (estado.usuario!!.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
+                        tint = if (estado.user!!.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
                     )
                 }
                 //Spacer(modifier = Modifier.width(12.dp))
@@ -140,7 +141,7 @@ fun ContenidoGR(
     navController: NavHostController,
     vm: AppViewModel,
     estado: UiState,
-    setBorrarActividad: (Actividad?) -> Unit
+    setBorrarActividad: (Activity?) -> Unit
 ) {
 
     Scaffold(
@@ -149,7 +150,7 @@ fun ContenidoGR(
             Column(modifier = Modifier.padding(paddinHijo)) {
                 LazyColumn(modifier = Modifier.padding(8.dp)) {
 
-                    if (estado.usuario!!.actividadesOfertadas.size == 0) {
+                    if (estado.user!!.activitiesOffered.size == 0) {
                         item {
                             Text(
                                 text = "Todavía no tienes reservas",
@@ -157,7 +158,7 @@ fun ContenidoGR(
                             )
                         }
                     } else {
-                        items(estado.usuario!!.actividadesOfertadas) { actividad ->
+                        items(estado.user!!.activitiesOffered) { actividad ->
                             MiniaturaReserva(
                                 actividad, vm, navController
                             )
@@ -200,7 +201,7 @@ fun TituloGR() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MiniaturaReserva(
-    actividad: Actividad,
+    activity: Activity,
     vm: AppViewModel,
     navController: NavHostController
 ) {
@@ -227,13 +228,13 @@ fun MiniaturaReserva(
             Card(
 //                shape = RectangleShape,
                 onClick = {
-                    vm.selectActividad(actividad)
+                    vm.selectActividad(activity)
                     vm.ocultarPanelNavegacion()
                     navController.navigate(Pantallas.vistaReservasActividad.name)
                 }) {
                 Image(
-                    painter = painterResource(id = actividad.imagen),
-                    contentDescription = actividad.titulo,
+                    painter = painterResource(id = R.drawable.noimagen),
+                    contentDescription = activity.title,
                     modifier = Modifier
                         .width(tam)
                         .height(tam * 2 / 3),
@@ -247,18 +248,18 @@ fun MiniaturaReserva(
 //                modifier = Modifier.widthIn(max = tam * 8 / 10)
             ) {
                 Text(
-                    text = actividad.titulo,
+                    text = activity.title,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     fontWeight = FontWeight.Bold,
                 )
 
                 Text(
-                    text = "Plazas disponibles: " + (actividad.plazas - actividad.reservas.size),
+                    text = "Plazas disponibles: " + (activity.vacancies - activity.reservations.size),
                     fontSize = pequena
                 )
                 Text(
-                    text = "Número de reservas: " + actividad.reservas.size,
+                    text = "Número de reservas: " + activity.reservations.size,
                     fontSize = pequena
                 )
             }

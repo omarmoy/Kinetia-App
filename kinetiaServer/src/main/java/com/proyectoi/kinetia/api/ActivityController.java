@@ -1,6 +1,7 @@
 package com.proyectoi.kinetia.api;
 
 import com.proyectoi.kinetia.domain.Activity;
+import com.proyectoi.kinetia.domain.Prueba;
 import com.proyectoi.kinetia.models.ActivityModel;
 import com.proyectoi.kinetia.services.ActivityService;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +37,12 @@ public class ActivityController {
     @DeleteMapping(path = "/{id}")
     public Boolean deleteActivity(@PathVariable("id") Long id) {
         return activityService.deleteActivity(id);
+    }
+
+
+    @GetMapping(path = "/photos")
+    public List<Prueba> prueba() {
+        return activityService.getPrueba();
     }
 
 }

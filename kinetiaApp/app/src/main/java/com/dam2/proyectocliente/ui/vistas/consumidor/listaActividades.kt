@@ -53,10 +53,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.controlador.AppViewModel
-import com.dam2.proyectocliente.controlador.UiState
-import com.dam2.proyectocliente.model.Actividad
+import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.ui.UiState
+import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.ui.Pantallas
+import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
 import com.example.proyectocliente.ui.theme.NegroClaro
@@ -66,7 +67,7 @@ import com.example.proyectocliente.ui.theme.pequena
 @Composable
 fun ListaActividades(
     titulo: String,
-    lista: ArrayList<Actividad>,
+    lista: ArrayList<Activity>,
     navController: NavHostController,
     vm: AppViewModel,
     estado: UiState
@@ -141,7 +142,7 @@ fun ContenidoListaActividades(
     navController: NavHostController,
     vm: AppViewModel,
     estado: UiState,
-    lista: ArrayList<Actividad>,
+    lista: ArrayList<Activity>,
     estadoLista: LazyListState
 ) {
     Column(
@@ -198,7 +199,7 @@ fun ContenidoListaActividades(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MiniaturaActividadUnaLinea(
-    a: Actividad,
+    a: Activity,
     vm: AppViewModel,
     navController: NavHostController,
     estado: UiState
@@ -212,8 +213,8 @@ fun MiniaturaActividadUnaLinea(
                 navController.navigate(Pantallas.vistaActividad.name)
             }) {
             Image(
-                painter = painterResource(id = a.imagen),
-                contentDescription = a.titulo,
+                painter = painterResource(id = R.drawable.noimagen),
+                contentDescription = a.title,
                 modifier = Modifier
                     .width(tam)
                     .height(tam * 2 / 3),
@@ -223,13 +224,13 @@ fun MiniaturaActividadUnaLinea(
         Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.widthIn(max = tam * 8 / 10)) {
             Text(
-                text = a.titulo,
+                text = a.title,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 fontWeight = FontWeight.Bold,
             )
 
-            Text(text = a.ubicacion, fontSize = pequena)
+            Text(text = a.location, fontSize = pequena)
 
         }
 

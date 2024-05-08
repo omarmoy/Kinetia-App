@@ -13,8 +13,8 @@ public class User extends SimpleUser{
 
     @JsonProperty("advertisements")
     private List<Advertisement> advertisements = new ArrayList<>();
-    @JsonProperty("activitiesOfered")
-    private List<Activity> activitiesOffered = new ArrayList<>();
+    @JsonProperty("activitiesOffered")
+    private List<ActivityPro> activitiesOffered = new ArrayList<>();
     @JsonProperty("activitiesFav")
     private List<Activity> activitiesFav = new ArrayList<>();
     @JsonProperty("activitiesReserved")
@@ -30,7 +30,7 @@ public class User extends SimpleUser{
         }
 
         for (ActivityModel activity : user.getActivitiesOffered()) {
-            this.activitiesOffered.add(new Activity(activity));
+            this.activitiesOffered.add(new ActivityPro(activity));
         }
         for (ActivityModel activity : user.getActivitiesFav()) {
             this.activitiesFav.add(new Activity(activity));

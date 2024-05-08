@@ -12,6 +12,8 @@ public class Advertisement {
     private Long id;
     @JsonProperty("userId")
     private Long userId;
+    @JsonProperty("userName")
+    private String userName;
     @JsonProperty("userPhoto")
     private String userPhoto;
     @JsonProperty("title")
@@ -26,6 +28,7 @@ public class Advertisement {
     public Advertisement(AdvertisementModel advertisementModel) {
         this.id = advertisementModel.getId();
         this.userId = advertisementModel.getUser().getId();
+        this.userName = advertisementModel.getUser().fullName();
         this.userPhoto = advertisementModel.getUser().getProfilePicture();
         this.title = advertisementModel.getTitle();
         this.description = advertisementModel.getDescription();

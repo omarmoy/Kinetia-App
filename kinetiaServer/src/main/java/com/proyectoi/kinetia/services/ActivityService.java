@@ -1,6 +1,7 @@
 package com.proyectoi.kinetia.services;
 
 import com.proyectoi.kinetia.domain.Activity;
+import com.proyectoi.kinetia.domain.Prueba;
 import com.proyectoi.kinetia.models.ActivityModel;
 import com.proyectoi.kinetia.repositories.IActivityRepository;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,15 @@ public class ActivityService {
         }
         return activities;
     }
+
+    public List<Prueba> getPrueba(){
+        List<Prueba> pruebas = new ArrayList<>();
+        for (ActivityModel activityModel : activityRepository.findAll()) {
+            pruebas.add(new Prueba(activityModel));
+        }
+        return pruebas;
+    }
+
 
     public Long createActivity(ActivityModel activity) {
         try {

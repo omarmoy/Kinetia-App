@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -53,7 +55,8 @@ fun Inicio(navController: NavHostController) {
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color(0xFFF4F4F4))
-                    .padding(40.dp),
+                    .padding(40.dp)
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
                 //,verticalArrangement = Arrangement.SpaceBetween
             ) {

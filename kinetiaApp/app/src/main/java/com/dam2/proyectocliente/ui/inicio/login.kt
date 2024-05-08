@@ -27,6 +27,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -38,8 +41,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.controlador.AppViewModel
-import com.dam2.proyectocliente.controlador.UiState
+import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.ui.Pantallas
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.AzulAguaFondo
@@ -50,6 +53,9 @@ import com.example.proyectocliente.ui.theme.NegroClaro
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Login(navController: NavHostController, vm: AppViewModel, estado: UiState) {
+
+    var email by rememberSaveable { mutableStateOf("antonia@correo.es") }
+    var password by rememberSaveable { mutableStateOf("antonia") }
 
     Scaffold(
         topBar = {
@@ -63,7 +69,6 @@ fun Login(navController: NavHostController, vm: AppViewModel, estado: UiState) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "volver",
-                            //modifier = Modifier.shadow(elevation = 8.dp, shape = Shape.)
                             tint = AzulAguaOscuro
                         )
                     }
@@ -88,8 +93,8 @@ fun Login(navController: NavHostController, vm: AppViewModel, estado: UiState) {
 
                 Spacer(modifier = Modifier.height(40.dp))
                 TextField(
-                    value = "",
-                    onValueChange = { it },
+                    value = email,
+                    onValueChange = { email = it },
                     singleLine = true,
                     label = { Text(text = "introduce tu correo electrónico") },
                     //leadingIcon = { Icon(painter = painterResource(id = R.drawable.money), contentDescription = null) },
@@ -103,8 +108,8 @@ fun Login(navController: NavHostController, vm: AppViewModel, estado: UiState) {
 
                 Spacer(modifier = Modifier.height(20.dp))
                 TextField(
-                    value = "",
-                    onValueChange = { it },
+                    value = password,
+                    onValueChange = { password = it },
                     singleLine = true,
                     label = { Text(text = "introduce la contraseña") },
                     keyboardOptions = KeyboardOptions.Default.copy(
@@ -131,7 +136,7 @@ fun Login(navController: NavHostController, vm: AppViewModel, estado: UiState) {
                 Button(
                     onClick = {
                         //TODO
-                        vm.mostrarPanelNavegacion()
+                        vm.login(email, password)
                         navController.navigate(Pantallas.menuPrincipal.name)
                     },
                     colors = ButtonDefaults.buttonColors(AzulAguaOscuro),
@@ -149,7 +154,8 @@ fun Login(navController: NavHostController, vm: AppViewModel, estado: UiState) {
 
 @Preview(showBackground = true)
 @Composable
-fun LoginPreview() {val navController = rememberNavController()
+fun LoginPreview() {
+    val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
     val estado by vm.uiState.collectAsState()
     Login(navController, vm, estado)

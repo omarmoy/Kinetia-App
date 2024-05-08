@@ -52,9 +52,11 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.controlador.AppViewModel
-import com.dam2.proyectocliente.controlador.UiState
-import com.dam2.proyectocliente.model.Actividad
+import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.ui.UiState
+import com.dam2.proyectocliente.models.Activity
+import com.dam2.proyectocliente.utils.selectorActivityPicture
+import com.dam2.proyectocliente.utils.selectorProfilePicture
 import com.dam2.proyectocliente.ui.PanelNavegacionPro
 import com.dam2.proyectocliente.ui.Pantallas
 import com.dam2.proyectocliente.ui.menus.DesplegableConfiguarion
@@ -72,8 +74,8 @@ import com.example.proyectocliente.ui.theme.pequena
 @Composable
 fun MenuPrincipalPro(navController: NavHostController, vm: AppViewModel, estado: UiState) {
 
-    var borrarActividad by remember { mutableStateOf<Actividad?>(null) }
-    val setBorrarActividad: (Actividad?) -> Unit = { actividad -> borrarActividad = actividad }
+    var borrarActivity by remember { mutableStateOf<Activity?>(null) }
+    val setBorrarActividad: (Activity?) -> Unit = { actividad -> borrarActivity = actividad }
 
     Scaffold(
         topBar = { BarraSuperiorPro(navController, vm, estado) },
@@ -82,11 +84,11 @@ fun MenuPrincipalPro(navController: NavHostController, vm: AppViewModel, estado:
         }
     )
 
-    if (borrarActividad != null) {
+    if (borrarActivity != null) {
         DialogoInfo(
             onDismissRequest = { setBorrarActividad(null) },
-            onConfirmation = { vm.borrarActividad(borrarActividad!!); setBorrarActividad(null) },
-            dialogTitle = borrarActividad!!.titulo,
+            onConfirmation = { vm.borrarActividad(borrarActivity!!); setBorrarActividad(null) },
+            dialogTitle = borrarActivity!!.title,
             dialogText = "¿Quieres borrar este actividad?",
             buttonConfirm = "Aceptar",
             buttonDismiss = "Cancelar"
@@ -111,7 +113,7 @@ fun BarraSuperiorPro(navController: NavHostController, vm: AppViewModel, estado:
         },
         actions = {
             IconButton(onClick = {
-                if (estado.usuario!!.tieneMensajesSinLeer()) {
+                if (estado.user!!.tieneMensajesSinLeer()) {
                     vm.filtrarMensajesNoleidos()
                     vm.cambiarBotonNav(2)
                     navController.navigate(Pantallas.menuMensajes.name)
@@ -122,7 +124,7 @@ fun BarraSuperiorPro(navController: NavHostController, vm: AppViewModel, estado:
                 Icon(
                     imageVector = Icons.Filled.Notifications,
                     contentDescription = "notificacion",
-                    tint = if (estado.usuario!!.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
+                    tint = if (estado.user!!.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
                 )
             }
             //Spacer(modifier = Modifier.width(12.dp))
@@ -149,7 +151,7 @@ fun ContenidoPrincipalPro(
     navController: NavHostController,
     vm: AppViewModel,
     estado: UiState,
-    setBorrarActividad: (Actividad?) -> Unit
+    setBorrarActividad: (Activity?) -> Unit
 ) {
 
     Scaffold(
@@ -161,7 +163,7 @@ fun ContenidoPrincipalPro(
 
                     item { Titulo(texto = "Mis Actividades") }
 
-                    if (estado.usuario!!.actividadesOfertadas.size == 0) {
+                    if (estado.user!!.activitiesOffered.size == 0) {
                         item {
                             Text(
                                 text = "Todavía no has publicado ninguna actividad",
@@ -169,7 +171,7 @@ fun ContenidoPrincipalPro(
                             )
                         }
                     } else {
-                        items(estado.usuario!!.actividadesOfertadas) { actividad ->
+                        items(estado.user!!.activitiesOffered) { actividad ->
 //                    items(DatosPrueba.actividades) { actividad -> //TODO quitar
                             MiniaturaActividadOfertada(
                                 actividad, vm, navController, estado, setBorrarActividad
@@ -224,14 +226,14 @@ fun DatosPerfilPro(estado: UiState) {
         ) {
             Card(shape = CircleShape) {
                 Image(
-                    painter = painterResource(id = estado.usuario!!.foto),
-                    contentDescription = estado.usuario!!.nombre,
-                    modifier = Modifier.fillMaxHeight(),
+                    painter = painterResource(id = selectorProfilePicture(estado.user!!.profilePicture)),
+                    contentDescription = estado.user!!.name,
+                    modifier = Modifier.fillMaxHeight().width(75.dp),
                     contentScale = ContentScale.Crop
                 )
             }
             Text(
-                text = estado.usuario!!.nombreCompleto(),
+                text = estado.user!!.fullName(),
                 fontSize = 18.sp,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -244,11 +246,11 @@ fun DatosPerfilPro(estado: UiState) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MiniaturaActividadOfertada(
-    actividad: Actividad,
+    activity: Activity,
     vm: AppViewModel,
     navController: NavHostController,
     estado: UiState,
-    setBorrarActividad: (Actividad?) -> Unit
+    setBorrarActividad: (Activity?) -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -262,13 +264,13 @@ fun MiniaturaActividadOfertada(
 
         Card(//shape = RectangleShape, /*cuadrado*/
             onClick = {
-                vm.selectActividad(actividad)
+                vm.selectActividad(activity)
                 vm.ocultarPanelNavegacion()
                 navController.navigate(Pantallas.vistaActividadPro.name)
             }) {
             Image(
-                painter = painterResource(id = actividad.imagen),
-                contentDescription = actividad.titulo,
+                painter = painterResource(id = selectorActivityPicture(activity.picture)),
+                contentDescription = activity.title,
                 modifier = Modifier
                     .width(tam)
                     .height(tam * 2 / 3),
@@ -278,13 +280,13 @@ fun MiniaturaActividadOfertada(
 //        Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.widthIn(max = tam * 8 / 10)) {
             Text(
-                text = actividad.titulo,
+                text = activity.title,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 fontWeight = FontWeight.Bold,
             )
 
-            Text(text = actividad.ubicacion ?: "", fontSize = pequena)
+            Text(text = activity.location ?: "", fontSize = pequena)
 
         }
 
@@ -314,7 +316,7 @@ fun MiniaturaActividadOfertada(
                     )
                 },
                 onClick = {
-                    vm.selectModActividad(actividad)
+                    vm.selectModActividad(activity)
                     vm.ocultarPanelNavegacion()
                     navController.navigate(Pantallas.modificarActividad.name)
                 })
@@ -328,7 +330,7 @@ fun MiniaturaActividadOfertada(
                     )
                 },
                 onClick = {
-                    setBorrarActividad(actividad)
+                    setBorrarActividad(activity)
                 })
 
         }

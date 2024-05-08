@@ -1,6 +1,6 @@
-package com.dam2.proyectocliente.model
+package com.dam2.proyectocliente.models
 
-enum class Categoria {
+enum class Category {
     TODO,
     AIRE_LIBRE,
     ARTE,
@@ -32,8 +32,5 @@ enum class Categoria {
             SALUD_Y_BIENESTAR -> "Salud y Bienestar"
         }
     }
-
-
-
 }
 

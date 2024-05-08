@@ -1,9 +1,6 @@
 package com.dam2.proyectocliente.ui.menus
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.ExitToApp
@@ -15,10 +12,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.dam2.proyectocliente.controlador.AppViewModel
-import com.dam2.proyectocliente.controlador.UiState
-import com.dam2.proyectocliente.model.Rol
-import com.dam2.proyectocliente.ui.PanelNavegacionPro
+import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.ui.UiState
+import com.dam2.proyectocliente.models.Role
 import com.dam2.proyectocliente.ui.Pantallas
 import com.example.proyectocliente.ui.theme.BlancoFondo
 
@@ -35,7 +31,7 @@ fun DesplegableConfiguarion(
         onDismissRequest = onDismissRequest,
         modifier = Modifier.background(BlancoFondo)
     ) {
-        if (estado.usuario!!.rol == Rol.OFERTANTE || estado.usuario.rol == Rol.ADMINISTRADOR) {
+        if (estado.user!!.role == Role.PROVIDER || estado.user.role == Role.ADMIN) {
             DropdownMenuItem(
                 text = {
                     if (estado.modoPro)

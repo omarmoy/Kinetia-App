@@ -50,10 +50,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.controlador.AppViewModel
-import com.dam2.proyectocliente.controlador.texfieldVacio
-import com.dam2.proyectocliente.controlador.validarFechaActividad
-import com.dam2.proyectocliente.model.Categoria
+import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.utils.texfieldVacio
+import com.dam2.proyectocliente.utils.validarFechaActividad
+import com.dam2.proyectocliente.models.Category
 import com.dam2.proyectocliente.ui.Pantallas
 import com.dam2.proyectocliente.ui.recursos.DialogoInfo
 import com.dam2.proyectocliente.ui.recursos.TextFieldConCabecera
@@ -73,8 +73,8 @@ fun FormularioActividad(
     vm: AppViewModel
 ) {
 
-    val categorias: ArrayList<Categoria> =
-        ArrayList(Categoria.values().filter { it != Categoria.TODO })
+    val categories: ArrayList<Category> =
+        ArrayList(Category.values().filter { it != Category.TODO })
     val listaHoras = arrayListOf<String>(
         "00",
         "01",
@@ -105,7 +105,7 @@ fun FormularioActividad(
     var titulo by rememberSaveable { mutableStateOf("") }
     var precioT by rememberSaveable { mutableStateOf("") }
     var ubicacion by rememberSaveable { mutableStateOf("") }
-    var categoria by rememberSaveable { mutableStateOf<Categoria?>(null) }
+    var category by rememberSaveable { mutableStateOf<Category?>(null) }
     var destacado by rememberSaveable { mutableStateOf(false) }
     var contenido by rememberSaveable { mutableStateOf("") }
     var diaT by rememberSaveable { mutableStateOf("") }
@@ -122,7 +122,7 @@ fun FormularioActividad(
         topBar = { BarraSuperiorFA(navController, vm) },
         bottomBar = {
             BarraInferiorFA(
-                vm, navController, titulo, precioT, ubicacion, categoria, destacado,
+                vm, navController, titulo, precioT, ubicacion, category, destacado,
                 contenido, diaT, mesT, anioT, horaT, minutosT, nPlazasT, setError
             )
         }
@@ -184,8 +184,8 @@ fun FormularioActividad(
 
                 Text(text = "Categoria", color = NegroClaro, fontSize = 16.sp)
                 ComboBoxCategoria(
-                    options = categorias,
-                    onOptionChosen = { categoria = it },
+                    options = categories,
+                    onOptionChosen = { category = it },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(20.dp))
@@ -391,7 +391,7 @@ fun BarraInferiorFA(
     titulo: String,
     precioT: String,
     ubicacion: String,
-    categoria: Categoria?,
+    category: Category?,
     destacado: Boolean,
     contenido: String,
     diaT: String,
@@ -411,7 +411,7 @@ fun BarraInferiorFA(
     var precio = precioT.toDoubleOrNull() ?: 0.0
 
     val campos = arrayListOf<String>(
-        titulo, precioT, ubicacion, categoria?.toString() ?: "", diaT, mesT, anioT, horaT,
+        titulo, precioT, ubicacion, category?.toString() ?: "", diaT, mesT, anioT, horaT,
         minutosT, contenido, nPlazasT, destacado.toString()
     )
 

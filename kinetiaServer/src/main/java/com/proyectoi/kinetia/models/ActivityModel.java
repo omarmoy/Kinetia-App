@@ -37,6 +37,9 @@ public class ActivityModel {
     @Column (nullable = false, columnDefinition = "TEXT")
     private String description;
 
+    @Column
+    private String picture;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private UserModel user;
 
@@ -179,6 +182,14 @@ public class ActivityModel {
 
     public void setReservations(Set<UserModel> reservations) {
         this.reservations = reservations;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 
     @Override

@@ -37,7 +37,7 @@ public class UserModel {
     @Column(unique = true)
     private String cif;
     @Column
-    private String adress;
+    private String address;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ActivityModel> activitiesOffered = new ArrayList<>();
@@ -77,7 +77,7 @@ public class UserModel {
         this.profilePicture = profilePicture;
         this.company = company;
         this.cif = cif;
-        this.adress = address;
+        this.address = address;
     }
 
     public Boolean addFav(ActivityModel activity) {
@@ -179,12 +179,12 @@ public class UserModel {
         this.cif = cif;
     }
 
-    public String getAdress() {
-        return adress;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAdress(String adress) {
-        this.adress = adress;
+    public void setAddress(String adress) {
+        this.address = adress;
     }
 
     public List<ActivityModel> getActivitiesOffered() {
@@ -256,7 +256,7 @@ public class UserModel {
                 ", profilePicture='" + profilePicture + '\'' +
                 ", company='" + company + '\'' +
                 ", cif='" + cif + '\'' +
-                ", adress='" + adress + '\'' +
+                ", adress='" + address + '\'' +
                 ", activitiesOffered=" + activitiesOffered.size() +
                 ", activitiesFav=" + activitiesFav.size() +
                 ", activitiesReserved=" + activitiesReserved.size() +

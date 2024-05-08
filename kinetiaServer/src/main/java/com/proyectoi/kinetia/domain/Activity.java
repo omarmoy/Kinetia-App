@@ -16,6 +16,8 @@ public class Activity {
     private String title;
     @JsonProperty("description")
     private String description;
+    @JsonProperty("picture")
+    private String picture;
     @JsonProperty("userId")
     private Long userId;
     @JsonProperty("userName")
@@ -41,6 +43,7 @@ public class Activity {
         this.id = activity.getId();
         this.title = activity.getTitle();
         this.description = activity.getDescription();
+        this.picture = activity.getPicture();
         this.userId = activity.getUser().getId();
         this.userName = activity.getUser().fullName();
         this.date = activity.getDate();

@@ -52,11 +52,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.controlador.AppViewModel
-import com.dam2.proyectocliente.controlador.UiState
-import com.dam2.proyectocliente.model.Anuncio
+import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.ui.UiState
+import com.dam2.proyectocliente.models.Advertisement
 import com.dam2.proyectocliente.ui.PanelNavegacionPro
 import com.dam2.proyectocliente.ui.Pantallas
+import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaFondo
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.NegroClaro
@@ -177,7 +178,7 @@ fun ContenidoBusqueda(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MiniaturaAnuncioBusqueda(
-    anuncio: Anuncio, vm: AppViewModel, navController: NavHostController, estado: UiState
+    advertisement: Advertisement, vm: AppViewModel, navController: NavHostController, estado: UiState
 ) {
 
 
@@ -190,7 +191,7 @@ fun MiniaturaAnuncioBusqueda(
             .background(AzulAguaFondo),
         onClick = {
             vm.ocultarPanelNavegacion()
-            vm.selectAnuncio(anuncio)
+            vm.selectAnuncio(advertisement)
             navController.navigate(Pantallas.vistaAnuncioPro.name)
         }) {
 
@@ -205,21 +206,21 @@ fun MiniaturaAnuncioBusqueda(
             Column(verticalArrangement = Arrangement.Center) {
 
                 Text(
-                    text = anuncio.titulo,
+                    text = advertisement.title,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp
                 )
-                Text(text = anuncio.anunciante, fontSize = 16.sp)
+                Text(text = advertisement.userName, fontSize = 16.sp)
             }
 
             Spacer(modifier = Modifier.width(24.dp))
 
             Card(shape = CircleShape) {
                 Image(
-                    painter = painterResource(id = anuncio.fotoAnunciante),
-                    contentDescription = anuncio.titulo,
+                    painter = painterResource(id = R.drawable.noimagen),
+                    contentDescription = advertisement.title,
                     modifier = Modifier.fillMaxHeight(),
                     contentScale = ContentScale.Crop
                 )

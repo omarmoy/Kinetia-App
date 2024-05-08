@@ -62,13 +62,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.controlador.AppViewModel
-import com.dam2.proyectocliente.controlador.UiState
-import com.dam2.proyectocliente.model.Anuncio
-import com.dam2.proyectocliente.model.Rol
+import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.ui.UiState
+import com.dam2.proyectocliente.models.Advertisement
+import com.dam2.proyectocliente.models.Role
 import com.dam2.proyectocliente.ui.PanelNavegacion
 import com.dam2.proyectocliente.ui.Pantallas
 import com.dam2.proyectocliente.ui.recursos.DialogoInfo
+import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondOscuro
@@ -82,8 +83,8 @@ import com.example.proyectocliente.ui.theme.pequena
 @Composable
 fun MenuUsuario2(navController: NavHostController, vm: AppViewModel, estado: UiState) {
 
-    var borrarAnuncio by remember { mutableStateOf<Anuncio?>(null) }
-    val setBorrarAnuncio: (Anuncio?) -> Unit = { anuncio -> borrarAnuncio = anuncio }
+    var borrarAdvertisement by remember { mutableStateOf<Advertisement?>(null) }
+    val setBorrarAnuncio: (Advertisement?) -> Unit = { anuncio -> borrarAdvertisement = anuncio }
 
     Scaffold(
         topBar = {
@@ -104,11 +105,11 @@ fun MenuUsuario2(navController: NavHostController, vm: AppViewModel, estado: UiS
         }
     )
 
-    if (borrarAnuncio!=null) {
+    if (borrarAdvertisement!=null) {
         DialogoInfo(
             onDismissRequest = {setBorrarAnuncio(null)},
-            onConfirmation = {vm.borrarAnuncio(borrarAnuncio!!); setBorrarAnuncio(null)},
-            dialogTitle = borrarAnuncio!!.titulo,
+            onConfirmation = {vm.borrarAnuncio(borrarAdvertisement!!); setBorrarAnuncio(null)},
+            dialogTitle = borrarAdvertisement!!.title,
             dialogText = "¿Quieres borrar este anunco?",
             buttonConfirm = "Aceptar",
             buttonDismiss = "Cancelar"
@@ -127,7 +128,7 @@ fun BarraSuperiorPerfil2(navController: NavHostController, vm: AppViewModel, est
         title = { /*sin título*/ },
         actions = {
             IconButton(onClick = {
-                if (estado.usuario!!.tieneMensajesSinLeer()) {
+                if (estado.user!!.tieneMensajesSinLeer()) {
                     vm.filtrarMensajesNoleidos()
                     vm.cambiarBotonNav(2)
                     navController.navigate(Pantallas.menuMensajes.name)
@@ -138,7 +139,7 @@ fun BarraSuperiorPerfil2(navController: NavHostController, vm: AppViewModel, est
                 Icon(
                     imageVector = Icons.Filled.Notifications,
                     contentDescription = "notificacion",
-                    tint = if (estado.usuario!!.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
+                    tint = if (estado.user!!.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
                 )
             }
             //Spacer(modifier = Modifier.width(12.dp))
@@ -156,7 +157,7 @@ fun BarraSuperiorPerfil2(navController: NavHostController, vm: AppViewModel, est
                 onDismissRequest = { mostrarMenu = false },
                 modifier = Modifier.background(BlancoFondo)
             ) {
-                if (estado.usuario!!.rol == Rol.OFERTANTE || estado.usuario.rol == Rol.ADMINISTRADOR) {
+                if (estado.user!!.role == Role.PROVIDER || estado.user.role == Role.ADMIN) {
                     DropdownMenuItem(
                         text = {
                             Row(
@@ -220,7 +221,7 @@ fun ContenidoUsuario2(
     navController: NavHostController,
     vm: AppViewModel,
     estado: UiState,
-    setBorrarAnuncio: (Anuncio) -> Unit
+    setBorrarAnuncio: (Advertisement) -> Unit
 ) {
     var verPerfil by rememberSaveable { mutableStateOf(false) }
     Scaffold(
@@ -296,7 +297,7 @@ fun ContenidoUsuario2(
                                 )
                             }
                         }
-                        items(estado.usuario!!.anunciosPublicados) { anuncio ->
+                        items(estado.user!!.advertisements) { anuncio ->
                             MiniaturaAnuncio2(
                                 anuncio,
                                 navController,
@@ -305,7 +306,7 @@ fun ContenidoUsuario2(
                             )
                         }
 
-                        if (estado.usuario.anunciosPublicados.size == 0) {
+                        if (estado.user.advertisements.size == 0) {
                             item {
                                 Text(
                                     text = "No ha publicado ningún anuncio todavía",
@@ -378,7 +379,7 @@ fun PanelPerfil2(navController: NavHostController, vm: AppViewModel, estado: UiS
         }
     }
     LazyRow {
-        items(estado.usuario!!.actividadesReservadas) { a ->
+        items(estado.user!!.activitiesReserved) { a ->
             MiniaturaScrollLateral(
                 a,
                 vm,
@@ -387,7 +388,7 @@ fun PanelPerfil2(navController: NavHostController, vm: AppViewModel, estado: UiS
                 true
             )
         }
-        if (estado.usuario!!.actividadesReservadas.size == 0) {
+        if (estado.user!!.activitiesReserved.size == 0) {
             item {
                 Text(
                     text = "No ha reservado ninguna actividad",
@@ -423,7 +424,7 @@ fun PanelPerfil2(navController: NavHostController, vm: AppViewModel, estado: UiS
         }
     }
     LazyRow {
-        items(estado.usuario!!.actividadesFav) { a ->
+        items(estado.user!!.activitiesFav) { a ->
             MiniaturaScrollLateral(
                 a,
                 vm,
@@ -432,7 +433,7 @@ fun PanelPerfil2(navController: NavHostController, vm: AppViewModel, estado: UiS
                 true
             )
         }
-        if (estado.usuario!!.actividadesFav.size == 0) {
+        if (estado.user!!.activitiesFav.size == 0) {
             item {
                 Text(
                     text = "No ha marcado ninguna actividad como favorita",
@@ -456,8 +457,8 @@ fun DatosPerfil2(estado: UiState) {
     ) {
         Card(shape = CircleShape) {
             Image(
-                painter = painterResource(id = estado.usuario!!.foto),
-                contentDescription = estado.usuario!!.nombre,
+                painter = painterResource(id = R.drawable.noimagen),
+                contentDescription = estado.user!!.name,
                 modifier = Modifier.fillMaxHeight(),
                 contentScale = ContentScale.Crop
             )
@@ -469,7 +470,7 @@ fun DatosPerfil2(estado: UiState) {
                 .padding(8.dp)
         ) {
             Text(
-                text = estado.usuario!!.nombreCompleto(),
+                text = estado.user!!.fullName(),
                 fontSize = 18.sp
             )
         }
@@ -480,10 +481,10 @@ fun DatosPerfil2(estado: UiState) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MiniaturaAnuncio2(
-    anuncio: Anuncio,
+    advertisement: Advertisement,
     navController: NavHostController,
     vm: AppViewModel,
-    setBorrarAnuncio: (Anuncio) -> Unit
+    setBorrarAnuncio: (Advertisement) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -494,7 +495,7 @@ fun MiniaturaAnuncio2(
         Card(
             onClick = {
                 vm.ocultarPanelNavegacion()
-                vm.selectAnuncio(anuncio)
+                vm.selectAnuncio(advertisement)
                 navController.navigate(Pantallas.vistaAnuncio.name)
             },
             shape = RectangleShape
@@ -508,11 +509,11 @@ fun MiniaturaAnuncio2(
                     .background(BlancoFondo)
                     .padding(8.dp)
             ) {
-                Text(text = anuncio.titulo)
+                Text(text = advertisement.title)
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = anuncio.fecha.mostrarFecha(), fontSize = 12.sp)
+                    Text(text = advertisement.creationDate.toString(), fontSize = 12.sp)
                     IconButton(onClick = {
-                        setBorrarAnuncio(anuncio)
+                        setBorrarAnuncio(advertisement)
                     }) {
                         Icon(
                             imageVector = Icons.Filled.Delete,
@@ -539,7 +540,7 @@ fun PerfilPreview2() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
     val estado by vm.uiState.collectAsState()
-    val setBorrarAnuncio: (Anuncio) -> Unit = {  }
+    val setBorrarAnuncio: (Advertisement) -> Unit = {  }
     Scaffold(
         topBar = {
             BarraSuperiorPerfil2(

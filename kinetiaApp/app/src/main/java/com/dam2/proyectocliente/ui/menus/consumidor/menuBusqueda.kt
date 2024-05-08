@@ -57,11 +57,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.controlador.AppViewModel
-import com.dam2.proyectocliente.controlador.UiState
-import com.dam2.proyectocliente.model.Actividad
+import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.ui.UiState
+import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.ui.PanelNavegacion
 import com.dam2.proyectocliente.ui.Pantallas
+import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaFondo
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
@@ -203,7 +204,7 @@ fun ContenidoBusqueda(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MiniaturaActividadBusqueda(
-    a: Actividad,
+    a: Activity,
     vm: AppViewModel,
     navController: NavHostController,
     estado: UiState
@@ -225,8 +226,8 @@ fun MiniaturaActividadBusqueda(
                 navController.navigate(Pantallas.vistaActividad.name)
             }) {
             Image(
-                painter = painterResource(id = a.imagen),
-                contentDescription = a.titulo,
+                painter = painterResource(R.drawable.noimagen),
+                contentDescription = a.title,
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(3f / 2f),
@@ -249,13 +250,13 @@ fun MiniaturaActividadBusqueda(
 
                 Column(modifier = Modifier) {
                     Text(
-                        text = a.titulo,
+                        text = a.title,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                         fontWeight = FontWeight.Bold,
 
                         )
-                    Text(text = a.ubicacion, fontSize = pequena)
+                    Text(text = a.location, fontSize = pequena)
                 }
 
                 Column(

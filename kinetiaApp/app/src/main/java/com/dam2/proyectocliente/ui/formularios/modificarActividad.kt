@@ -50,13 +50,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.controlador.AppViewModel
-import com.dam2.proyectocliente.controlador.DatosPrueba
-import com.dam2.proyectocliente.controlador.UiState
-import com.dam2.proyectocliente.controlador.texfieldVacio
-import com.dam2.proyectocliente.controlador.validarFechaActividad
-import com.dam2.proyectocliente.model.Actividad
-import com.dam2.proyectocliente.model.Categoria
+import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.ui.UiState
+import com.dam2.proyectocliente.utils.texfieldVacio
+import com.dam2.proyectocliente.utils.validarFechaActividad
+import com.dam2.proyectocliente.models.Activity
+import com.dam2.proyectocliente.models.Category
 import com.dam2.proyectocliente.ui.recursos.DialogoInfo
 import com.dam2.proyectocliente.ui.recursos.TextFieldConCabecera
 import com.dam2.proyectocliente.ui.recursos.TextFieldIntroducirNumero
@@ -73,11 +72,11 @@ fun ModificarActividad(
     navController: NavHostController,
     vm: AppViewModel,
     estado: UiState,
-    actividad: Actividad
+    activity: Activity
 ) {
 
-    val categorias: ArrayList<Categoria> =
-        ArrayList(Categoria.values().filter { it != Categoria.TODO })
+    val categories: ArrayList<Category> =
+        ArrayList(Category.values().filter { it != Category.TODO })
     val listaHoras = arrayListOf<String>(
         "00",
         "01",
@@ -105,18 +104,18 @@ fun ModificarActividad(
     )
     val listaMinutos = arrayListOf<String>("00", "15", "30", "45")
 
-    var titulo by rememberSaveable { mutableStateOf(actividad.titulo) }
-    var precioT by rememberSaveable { mutableStateOf(actividad.precio.toString()) }
-    var ubicacion by rememberSaveable { mutableStateOf(actividad.ubicacion) }
-    var categoria by rememberSaveable { mutableStateOf<Categoria?>(actividad.categoria) }
-    var destacado by rememberSaveable { mutableStateOf(actividad.destacado) }
-    var contenido by rememberSaveable { mutableStateOf(actividad.contenido) }
-    var diaT by rememberSaveable { mutableStateOf(actividad.fecha.diaString()) }
-    var mesT by rememberSaveable { mutableStateOf(actividad.fecha.mesString()) }
-    var anioT by rememberSaveable { mutableStateOf(actividad.fecha.anioString()) }
-    var horaT by rememberSaveable { mutableStateOf(actividad.fecha.horaString()) }
-    var minutosT by rememberSaveable { mutableStateOf(actividad.fecha.minutosString())}
-    var nPlazasT by rememberSaveable { mutableStateOf(actividad.plazas.toString()) }
+    var titulo by rememberSaveable { mutableStateOf(activity.title) }
+    var precioT by rememberSaveable { mutableStateOf(activity.price.toString()) }
+    var ubicacion by rememberSaveable { mutableStateOf(activity.location) }
+    var category by rememberSaveable { mutableStateOf<Category?>(activity.category) }
+    var destacado by rememberSaveable { mutableStateOf(activity.featured) }
+    var contenido by rememberSaveable { mutableStateOf(activity.description) }
+    var diaT by rememberSaveable { mutableStateOf(activity.date.dayOfMonth.toString()) }
+    var mesT by rememberSaveable { mutableStateOf(activity.date.monthValue.toString()) }
+    var anioT by rememberSaveable { mutableStateOf(activity.date.year.toString()) }
+    var horaT by rememberSaveable { mutableStateOf(activity.date.hour.toString()) }
+    var minutosT by rememberSaveable { mutableStateOf(activity.date.minute.toString())}
+    var nPlazasT by rememberSaveable { mutableStateOf(activity.vacancies.toString()) }
 
     var error by rememberSaveable { mutableStateOf("") }
     val setError: (String) -> Unit = { e -> error = e }
@@ -125,8 +124,8 @@ fun ModificarActividad(
         topBar = { BarraSuperiorModActividad(navController, vm) },
         bottomBar = {
             BarraInferiorModActividad(
-                vm, estado, titulo, precioT, ubicacion, categoria, destacado,
-                contenido, diaT, mesT, anioT, horaT, minutosT, nPlazasT, setError, actividad,
+                vm, estado, titulo, precioT, ubicacion, category, destacado,
+                contenido, diaT, mesT, anioT, horaT, minutosT, nPlazasT, setError, activity,
                 navController
             )
         }
@@ -147,7 +146,7 @@ fun ModificarActividad(
                         .fillMaxWidth()
                 ) {
                     Image(
-                        painter = painterResource(actividad.imagen),
+                        painter = painterResource(R.drawable.noimagen),
                         contentDescription = "imagen",
                         modifier = Modifier
                             .fillMaxWidth()
@@ -188,9 +187,9 @@ fun ModificarActividad(
 
                 Text(text = "Categoria", color = NegroClaro, fontSize = 16.sp)
                 ComboBoxCategoria(
-                    options = categorias,
-                    onOptionChosen = { categoria = it },
-                    selectedOption = categoria,
+                    options = categories,
+                    onOptionChosen = { category = it },
+                    selectedOption = category,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(20.dp))
@@ -396,7 +395,7 @@ fun BarraInferiorModActividad(
     titulo: String,
     precioT: String,
     ubicacion: String,
-    categoria: Categoria?,
+    category: Category?,
     destacado: Boolean,
     contenido: String,
     diaT: String,
@@ -406,7 +405,7 @@ fun BarraInferiorModActividad(
     minutosT: String,
     nPlazasT: String,
     setError: (String) -> Unit,
-    actividad: Actividad,
+    activity: Activity,
     navController: NavHostController
 ) {
 
@@ -415,7 +414,7 @@ fun BarraInferiorModActividad(
     var anio = anioT.toIntOrNull() ?: 0
 
     val campos = arrayListOf<String>(
-        titulo, precioT, ubicacion, categoria?.toString() ?: "", diaT, mesT, anioT, horaT,
+        titulo, precioT, ubicacion, category?.toString() ?: "", diaT, mesT, anioT, horaT,
         minutosT, contenido, nPlazasT
     )
 
@@ -440,7 +439,7 @@ fun BarraInferiorModActividad(
                 else if (nPlazasT.toIntOrNull() == null){
                     setError("plazasNoInt")
                 }else{
-                    vm.modificarActividad(campos, actividad, destacado)
+                    vm.modificarActividad(campos, activity, destacado)
                     navController.navigateUp()
                 }
 
@@ -458,7 +457,7 @@ fun ModificarActividadPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
     val estado by vm.uiState.collectAsState()
-    ModificarActividad(navController, vm, estado,
-        DatosPrueba.actividades[0]
-        )
+//    ModificarActividad(navController, vm, estado,
+////        DatosPrueba.actividades[0]
+//        )
 }

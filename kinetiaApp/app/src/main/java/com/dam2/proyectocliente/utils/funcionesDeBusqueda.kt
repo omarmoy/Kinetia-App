@@ -1,8 +1,8 @@
-package com.dam2.proyectocliente.controlador
+package com.dam2.proyectocliente.utils
 
-import com.dam2.proyectocliente.model.Actividad
-import com.dam2.proyectocliente.model.Anuncio
-import com.dam2.proyectocliente.model.Contacto
+import com.dam2.proyectocliente.models.Activity
+import com.dam2.proyectocliente.models.Advertisement
+import com.dam2.proyectocliente.models.Chat
 
 
 fun umbral(): Int {
@@ -10,18 +10,18 @@ fun umbral(): Int {
 }
 
 fun buscarActividad(
-    actividades: ArrayList<Actividad>,
+    actividades: ArrayList<Activity>,
     cadenaABuscar: String,
     umbral: Int = umbral()
-): ArrayList<Actividad> {
-    val lista = mutableListOf<Pair<Actividad, Int>>()
+): ArrayList<Activity> {
+    val lista = mutableListOf<Pair<Activity, Int>>()
     for (actividad in actividades) {
-        val distancia = calcularDistanciaLevenshtein(actividad.titulo, cadenaABuscar)
+        val distancia = calcularDistanciaLevenshtein(actividad.title, cadenaABuscar)
         if (distancia <= umbral)
             lista.add(actividad to distancia)
     }
     val listaOrdenada = lista.sortedBy { it.second }
-    val resultado = ArrayList<Actividad>()
+    val resultado = ArrayList<Activity>()
     for ((actividad, _) in listaOrdenada) {
         resultado.add(actividad)
     }
@@ -29,27 +29,27 @@ fun buscarActividad(
 }
 
 fun buscarAnuncio(
-    anuncios: ArrayList<Anuncio>,
+    advertisements: ArrayList<Advertisement>,
     cadenaABuscar: String,
     umbral: Int = umbral()
-): ArrayList<Anuncio> {
+): ArrayList<Advertisement> {
     //TODO
     return ArrayList()
 }
 
 fun buscarContacto(
-    contactos: ArrayList<Contacto>,
+    chats: ArrayList<Chat>,
     cadenaABuscar: String,
     umbral: Int = umbral()
-): ArrayList<Contacto> {
-    val lista = mutableListOf<Pair<Contacto, Int>>()
-    for (contacto in contactos) {
-        val distancia = calcularDistanciaLevenshtein(contacto.nombre, cadenaABuscar)
+): ArrayList<Chat> {
+    val lista = mutableListOf<Pair<Chat, Int>>()
+    for (contacto in chats) {
+        val distancia = calcularDistanciaLevenshtein(contacto.contactName, cadenaABuscar)
         if (distancia <= umbral)
             lista.add(contacto to distancia)
     }
     val listaOrdenada = lista.sortedBy { it.second }
-    val resultado = ArrayList<Contacto>()
+    val resultado = ArrayList<Chat>()
     for ((contacto, _) in listaOrdenada) {
         resultado.add(contacto)
     }

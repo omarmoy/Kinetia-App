@@ -46,14 +46,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.controlador.AppViewModel
-import com.dam2.proyectocliente.controlador.UiState
-import com.dam2.proyectocliente.model.Rol
+import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.ui.UiState
+import com.dam2.proyectocliente.models.Role
 import com.dam2.proyectocliente.ui.Pantallas
 import com.dam2.proyectocliente.ui.recursos.DialogoInfo
-import com.dam2.proyectocliente.controlador.emailValido
-import com.dam2.proyectocliente.controlador.passwdIguales
-import com.dam2.proyectocliente.controlador.texfieldVacio
+import com.dam2.proyectocliente.utils.emailValido
+import com.dam2.proyectocliente.utils.passwdIguales
+import com.dam2.proyectocliente.utils.texfieldVacio
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.AzulAguaFondo
@@ -102,7 +102,7 @@ fun NuevoUsuario(navController: NavHostController, vm: AppViewModel, estado: UiS
                     } else {
                         vm.addCampoFormularioRegistro("mail", mail)
                         vm.addCampoFormularioRegistro("password", password)
-                        if (estado.esEmpresa && estado.formularioRegistro["rol"] == Rol.OFERTANTE.toString())
+                        if (estado.esEmpresa && estado.formularioRegistro["rol"] == Role.PROVIDER.toString())
                             navController.navigate(Pantallas.nuevaEmpresaDatos.name)
                         else
                             navController.navigate(Pantallas.nuevoUsuarioDatos.name)

@@ -2,8 +2,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.sp
-import com.dam2.proyectocliente.model.Categoria
+import com.dam2.proyectocliente.models.Category
 import com.example.proyectocliente.ui.theme.AzulAguaFondo
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,10 +60,10 @@ fun ComboBox(
 @Composable
 fun ComboBoxCategoria(
     labelText: String = "",
-    options: ArrayList<Categoria>, //= arrayListOf(Categoria.Experiencias, Categoria.Ocio),
-    onOptionChosen: (Categoria) -> Unit,
+    options: ArrayList<Category>, //= arrayListOf(Categoria.Experiencias, Categoria.Ocio),
+    onOptionChosen: (Category) -> Unit,
     modifier: Modifier = Modifier,
-    selectedOption: Categoria? = null,
+    selectedOption: Category? = null,
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedCategoria by remember { mutableStateOf(selectedOption) }

@@ -37,7 +37,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -47,10 +46,11 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.controlador.AppViewModel
-import com.dam2.proyectocliente.controlador.DatosPrueba
-import com.dam2.proyectocliente.model.Anuncio
+import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.models.Advertisement
+import com.dam2.proyectocliente.utils.mostrarFecha
 import com.dam2.proyectocliente.ui.Pantallas
+import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
 import com.example.proyectocliente.ui.theme.AzulAguaFondo2
@@ -58,12 +58,14 @@ import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
 import com.example.proyectocliente.ui.theme.pequena
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VistaAnuncio(
     navController: NavHostController,
-    anuncio: Anuncio,
+    advertisement: Advertisement,
     vm: AppViewModel,
     vistaPrevia: Boolean = false
 ) {
@@ -73,12 +75,12 @@ fun VistaAnuncio(
             if (vistaPrevia)
                 BarraSuperiorAnuncioVP()
             else
-                BarraSuperiorAnuncio(navController, anuncio, vm)
+                BarraSuperiorAnuncio(navController, advertisement, vm)
         },
-        content = { innerPadding -> ContenidoAnuncio(innerPadding, anuncio) },
+        content = { innerPadding -> ContenidoAnuncio(innerPadding, advertisement) },
         bottomBar = {
-            if (anuncio.anuncianteID != vm.usuario()!!.id)
-                BotonContactar(navController, anuncio, vm)
+            if (advertisement.userId != vm.usuario()!!.id)
+                BotonContactar(navController, advertisement, vm)
             if (vistaPrevia)
                 BarraInferiorAnuncioVP(navController, vm)
         }
@@ -114,7 +116,7 @@ fun BarraSuperiorAnuncioVP() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BarraSuperiorAnuncio(
-    navController: NavHostController, anuncio: Anuncio, vm: AppViewModel
+    navController: NavHostController, advertisement: Advertisement, vm: AppViewModel
 ) {
     TopAppBar(
         title = { },
@@ -131,9 +133,9 @@ fun BarraSuperiorAnuncio(
             }
         },
         actions = {
-            if (anuncio.anuncianteID == vm.usuario()!!.id) {
+            if (advertisement.userId == vm.usuario()!!.id) {
                 IconButton(onClick = {
-                    vm.selectModAnuncio(anuncio)
+                    vm.selectModAnuncio(advertisement)
                     navController.navigate(Pantallas.modificarAnuncio.name)
                 }) {
                     Icon(
@@ -150,7 +152,7 @@ fun BarraSuperiorAnuncio(
 }
 
 @Composable
-fun ContenidoAnuncio(innerPadding: PaddingValues, anuncio: Anuncio) {
+fun ContenidoAnuncio(innerPadding: PaddingValues, advertisement: Advertisement) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -167,18 +169,18 @@ fun ContenidoAnuncio(innerPadding: PaddingValues, anuncio: Anuncio) {
 //                .padding(top = 12.dp)
         ) {
             Image(
-                painter = painterResource(id = anuncio.fotoAnunciante),
-                contentDescription = anuncio.titulo,
+                painter = painterResource(id = R.drawable.nofoto),
+                contentDescription = advertisement.title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = anuncio.anunciante, color = AzulAguaClaro, fontSize = 16.sp)
+        Text(text = advertisement.userName, color = AzulAguaClaro, fontSize = 16.sp)
 
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = anuncio.titulo, color = AzulAguaOscuro, fontWeight = FontWeight.Bold,
+            text = advertisement.title, color = AzulAguaOscuro, fontWeight = FontWeight.Bold,
             fontSize = 28.sp
         )
 
@@ -190,10 +192,19 @@ fun ContenidoAnuncio(innerPadding: PaddingValues, anuncio: Anuncio) {
                 .padding(12.dp)
         ) {
 
-            Text(text = "Ubicacion: " + anuncio.localidad, color = AzulAguaClaro, fontSize = 16.sp)
+            Text(
+                text = "Ubicacion: " + advertisement.location,
+                color = AzulAguaClaro,
+                fontSize = 16.sp
+            )
 
             Text(
-                text = "Publicado " + anuncio.fecha.mostrarFecha(),
+                text = "Publicado " + mostrarFecha(
+                    LocalDateTime.ofInstant(
+                        advertisement.creationDate,
+                        ZoneId.systemDefault()
+                    )
+                ),
                 color = AzulAguaClaro,
                 fontSize = 16.sp
             )
@@ -206,10 +217,7 @@ fun ContenidoAnuncio(innerPadding: PaddingValues, anuncio: Anuncio) {
         ) {
 
             Text(
-                text = if (anuncio.contenido == "")  //TODO quitar stringResource()
-                    stringResource(id = anuncio.contenidoInt)
-                else
-                    anuncio.contenido,
+                text = advertisement.description,
                 textAlign = TextAlign.Justify,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -225,7 +233,11 @@ fun ContenidoAnuncio(innerPadding: PaddingValues, anuncio: Anuncio) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BotonContactar(navController: NavHostController, anuncio: Anuncio, vm: AppViewModel) {
+fun BotonContactar(
+    navController: NavHostController,
+    advertisement: Advertisement,
+    vm: AppViewModel
+) {
     Box(
         modifier = Modifier
             .background(Gris2)
@@ -317,6 +329,6 @@ fun BarraInferiorAnuncioVP(
 fun VistaAnuncioPreview() {
     val vm: AppViewModel = viewModel()
     val navController = rememberNavController()
-    val a = DatosPrueba.anuncios[0]
-    VistaAnuncio(navController, a, vm)
+//    val a = DatosPrueba.anuncios[0]
+//    VistaAnuncio(navController, a, vm)
 }

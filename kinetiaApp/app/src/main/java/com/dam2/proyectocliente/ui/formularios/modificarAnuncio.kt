@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,7 +26,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -36,14 +34,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.controlador.AppViewModel
-import com.dam2.proyectocliente.controlador.DatosPrueba
-import com.dam2.proyectocliente.controlador.UiState
-import com.dam2.proyectocliente.controlador.texfieldVacio
-import com.dam2.proyectocliente.model.Anuncio
+import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.ui.UiState
+import com.dam2.proyectocliente.utils.texfieldVacio
+import com.dam2.proyectocliente.models.Advertisement
 import com.dam2.proyectocliente.ui.recursos.DialogoInfo
 import com.dam2.proyectocliente.ui.recursos.TextFieldConCabecera
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
@@ -55,12 +50,12 @@ import com.example.proyectocliente.ui.theme.Gris2
 fun ModificarAnuncio(
     navController: NavHostController,
     vm: AppViewModel, estado: UiState,
-    anuncio: Anuncio
+    advertisement: Advertisement
 ) {
 
-    var titulo by rememberSaveable { mutableStateOf(anuncio.titulo) }
-    var ubicacion by rememberSaveable { mutableStateOf(anuncio.localidad) }
-    var contenido by rememberSaveable { mutableStateOf(anuncio.contenido) }
+    var titulo by rememberSaveable { mutableStateOf(advertisement.title) }
+    var ubicacion by rememberSaveable { mutableStateOf(advertisement.location) }
+    var contenido by rememberSaveable { mutableStateOf(advertisement.description) }
 
     var error by rememberSaveable { mutableStateOf(false) }
     val setError: (Boolean) -> Unit = { e -> error = e }
@@ -69,7 +64,7 @@ fun ModificarAnuncio(
         topBar = { BarraSuperiorModAnuncio(navController, vm) },
         bottomBar = {
             BarraInferiorModAnuncio(
-                vm, navController, titulo, ubicacion, contenido, setError, anuncio
+                vm, navController, titulo, ubicacion, contenido, setError, advertisement
             )
         }
 
@@ -163,7 +158,7 @@ fun BarraInferiorModAnuncio(
     ubicacion: String,
     contenido: String,
     setError: (Boolean) -> Unit,
-    anuncio: Anuncio,
+    advertisement: Advertisement,
 ) {
 
     val campos = arrayListOf<String>(titulo, ubicacion, contenido)
@@ -183,7 +178,7 @@ fun BarraInferiorModAnuncio(
                 if (texfieldVacio(campos))
                     setError(true)
                 else {
-                    vm.modAnuncio(titulo, ubicacion, contenido, anuncio)
+                    vm.modAnuncio(titulo, ubicacion, contenido, advertisement)
                     navController.navigateUp()
                 }
 
@@ -198,9 +193,9 @@ fun BarraInferiorModAnuncio(
 @Preview(showBackground = true)
 @Composable
 fun ModificarAnuncioPreview() {
-    val navController = rememberNavController()
-    val vm: AppViewModel = viewModel()
-    val estado by vm.uiState.collectAsState()
-    val anuncio = DatosPrueba.anuncios[0]
-    ModificarAnuncio(navController, vm, estado, anuncio)
+//    val navController = rememberNavController()
+//    val vm: AppViewModel = viewModel()
+//    val estado by vm.uiState.collectAsState()
+//    val anuncio = DatosPrueba.anuncios[0]
+//    ModificarAnuncio(navController, vm, estado, anuncio)
 }

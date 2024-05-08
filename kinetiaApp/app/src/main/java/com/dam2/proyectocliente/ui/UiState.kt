@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 
 data class UiState(
 
-    val user: User? = Moker.user,  //TODO: quitar
+    val user: User? = null,
 
     //Formulario inscripción
     val formularioRegistro: MutableMap<String, String> = mutableMapOf(
@@ -47,9 +47,23 @@ data class UiState(
     var modActivity: Activity? = null,
 
     //Datos IU
-    val actividades: ArrayList<Activity> = arrayListOf(),
+    val activities: ArrayList<Activity> = arrayListOf(),
     val advertisements: ArrayList<Advertisement> = arrayListOf(),
-    val categories: ArrayList<Category> = arrayListOf(),
+    val categories: ArrayList<Category> = arrayListOf(
+        Category.TODO,
+        Category.AIRE_LIBRE,
+        Category.ARTE,
+        Category.AVENTURA,
+        Category.BARES,
+        Category.CURSOS_Y_TALLERES,
+        Category.DEPORTE,
+        Category.EXPERIENCIAS,
+        Category.GASTRONOMIA,
+        Category.MUSICA,
+        Category.OCIO,
+        Category.OFERTAS,
+        Category.SALUD_Y_BIENESTAR
+    ),
     val indiceCategoria: Int = 0,
 
     //Variables de Estado IU

@@ -10,6 +10,7 @@ import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.models.Advertisement
 import com.dam2.proyectocliente.models.Category
 import com.dam2.proyectocliente.models.Chat
+import com.dam2.proyectocliente.models.Role
 import com.dam2.proyectocliente.models.User
 import com.dam2.proyectocliente.network.request.Login
 import com.dam2.proyectocliente.ui.UiState
@@ -17,8 +18,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import java.io.IOException
 import java.time.LocalDateTime
 
 
@@ -42,19 +41,32 @@ class AppViewModel : ViewModel() {
             userUiState = try {
                 val userRepository = UserRepository()
                 val user = userRepository.login(Login(email, password))
+                if (user != null && user.role == Role.CONSUMER)
+                    setAdvertisement(userRepository.getAdvertisements())
+                setActivities(userRepository.getActivities())
                 setUser(user)
                 UserUiState.Success(user)
-            } catch (e: IOException) {
-                UserUiState.Error
-            } catch (e: HttpException) {
+            } catch (e: Exception) {
                 UserUiState.Error
             }
         }
     }
 
-    fun setUser(user: User?){
+    fun setUser(user: User?) {
         _uiState.update { e ->
             e.copy(user = user)
+        }
+    }
+
+    fun setActivities(activities: ArrayList<Activity>) {
+        _uiState.update { e ->
+            e.copy(activities = activities)
+        }
+    }
+
+    fun setAdvertisement(advertisements: ArrayList<Advertisement>) {
+        _uiState.update { e ->
+            e.copy(advertisements = advertisements)
         }
     }
 
@@ -91,12 +103,12 @@ class AppViewModel : ViewModel() {
     ACTIVIDADES
      */
     fun actividadesDestacadas(): ArrayList<Activity> {
-        val listaFiltrada = _uiState.value.actividades.filter { it.featured }
+        val listaFiltrada = _uiState.value.activities.filter { it.featured }
         return ArrayList(listaFiltrada)
     }
 
     fun actividadesRecientes(): ArrayList<Activity> {
-        val ordenadas = _uiState.value.actividades.sortedByDescending { it.date }
+        val ordenadas = _uiState.value.activities.sortedByDescending { it.date }
         val recientes = ArrayList<Activity>()
 
         for (i in 0 until minOf(ordenadas.size, 5)) {
@@ -117,6 +129,8 @@ class AppViewModel : ViewModel() {
     fun setIndiceCategoria(c: Category? = null) {
         val indice =
             if (c != null) {
+                println("indice: "+uiState.value.categories.indexOf(c))
+                println(c)
                 uiState.value.categories.indexOf(c)
             } else {
                 0
@@ -129,7 +143,7 @@ class AppViewModel : ViewModel() {
         val listaActividades = if (uiState.value.actividadBuscar != "") {
             resultadoBusquedaActividad()
         } else {
-            uiState.value.actividades
+            uiState.value.activities
         }
 
         return if (uiState.value.categorySelecciononada == Category.TODO)
@@ -145,7 +159,7 @@ class AppViewModel : ViewModel() {
     }
 
     fun resultadoBusquedaActividad(tituloBuscar: String = uiState.value.actividadBuscar): ArrayList<Activity> {
-        return buscarActividad(uiState.value.actividades, tituloBuscar)
+        return buscarActividad(uiState.value.activities, tituloBuscar)
     }
 
     //actividades de usuario

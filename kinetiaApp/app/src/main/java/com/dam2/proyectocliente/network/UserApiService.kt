@@ -1,6 +1,7 @@
 package com.dam2.proyectocliente.network
 
 import com.dam2.proyectocliente.models.Activity
+import com.dam2.proyectocliente.models.Advertisement
 import com.dam2.proyectocliente.models.User
 import com.dam2.proyectocliente.network.request.Login
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -25,6 +26,9 @@ interface UserApiService {
 
     @GET("/activities")
     suspend fun getActivities(): ArrayList<Activity>
+
+    @GET("/advertisements")
+    suspend fun getAdvertisements(): ArrayList<Advertisement>
 
 }
 

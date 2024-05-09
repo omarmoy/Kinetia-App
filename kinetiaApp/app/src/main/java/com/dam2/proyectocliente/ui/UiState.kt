@@ -11,6 +11,7 @@ import java.time.LocalDateTime
 
 data class UiState(
 
+//    val user: User? = Moker.user, //TODO cambiar por null
     val user: User? = null,
 
     //Formulario inscripción

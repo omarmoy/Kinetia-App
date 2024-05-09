@@ -36,7 +36,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.utils.AppViewModel
 import com.dam2.proyectocliente.models.Role
-import com.dam2.proyectocliente.ui.Pantallas
+import com.dam2.proyectocliente.models.Pantallas
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.AzulAgua

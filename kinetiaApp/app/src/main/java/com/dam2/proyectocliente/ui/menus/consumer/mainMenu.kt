@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.menus.consumidor
+package com.dam2.proyectocliente.ui.menus.consumer
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -60,8 +60,8 @@ import com.dam2.proyectocliente.utils.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.models.Category
-import com.dam2.proyectocliente.ui.PanelNavegacion
-import com.dam2.proyectocliente.ui.Pantallas
+import com.dam2.proyectocliente.PanelNavegacion
+import com.dam2.proyectocliente.models.Pantallas
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAgua
@@ -75,13 +75,13 @@ import com.example.proyectocliente.ui.theme.subtitulo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuPrincipal(navController: NavHostController, vm: AppViewModel, estado: UiState) {
+fun MainMenu(navController: NavHostController, vm: AppViewModel, uiState: UiState) {
     Scaffold(
         topBar = {
-            BarraSuperiorMPrincipal(navController, vm, estado)
+            BarraSuperiorMPrincipal(navController, vm, uiState)
         },
         content = { innerPadding ->
-            ContenidoInicio(innerPadding, vm, estado, navController)
+            ContenidoInicio(innerPadding, vm, uiState, navController)
         }
     )
 }
@@ -92,7 +92,7 @@ fun MenuPrincipal(navController: NavHostController, vm: AppViewModel, estado: Ui
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorMPrincipal(navController: NavHostController, vm: AppViewModel, estado: UiState) {
+fun BarraSuperiorMPrincipal(navController: NavHostController, vm: AppViewModel, uiState: UiState) {
     TopAppBar(
         colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = BlancoFondo),
         title = {
@@ -106,7 +106,7 @@ fun BarraSuperiorMPrincipal(navController: NavHostController, vm: AppViewModel, 
         actions = {
 
             IconButton(onClick = {
-                if (estado.user!!.tieneMensajesSinLeer()) {
+                if (uiState.user!!.tieneMensajesSinLeer()) {
                     vm.filtrarMensajesNoleidos()
                     vm.cambiarBotonNav(2)
                     navController.navigate(Pantallas.menuMensajes.name)
@@ -117,7 +117,7 @@ fun BarraSuperiorMPrincipal(navController: NavHostController, vm: AppViewModel, 
                 Icon(
                     imageVector = Icons.Filled.Notifications,
                     contentDescription = "notificacion",
-                    tint = if (estado.user!!.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
+                    tint = if (uiState.user!!.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
                 )
             }
             //Spacer(modifier = Modifier.width(12.dp))
@@ -143,7 +143,7 @@ fun BarraSuperiorMPrincipal(navController: NavHostController, vm: AppViewModel, 
  */
 @Composable
 fun ContenidoInicio(
-    innerPadding: PaddingValues, vm: AppViewModel, estado: UiState, navController: NavHostController
+    innerPadding: PaddingValues, vm: AppViewModel, uiState: UiState, navController: NavHostController
 ) {
     Column(
         modifier = Modifier
@@ -160,13 +160,13 @@ fun ContenidoInicio(
                 Categorias(
                     navController,
                     vm,
-                    estado
+                    uiState
                 )
             }
             item(span = { GridItemSpan(2) }) {
                 DestacadosyRecientes(
                     vm,
-                    estado,
+                    uiState,
                     navController
                 )
             }
@@ -185,9 +185,9 @@ fun ContenidoInicio(
 fun Categorias(
     navController: NavHostController,
     vm: AppViewModel,
-    estado: UiState
+    uiState: UiState
 ) {
-    val estadoLista = rememberLazyListState()
+    val uiStateLista = rememberLazyListState()
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -197,12 +197,12 @@ fun Categorias(
             .padding(top = 12.dp)
     ) {
 
-        LazyRow(state = estadoLista) {
+        LazyRow(state = uiStateLista) {
             items(Category.values()) { categoria ->
-                if (!(categoria == Category.TODO && estado.botoneraNav[0])) {
+                if (!(categoria == Category.TODO && uiState.botoneraNav[0])) {
                     val colorBoton: Color
                     val colorTexto: Color
-                    if (categoria == estado.categorySelecciononada && !estado.botoneraNav[0]) {
+                    if (categoria == uiState.categorySelecciononada && !uiState.botoneraNav[0]) {
                         colorBoton = AmarilloPastel
                         colorTexto = NegroClaro
                     } else {
@@ -213,7 +213,7 @@ fun Categorias(
                     Button(
                         onClick = {
                             vm.selectCategoria(categoria)
-                            if (estado.botoneraNav[0]) {
+                            if (uiState.botoneraNav[0]) {
                                 vm.cambiarBotonNav(1)
                                 vm.setIndiceCategoria(categoria)
                                 navController.navigate(Pantallas.menuBuscar.name)
@@ -229,13 +229,13 @@ fun Categorias(
             }
         }
     }
-    LaunchedEffect(estado.indiceCategoria != 0) {
-        estadoLista.animateScrollToItem(index = estado.indiceCategoria)
+    LaunchedEffect(uiState.indiceCategoria != 0) {
+        uiStateLista.animateScrollToItem(index = uiState.indiceCategoria)
     }
 }
 
 @Composable
-fun DestacadosyRecientes(vm: AppViewModel, estado: UiState, navController: NavHostController) {
+fun DestacadosyRecientes(vm: AppViewModel, uiState: UiState, navController: NavHostController) {
     Column(modifier = Modifier.padding(start = 12.dp)) {
 
         Titulo(texto = "Destacado")
@@ -245,7 +245,7 @@ fun DestacadosyRecientes(vm: AppViewModel, estado: UiState, navController: NavHo
                     a,
                     vm,
                     navController,
-                    estado
+                    uiState
                 )
             }
         }
@@ -256,7 +256,7 @@ fun DestacadosyRecientes(vm: AppViewModel, estado: UiState, navController: NavHo
                     a,
                     vm,
                     navController,
-                    estado
+                    uiState
                 )
             }
         }
@@ -283,7 +283,7 @@ fun MiniaturaScrollLateral(
     a: Activity,
     vm: AppViewModel,
     navController: NavHostController,
-    estado: UiState,
+    uiState: UiState,
     mostrarMenos: Boolean = false
 ) {
     val tam = 230.dp
@@ -291,7 +291,7 @@ fun MiniaturaScrollLateral(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(end = 12.dp)
     ) {
-        // Define un estado mutable para actuar como un disparador de recomposición
+        // Define un uiState mutable para actuar como un disparador de recomposición
         val recomposeTrigger = remember { mutableIntStateOf(0) }
 
         // Función para refrescar manualmente la componible
@@ -351,14 +351,14 @@ fun MiniaturaScrollLateral(
                     ) {
 
                         IconButton(onClick = {
-                            if (estado.esFavorita(a))
+                            if (uiState.esFavorita(a))
                                 vm.eliminarFavorito(a)
                             else
                                 vm.addFavorito(a)
                             refreshComposable()
                         }) {
                             Icon(
-                                imageVector = if (estado.esFavorita(a)) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                                imageVector = if (uiState.esFavorita(a)) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                                 contentDescription = "Fav",
                                 tint = AzulAguaOscuro
                             )
@@ -436,27 +436,27 @@ fun MiniaturaActividad(a: Activity, vm: AppViewModel, navController: NavHostCont
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun MenuInicioPreview() {
+fun mainMenuProPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
-    val estado by vm.uiState.collectAsState()
+    val uiState by vm.uiState.collectAsState()
     Scaffold(
         topBar = {
             BarraSuperiorMPrincipal(
                 navController,
                 vm,
-                estado
+                uiState
             )
         },
         content = { innerPadding ->
             ContenidoInicio(
                 innerPadding,
                 vm,
-                estado,
+                uiState,
                 navController
             )
         },
         //llama a una función de AppPrincipal:
-        bottomBar = { PanelNavegacion(navController = navController, vm, estado) }
+        bottomBar = { PanelNavegacion(navController = navController, vm, uiState) }
     )
 }

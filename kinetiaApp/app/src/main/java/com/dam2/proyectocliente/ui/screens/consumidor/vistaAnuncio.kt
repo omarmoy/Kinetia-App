@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.vistas.consumidor
+package com.dam2.proyectocliente.ui.screens.consumidor
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -49,7 +49,7 @@ import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.utils.AppViewModel
 import com.dam2.proyectocliente.models.Advertisement
 import com.dam2.proyectocliente.utils.mostrarFecha
-import com.dam2.proyectocliente.ui.Pantallas
+import com.dam2.proyectocliente.models.Pantallas
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAguaClaro

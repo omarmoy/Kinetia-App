@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.menus.consumidor
+package com.dam2.proyectocliente.ui.menus.consumer
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -21,18 +21,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -65,9 +60,9 @@ import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.utils.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Advertisement
-import com.dam2.proyectocliente.models.Role
-import com.dam2.proyectocliente.ui.PanelNavegacion
-import com.dam2.proyectocliente.ui.Pantallas
+import com.dam2.proyectocliente.PanelNavegacion
+import com.dam2.proyectocliente.models.Pantallas
+import com.dam2.proyectocliente.ui.menus.DesplegableConfiguarion
 import com.dam2.proyectocliente.ui.recursos.DialogoInfo
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
@@ -81,21 +76,21 @@ import com.example.proyectocliente.ui.theme.pequena
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuUsuario2(navController: NavHostController, vm: AppViewModel, estado: UiState) {
+fun MenuUsuario(navController: NavHostController, vm: AppViewModel, estado: UiState) {
 
     var borrarAdvertisement by remember { mutableStateOf<Advertisement?>(null) }
     val setBorrarAnuncio: (Advertisement?) -> Unit = { anuncio -> borrarAdvertisement = anuncio }
 
     Scaffold(
         topBar = {
-            BarraSuperiorPerfil2(
+            BarraSuperiorPerfil(
                 navController = navController,
                 vm,
                 estado
             )
         },
         content = { innerPadding ->
-            ContenidoUsuario2(
+            ContenidoUsuario(
                 innerPadding,
                 navController,
                 vm,
@@ -105,10 +100,10 @@ fun MenuUsuario2(navController: NavHostController, vm: AppViewModel, estado: UiS
         }
     )
 
-    if (borrarAdvertisement!=null) {
+    if (borrarAdvertisement != null) {
         DialogoInfo(
-            onDismissRequest = {setBorrarAnuncio(null)},
-            onConfirmation = {vm.borrarAnuncio(borrarAdvertisement!!); setBorrarAnuncio(null)},
+            onDismissRequest = { setBorrarAnuncio(null) },
+            onConfirmation = { vm.borrarAnuncio(borrarAdvertisement!!); setBorrarAnuncio(null) },
             dialogTitle = borrarAdvertisement!!.title,
             dialogText = "¿Quieres borrar este anunco?",
             buttonConfirm = "Aceptar",
@@ -120,9 +115,10 @@ fun MenuUsuario2(navController: NavHostController, vm: AppViewModel, estado: UiS
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorPerfil2(navController: NavHostController, vm: AppViewModel, estado: UiState) {
+fun BarraSuperiorPerfil(navController: NavHostController, vm: AppViewModel, estado: UiState) {
 
     var mostrarMenu by remember { mutableStateOf(false) }
+    val setMostrarMenu: (Boolean) -> Unit = { value -> mostrarMenu = value }
     TopAppBar(
         colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = BlancoFondo),
         title = { /*sin título*/ },
@@ -152,63 +148,67 @@ fun BarraSuperiorPerfil2(navController: NavHostController, vm: AppViewModel, est
                     tint = AzulAguaOscuro
                 )
             }
-            DropdownMenu(
-                expanded = mostrarMenu,
-                onDismissRequest = { mostrarMenu = false },
-                modifier = Modifier.background(BlancoFondo)
-            ) {
-                if (estado.user!!.role == Role.PROVIDER || estado.user.role == Role.ADMIN) {
-                    DropdownMenuItem(
-                        text = {
-                            Row(
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                if (estado.modoPro)
-                                    Text(text = "Modo Ofertante")
-                                else
-                                    Text(text = "Modo Consumidor")
-                                Icon(
-                                    imageVector = Icons.Filled.Refresh,
-                                    contentDescription = "modo"
-                                )
-                            }
-                        },
-                        onClick = {
-                            /*TODO*/
-                            vm.cambiarModo()
-                        })
-                }
-                DropdownMenuItem(
-                    text = {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text(text = "Editar perfil")
-                            Icon(imageVector = Icons.Filled.AccountBox, contentDescription = "edit")
-                        }
-                    },
-                    onClick = {
-                        /*TODO*/
-                    })
-                DropdownMenuItem(
-                    text = {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text(text = "Cerrar sesión")
-                            Icon(imageVector = Icons.Filled.ExitToApp, contentDescription = "salir")
-                        }
-                    },
-                    onClick = {
-                        /*TODO*/
-                        vm.ocultarPanelNavegacion()
-                        vm.cambiarBotonNav(0)
-                        navController.navigate(Pantallas.inicio.name)
-                    })
-            }
+
+            DesplegableConfiguarion(navController, vm, estado, mostrarMenu) { mostrarMenu = false }
+
+
+//            DropdownMenu(
+//                expanded = mostrarMenu,
+//                onDismissRequest = { mostrarMenu = false },
+//                modifier = Modifier.background(BlancoFondo)
+//            ) {
+//                if (estado.usuario.rol == Rol.OFERTANTE || estado.usuario.rol == Rol.ADMINISTRADOR) {
+//                    DropdownMenuItem(
+//                        text = {
+//                            Row(
+//                                horizontalArrangement = Arrangement.SpaceBetween,
+//                                modifier = Modifier.fillMaxWidth()
+//                            ) {
+//                                if (estado.modoPro)
+//                                    Text(text = "Modo Ofertante")
+//                                else
+//                                    Text(text = "Modo Consumidor")
+//                                Icon(
+//                                    imageVector = Icons.Filled.Refresh,
+//                                    contentDescription = "modo"
+//                                )
+//                            }
+//                        },
+//                        onClick = {
+//                            /*TODO*/
+//                            vm.cambiarModo()
+//                        })
+//                }
+//                DropdownMenuItem(
+//                    text = {
+//                        Row(
+//                            horizontalArrangement = Arrangement.SpaceBetween,
+//                            modifier = Modifier.fillMaxWidth()
+//                        ) {
+//                            Text(text = "Editar perfil")
+//                            Icon(imageVector = Icons.Filled.AccountBox, contentDescription = "edit")
+//                        }
+//                    },
+//                    onClick = {
+//                        /*TODO*/
+//                    })
+//                DropdownMenuItem(
+//                    text = {
+//                        Row(
+//                            horizontalArrangement = Arrangement.SpaceBetween,
+//                            modifier = Modifier.fillMaxWidth()
+//                        ) {
+//                            Text(text = "Cerrar sesión")
+//                            Icon(imageVector = Icons.Filled.ExitToApp, contentDescription = "salir")
+//                        }
+//                    },
+//                    onClick = {
+//                        /*TODO*/
+//                        vm.ocultarPanelNavegacion()
+//                        vm.cambiarBotonNav(0)
+//                        navController.navigate(Pantallas.inicio.name)
+//                    })
+//            }
         }
     )
 }
@@ -216,14 +216,14 @@ fun BarraSuperiorPerfil2(navController: NavHostController, vm: AppViewModel, est
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContenidoUsuario2(
+fun ContenidoUsuario(
     innerPadding: PaddingValues,
     navController: NavHostController,
     vm: AppViewModel,
     estado: UiState,
     setBorrarAnuncio: (Advertisement) -> Unit
 ) {
-    var verPerfil by rememberSaveable { mutableStateOf(false) }
+    var verPerfil by rememberSaveable { mutableStateOf(true) }
     Scaffold(
         modifier = Modifier.padding(innerPadding),
         content = { paddinHijo ->
@@ -273,7 +273,7 @@ fun ContenidoUsuario2(
                 LazyColumn {
                     if (verPerfil)
                         item {
-                            PanelPerfil2(
+                            PanelPerfil(
                                 navController,
                                 vm,
                                 estado
@@ -298,7 +298,7 @@ fun ContenidoUsuario2(
                             }
                         }
                         items(estado.user!!.advertisements) { anuncio ->
-                            MiniaturaAnuncio2(
+                            MiniaturaAnuncio(
                                 anuncio,
                                 navController,
                                 vm,
@@ -306,12 +306,14 @@ fun ContenidoUsuario2(
                             )
                         }
 
-                        if (estado.user.advertisements.size == 0) {
+                        if (estado.user!!.advertisements.size == 0) {
                             item {
                                 Text(
                                     text = "No ha publicado ningún anuncio todavía",
                                     textAlign = TextAlign.Center,
-                                    modifier = Modifier.fillMaxWidth().padding(top = 100.dp)
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 100.dp)
                                 )
                             }
                         }
@@ -350,7 +352,7 @@ fun ContenidoUsuario2(
 
 
 @Composable
-fun PanelPerfil2(navController: NavHostController, vm: AppViewModel, estado: UiState) {
+fun PanelPerfil(navController: NavHostController, vm: AppViewModel, estado: UiState) {
     DatosPerfil(estado)
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -393,7 +395,9 @@ fun PanelPerfil2(navController: NavHostController, vm: AppViewModel, estado: UiS
                 Text(
                     text = "No ha reservado ninguna actividad",
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth().padding(25.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(25.dp)
                 )
             }
         }
@@ -433,12 +437,14 @@ fun PanelPerfil2(navController: NavHostController, vm: AppViewModel, estado: UiS
                 true
             )
         }
-        if (estado.user!!.activitiesFav.size == 0) {
+        if (estado.user.activitiesFav.size == 0) {
             item {
                 Text(
                     text = "No ha marcado ninguna actividad como favorita",
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth().padding(25.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(25.dp)
                 )
             }
         }
@@ -446,7 +452,7 @@ fun PanelPerfil2(navController: NavHostController, vm: AppViewModel, estado: UiS
 }
 
 @Composable
-fun DatosPerfil2(estado: UiState) {
+fun DatosPerfil(estado: UiState) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -457,7 +463,7 @@ fun DatosPerfil2(estado: UiState) {
     ) {
         Card(shape = CircleShape) {
             Image(
-                painter = painterResource(id = R.drawable.noimagen),
+                painter = painterResource(id = R.drawable.nofoto),
                 contentDescription = estado.user!!.name,
                 modifier = Modifier.fillMaxHeight(),
                 contentScale = ContentScale.Crop
@@ -480,7 +486,7 @@ fun DatosPerfil2(estado: UiState) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MiniaturaAnuncio2(
+fun MiniaturaAnuncio(
     advertisement: Advertisement,
     navController: NavHostController,
     vm: AppViewModel,
@@ -536,21 +542,21 @@ fun MiniaturaAnuncio2(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun PerfilPreview2() {
+fun PerfilPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
     val estado by vm.uiState.collectAsState()
-    val setBorrarAnuncio: (Advertisement) -> Unit = {  }
+    val setBorrarAnuncio: (Advertisement) -> Unit = { }
     Scaffold(
         topBar = {
-            BarraSuperiorPerfil2(
+            BarraSuperiorPerfil(
                 navController,
                 vm,
                 estado
             )
         },
         content = { innerPadding ->
-            ContenidoUsuario2(
+            ContenidoUsuario(
                 innerPadding,
                 navController,
                 vm,

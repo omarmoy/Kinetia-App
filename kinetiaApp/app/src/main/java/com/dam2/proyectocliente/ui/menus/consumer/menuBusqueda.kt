@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.menus.consumidor
+package com.dam2.proyectocliente.ui.menus.consumer
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -60,8 +60,8 @@ import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.utils.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Activity
-import com.dam2.proyectocliente.ui.PanelNavegacion
-import com.dam2.proyectocliente.ui.Pantallas
+import com.dam2.proyectocliente.PanelNavegacion
+import com.dam2.proyectocliente.models.Pantallas
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaFondo
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro

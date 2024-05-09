@@ -15,7 +15,7 @@ import androidx.navigation.NavHostController
 import com.dam2.proyectocliente.utils.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Role
-import com.dam2.proyectocliente.ui.Pantallas
+import com.dam2.proyectocliente.models.Pantallas
 import com.example.proyectocliente.ui.theme.BlancoFondo
 
 @Composable

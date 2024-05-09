@@ -46,12 +46,12 @@ import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.utils.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Activity
-import com.dam2.proyectocliente.ui.PanelNavegacionPro
-import com.dam2.proyectocliente.ui.Pantallas
+import com.dam2.proyectocliente.PanelNavegacionPro
+import com.dam2.proyectocliente.models.Pantallas
 import com.dam2.proyectocliente.ui.menus.DesplegableConfiguarion
-import com.dam2.proyectocliente.ui.menus.consumidor.Titulo
+import com.dam2.proyectocliente.ui.menus.consumer.Titulo
 import com.dam2.proyectocliente.ui.recursos.DialogoInfo
-import com.example.proyectocliente.R
+import com.dam2.proyectocliente.utils.selectorActivityPicture
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
@@ -60,7 +60,7 @@ import com.example.proyectocliente.ui.theme.pequena
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuReservas(navController: NavHostController, vm: AppViewModel, estado: UiState) {
+fun ReservationMenu(navController: NavHostController, vm: AppViewModel, estado: UiState) {
 
     var borrarActivity by remember { mutableStateOf<Activity?>(null) }
     val setBorrarActividad: (Activity?) -> Unit = { actividad -> borrarActivity = actividad }
@@ -233,7 +233,7 @@ fun MiniaturaReserva(
                     navController.navigate(Pantallas.vistaReservasActividad.name)
                 }) {
                 Image(
-                    painter = painterResource(id = R.drawable.noimagen),
+                    painter = painterResource(id = selectorActivityPicture(activity.picture)),
                     contentDescription = activity.title,
                     modifier = Modifier
                         .width(tam)

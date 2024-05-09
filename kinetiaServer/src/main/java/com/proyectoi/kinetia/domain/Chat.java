@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Chat {
 
-    @JsonProperty("id")
+    @JsonProperty("contactId")
     private Long contactId;
     @JsonProperty("contactName")
     private String contactName;

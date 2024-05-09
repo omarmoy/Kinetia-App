@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui
+package com.dam2.proyectocliente
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,15 +35,17 @@ import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.utils.AppViewModel
 import com.dam2.proyectocliente.utils.UserUiState
 import com.dam2.proyectocliente.models.Category
+import com.dam2.proyectocliente.models.Pantallas
 import com.dam2.proyectocliente.models.Role
-import com.dam2.proyectocliente.ui.vistas.consumidor.ListaActividades
-import com.dam2.proyectocliente.ui.menus.consumidor.MenuBusqueda
+import com.dam2.proyectocliente.ui.UiState
+import com.dam2.proyectocliente.ui.screens.consumidor.ListaActividades
+import com.dam2.proyectocliente.ui.menus.consumer.MenuBusqueda
 import com.dam2.proyectocliente.ui.menus.MenuConversaciones
-import com.dam2.proyectocliente.ui.menus.consumidor.MenuPrincipal
-import com.dam2.proyectocliente.ui.menus.consumidor.MenuUsuario
-import com.dam2.proyectocliente.ui.vistas.consumidor.VistaActividad
-import com.dam2.proyectocliente.ui.vistas.consumidor.VistaAnuncio
-import com.dam2.proyectocliente.ui.vistas.VistaChat
+import com.dam2.proyectocliente.ui.menus.consumer.MainMenu
+import com.dam2.proyectocliente.ui.menus.consumer.MenuUsuario
+import com.dam2.proyectocliente.ui.screens.consumidor.VistaActividad
+import com.dam2.proyectocliente.ui.screens.consumidor.VistaAnuncio
+import com.dam2.proyectocliente.ui.screens.VistaChat
 import com.dam2.proyectocliente.ui.formularios.FormularioActividad
 import com.dam2.proyectocliente.ui.formularios.FormularioAnuncio
 import com.dam2.proyectocliente.ui.formularios.ModificarActividad
@@ -53,8 +55,8 @@ import com.dam2.proyectocliente.ui.inicio.Inicio
 import com.dam2.proyectocliente.ui.inicio.LoadingScreen
 import com.dam2.proyectocliente.ui.inicio.Login
 import com.dam2.proyectocliente.ui.menus.pro.MenuBusquedaAnuncio
-import com.dam2.proyectocliente.ui.menus.pro.MenuReservas
-import com.dam2.proyectocliente.ui.menus.pro.MenuPrincipalPro
+import com.dam2.proyectocliente.ui.menus.pro.ReservationMenu
+import com.dam2.proyectocliente.ui.menus.pro.MainMenuPro
 import com.dam2.proyectocliente.ui.registro.AddImagen
 import com.dam2.proyectocliente.ui.registro.ConfirmarRegistro
 import com.dam2.proyectocliente.ui.registro.ElegirRol
@@ -62,9 +64,9 @@ import com.dam2.proyectocliente.ui.registro.ElegirTipoPro
 import com.dam2.proyectocliente.ui.registro.NuevaEmpresaDatos
 import com.dam2.proyectocliente.ui.registro.NuevoUsuarioDatos
 import com.dam2.proyectocliente.ui.registro.NuevoUsuario
-import com.dam2.proyectocliente.ui.vistas.pro.VistaActividadPro
-import com.dam2.proyectocliente.ui.vistas.pro.VistaAnuncioPro
-import com.dam2.proyectocliente.ui.vistas.pro.VistaReservas
+import com.dam2.proyectocliente.ui.screens.pro.VistaActividadPro
+import com.dam2.proyectocliente.ui.screens.pro.VistaAnuncioPro
+import com.dam2.proyectocliente.ui.screens.pro.ActivityReserves
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
@@ -72,7 +74,7 @@ import com.example.proyectocliente.ui.theme.NegroClaro
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Principal(
+fun Navegation(
     navController: NavHostController = rememberNavController(),
     vm: AppViewModel = viewModel()
 ) {
@@ -112,16 +114,17 @@ fun Contenido(
                 is UserUiState.Loading -> LoadingScreen(modifier = Modifier.fillMaxSize())
                 is UserUiState.Success -> {
                     vm.mostrarPanelNavegacion()
-                    if (estado.user!!.role == Role.PROVIDER && estado.modoPro)
-                        MenuPrincipalPro(navController, vm, estado)
-                    else
-                        MenuPrincipal(navController, vm, estado)
+                    if (estado.user.role == Role.PROVIDER && estado.modoPro)
+                        MainMenuPro(navController, vm, estado)
+                    else{
+                        MainMenu(navController, vm, estado)
+                    }
                 }
 
                 is UserUiState.Error -> ErrorScreen(navController)
             }
         }else
-            Inicio(navController)
+            ErrorScreen(navController)
 
         }
 
@@ -231,7 +234,7 @@ fun Contenido(
 
         //Menus Pro
         composable(route = Pantallas.menuPrincipalPro.name) {
-            MenuPrincipalPro(navController, vm, estado)
+            MainMenuPro(navController, vm, estado)
         }
         composable(route = Pantallas.menuBusquedaAnuncios.name) {
             MenuBusquedaAnuncio(navController, vm, estado)
@@ -240,10 +243,10 @@ fun Contenido(
             VistaAnuncioPro(navController, estado.advertisementSeleccionado, vm)
         }
         composable(route = Pantallas.menuReservas.name) {
-            MenuReservas(navController, vm, estado)
+            ReservationMenu(navController, vm, estado)
         }
         composable(route = Pantallas.vistaReservasActividad.name) {
-            VistaReservas(navController, vm, estado.activitySeleccionada)
+            ActivityReserves(navController, vm, estado.activitySeleccionada)
         }
 
     }

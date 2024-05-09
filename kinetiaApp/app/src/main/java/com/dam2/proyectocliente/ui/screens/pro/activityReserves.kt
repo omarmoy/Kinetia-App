@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.vistas.pro
+package com.dam2.proyectocliente.ui.screens.pro
 
 
 import androidx.compose.foundation.Image
@@ -9,16 +9,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,30 +45,32 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.utils.AppViewModel
 import com.dam2.proyectocliente.models.Activity
-import com.dam2.proyectocliente.models.Reservations
-import com.dam2.proyectocliente.ui.Pantallas
-import com.example.proyectocliente.R
+import com.dam2.proyectocliente.models.Reservation
+import com.dam2.proyectocliente.moker.Moker
+import com.dam2.proyectocliente.models.Pantallas
+import com.dam2.proyectocliente.utils.selectorProfilePicture
 import com.example.proyectocliente.ui.theme.AmarilloPastel
+import com.example.proyectocliente.ui.theme.AzulAguaClaro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VistaReservas(
+fun ActivityReserves(
     navController: NavHostController,
     vm: AppViewModel,
     activity: Activity
 ) {
 
     Scaffold(
-        topBar = { BarraSuperiorReservas(navController, vm, activity) },
-        content = { innerPadding -> ContenidoReservas(innerPadding, vm, navController, activity) },
+        topBar = { TopBarAR(navController, vm, activity) },
+        content = { innerPadding -> ContentAR(innerPadding, vm, navController, activity) },
     )
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorReservas(
+fun TopBarAR(
     navController: NavHostController, vm: AppViewModel, activity: Activity
 ) {
     Box(
@@ -75,7 +79,7 @@ fun BarraSuperiorReservas(
             .padding(bottom = 1.dp)
     ) {
         TopAppBar(
-            title = { Text(text = activity.title) },
+            title = { Text(text = "Reservas " + activity.title) },
             colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = BlancoFondo),
             navigationIcon = {
                 IconButton(onClick = {
@@ -93,7 +97,7 @@ fun BarraSuperiorReservas(
 }
 
 @Composable
-fun ContenidoReservas(
+fun ContentAR(
     innerPadding: PaddingValues,
     vm: AppViewModel,
     navController: NavHostController,
@@ -107,7 +111,7 @@ fun ContenidoReservas(
 
         LazyColumn {
             items(activity.reservations) { c ->
-                MiniaturaReserva(c, navController, vm)
+                MiniatureReservation(c, navController, vm)
             }
         }
     }
@@ -116,7 +120,9 @@ fun ContenidoReservas(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MiniaturaReserva(c: Reservations, navController: NavHostController, vm: AppViewModel) {
+fun MiniatureReservation(
+    reservation: Reservation, navController: NavHostController, vm: AppViewModel
+) {
     Card(
         colors = CardDefaults.cardColors(BlancoFondo),
         shape = RectangleShape,
@@ -125,36 +131,45 @@ fun MiniaturaReserva(c: Reservations, navController: NavHostController, vm: AppV
             .padding(8.dp)
             .height(75.dp)
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Card(shape = CircleShape) {
-                Image(
-                    painter = painterResource(id = R.drawable.nofoto),
-                    contentDescription = c.contactName,
-                    modifier = Modifier.fillMaxHeight(),
-                    contentScale = ContentScale.Crop
-                )
-            }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxSize().padding(start=12.dp)
+        ) {
+
+
+            Text(text = reservation.contactName, fontSize = 20.sp)
+
             Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
+
             ) {
-                Text(text = c.contactName, fontSize = 20.sp)
                 IconButton(
                     onClick = {
-//                        vm.selectContacto(c) TODO: new Contact
+//                        TODO: borrar
+
+                    }) {
+
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = "borrar",
+                        tint = AzulAguaClaro
+                    )
+
+                }
+
+                IconButton(
+                    onClick = {
+                        vm.createChatIfNoExist(reservation)
                         vm.ocultarPanelNavegacion()
                         navController.navigate(Pantallas.chat.name)
                     }) {
                     Icon(
-                        imageVector = Icons.Filled.Send,
-                        contentDescription = "buscar",
+                        imageVector = Icons.Filled.MailOutline,
+                        contentDescription = "contactar",
                         tint = AmarilloPastel,
-                        modifier = Modifier.size(30.dp)
+//                        modifier = Modifier.size(30.dp)
                     )
                 }
-
             }
         }
     }
@@ -169,6 +184,6 @@ fun MiniaturaReserva(c: Reservations, navController: NavHostController, vm: AppV
 fun VistaReservaPreview() {
     val vm: AppViewModel = viewModel()
     val navController = rememberNavController()
-//    val ac = DatosPrueba.user.activitiesOfered[0]
-//    VistaReservas(navController, vm, ac)
+    val ac = Moker.activity
+    ActivityReserves(navController, vm, ac)
 }

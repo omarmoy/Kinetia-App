@@ -10,6 +10,7 @@ import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.models.Advertisement
 import com.dam2.proyectocliente.models.Category
 import com.dam2.proyectocliente.models.Chat
+import com.dam2.proyectocliente.models.Reservation
 import com.dam2.proyectocliente.models.Role
 import com.dam2.proyectocliente.models.User
 import com.dam2.proyectocliente.network.request.Login
@@ -41,8 +42,10 @@ class AppViewModel : ViewModel() {
             userUiState = try {
                 val userRepository = UserRepository()
                 val user = userRepository.login(Login(email, password))
-                if (user != null && user.role == Role.CONSUMER)
+                if (user != null && user.role == Role.PROVIDER)
                     setAdvertisement(userRepository.getAdvertisements())
+                else
+                    cambiarModo()
                 setActivities(userRepository.getActivities())
                 setUser(user)
                 UserUiState.Success(user)
@@ -53,21 +56,25 @@ class AppViewModel : ViewModel() {
     }
 
     fun setUser(user: User?) {
-        _uiState.update { e ->
-            e.copy(user = user)
-        }
+//        _uiState.update { e ->
+//            e.copy(user = user)
+//        }
+
+        _uiState.value = _uiState.value.copy(user = user)
     }
 
     fun setActivities(activities: ArrayList<Activity>) {
-        _uiState.update { e ->
-            e.copy(activities = activities)
-        }
+//        _uiState.update { e ->
+//            e.copy(activities = activities)
+//        }
+        _uiState.value = _uiState.value.copy(activities = activities)
     }
 
     fun setAdvertisement(advertisements: ArrayList<Advertisement>) {
-        _uiState.update { e ->
-            e.copy(advertisements = advertisements)
-        }
+//        _uiState.update { e ->
+//            e.copy(advertisements = advertisements)
+//        }
+        _uiState.value = _uiState.value.copy(advertisements = advertisements)
     }
 
 
@@ -129,7 +136,7 @@ class AppViewModel : ViewModel() {
     fun setIndiceCategoria(c: Category? = null) {
         val indice =
             if (c != null) {
-                println("indice: "+uiState.value.categories.indexOf(c))
+                println("indice: " + uiState.value.categories.indexOf(c))
                 println(c)
                 uiState.value.categories.indexOf(c)
             } else {
@@ -454,5 +461,22 @@ class AppViewModel : ViewModel() {
         _uiState.value.user!!.cancelarReserva(activity)
     }
 
+    /**
+    RESERVAS PRO
+     */
+
+    fun createChatIfNoExist(reservation: Reservation) {
+        val chat = Chat(
+            contactId = reservation.contactId,
+            contactName = reservation.contactName,
+            contactPicture = reservation.contactPicture
+        )
+
+        if (!_uiState.value.user!!.chats.contains(chat)){
+            _uiState.value.user!!.addChat(chat)
+        }
+        selectContacto(chat)
+
+    }
 
 }

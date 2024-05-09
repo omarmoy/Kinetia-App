@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui
+package com.dam2.proyectocliente.models
 
 enum class Pantallas {
     inicio,

@@ -70,9 +70,9 @@ data class User(
     }
 
     /**
-    CONVERSACIONES
+    CHATS
      */
-    fun addContacto(chat: Chat): Boolean {
+    fun addChat(chat: Chat): Boolean {
         return chats.add(chat)
     }
 

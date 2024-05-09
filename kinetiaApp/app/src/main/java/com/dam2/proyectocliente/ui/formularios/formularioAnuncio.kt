@@ -41,7 +41,7 @@ import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.utils.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.utils.texfieldVacio
-import com.dam2.proyectocliente.ui.Pantallas
+import com.dam2.proyectocliente.models.Pantallas
 import com.dam2.proyectocliente.ui.recursos.DialogoInfo
 import com.dam2.proyectocliente.ui.recursos.TextFieldConCabecera
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro

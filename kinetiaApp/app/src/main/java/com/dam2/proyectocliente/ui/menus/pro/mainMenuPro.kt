@@ -57,10 +57,10 @@ import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.utils.selectorActivityPicture
 import com.dam2.proyectocliente.utils.selectorProfilePicture
-import com.dam2.proyectocliente.ui.PanelNavegacionPro
-import com.dam2.proyectocliente.ui.Pantallas
+import com.dam2.proyectocliente.PanelNavegacionPro
+import com.dam2.proyectocliente.models.Pantallas
 import com.dam2.proyectocliente.ui.menus.DesplegableConfiguarion
-import com.dam2.proyectocliente.ui.menus.consumidor.Titulo
+import com.dam2.proyectocliente.ui.menus.consumer.Titulo
 import com.dam2.proyectocliente.ui.recursos.DialogoInfo
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
@@ -72,23 +72,23 @@ import com.example.proyectocliente.ui.theme.pequena
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuPrincipalPro(navController: NavHostController, vm: AppViewModel, estado: UiState) {
+fun MainMenuPro(navController: NavHostController, vm: AppViewModel, uiState: UiState) {
 
-    var borrarActivity by remember { mutableStateOf<Activity?>(null) }
-    val setBorrarActividad: (Activity?) -> Unit = { actividad -> borrarActivity = actividad }
+    var deleteActivity by remember { mutableStateOf<Activity?>(null) }
+    val setDeleteActivity: (Activity?) -> Unit = { activity -> deleteActivity = activity }
 
     Scaffold(
-        topBar = { BarraSuperiorPro(navController, vm, estado) },
+        topBar = { TopBarMenuPro(navController, vm, uiState) },
         content = { innerPadding ->
-            ContenidoPrincipalPro(innerPadding, navController, vm, estado, setBorrarActividad)
+            MainMenuContent(innerPadding, navController, vm, uiState, setDeleteActivity)
         }
     )
 
-    if (borrarActivity != null) {
+    if (deleteActivity != null) {
         DialogoInfo(
-            onDismissRequest = { setBorrarActividad(null) },
-            onConfirmation = { vm.borrarActividad(borrarActivity!!); setBorrarActividad(null) },
-            dialogTitle = borrarActivity!!.title,
+            onDismissRequest = { setDeleteActivity(null) },
+            onConfirmation = { vm.borrarActividad(deleteActivity!!); setDeleteActivity(null) },
+            dialogTitle = deleteActivity!!.title,
             dialogText = "¿Quieres borrar este actividad?",
             buttonConfirm = "Aceptar",
             buttonDismiss = "Cancelar"
@@ -100,8 +100,8 @@ fun MenuPrincipalPro(navController: NavHostController, vm: AppViewModel, estado:
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorPro(navController: NavHostController, vm: AppViewModel, estado: UiState) {
-    var mostrarMenu by remember { mutableStateOf(false) }
+fun TopBarMenuPro(navController: NavHostController, vm: AppViewModel, uiState: UiState) {
+    var showSetting by remember { mutableStateOf(false) }
     TopAppBar(
         colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = BlancoFondo),
         title = {
@@ -113,7 +113,7 @@ fun BarraSuperiorPro(navController: NavHostController, vm: AppViewModel, estado:
         },
         actions = {
             IconButton(onClick = {
-                if (estado.user!!.tieneMensajesSinLeer()) {
+                if (uiState.user!!.tieneMensajesSinLeer()) {
                     vm.filtrarMensajesNoleidos()
                     vm.cambiarBotonNav(2)
                     navController.navigate(Pantallas.menuMensajes.name)
@@ -124,13 +124,13 @@ fun BarraSuperiorPro(navController: NavHostController, vm: AppViewModel, estado:
                 Icon(
                     imageVector = Icons.Filled.Notifications,
                     contentDescription = "notificacion",
-                    tint = if (estado.user!!.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
+                    tint = if (uiState.user!!.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
                 )
             }
             //Spacer(modifier = Modifier.width(12.dp))
 
             //Ajustes
-            IconButton(onClick = { mostrarMenu = !mostrarMenu }) {
+            IconButton(onClick = { showSetting = !showSetting }) {
                 Icon(
                     imageVector = Icons.Filled.Settings,
                     contentDescription = "Ajustes",
@@ -138,7 +138,7 @@ fun BarraSuperiorPro(navController: NavHostController, vm: AppViewModel, estado:
                 )
             }
 
-            DesplegableConfiguarion(navController, vm, estado, mostrarMenu) { mostrarMenu = false }
+            DesplegableConfiguarion(navController, vm, uiState, showSetting) { showSetting = false }
 
         }
     )
@@ -146,24 +146,24 @@ fun BarraSuperiorPro(navController: NavHostController, vm: AppViewModel, estado:
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContenidoPrincipalPro(
+fun MainMenuContent(
     innerPadding: PaddingValues,
     navController: NavHostController,
     vm: AppViewModel,
-    estado: UiState,
-    setBorrarActividad: (Activity?) -> Unit
+    uiState: UiState,
+    setDeleteActivity: (Activity?) -> Unit
 ) {
 
     Scaffold(
         modifier = Modifier.padding(innerPadding),
         content = { paddinHijo ->
             Column(modifier = Modifier.padding(paddinHijo)) {
-                DatosPerfilPro(estado)
+                DatosPerfilPro(uiState)
                 LazyColumn(modifier = Modifier.padding(8.dp)) {
 
                     item { Titulo(texto = "Mis Actividades") }
 
-                    if (estado.user!!.activitiesOffered.size == 0) {
+                    if (uiState.user!!.activitiesOffered.size == 0) {
                         item {
                             Text(
                                 text = "Todavía no has publicado ninguna actividad",
@@ -171,10 +171,10 @@ fun ContenidoPrincipalPro(
                             )
                         }
                     } else {
-                        items(estado.user!!.activitiesOffered) { actividad ->
-//                    items(DatosPrueba.actividades) { actividad -> //TODO quitar
-                            MiniaturaActividadOfertada(
-                                actividad, vm, navController, estado, setBorrarActividad
+                        items(uiState.user!!.activitiesOffered) { actividad ->
+//                    items(Moker.activities) { actividad -> //TODO quitar
+                            ActivityOffered(
+                                actividad, vm, navController, uiState, setDeleteActivity
                             )
                         }
                     }
@@ -210,7 +210,7 @@ fun ContenidoPrincipalPro(
 }
 
 @Composable
-fun DatosPerfilPro(estado: UiState) {
+fun DatosPerfilPro(uiState: UiState) {
     Box(
         modifier = Modifier
             .background(Gris2)
@@ -226,14 +226,16 @@ fun DatosPerfilPro(estado: UiState) {
         ) {
             Card(shape = CircleShape) {
                 Image(
-                    painter = painterResource(id = selectorProfilePicture(estado.user!!.profilePicture)),
-                    contentDescription = estado.user!!.name,
-                    modifier = Modifier.fillMaxHeight().width(75.dp),
+                    painter = painterResource(id = selectorProfilePicture(uiState.user!!.profilePicture)),
+                    contentDescription = uiState.user!!.name,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(75.dp),
                     contentScale = ContentScale.Crop
                 )
             }
             Text(
-                text = estado.user!!.fullName(),
+                text = uiState.user!!.fullName(),
                 fontSize = 18.sp,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -245,12 +247,12 @@ fun DatosPerfilPro(estado: UiState) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MiniaturaActividadOfertada(
+fun ActivityOffered(
     activity: Activity,
     vm: AppViewModel,
     navController: NavHostController,
-    estado: UiState,
-    setBorrarActividad: (Activity?) -> Unit
+    uiState: UiState,
+    setDeleteActivity: (Activity?) -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -290,51 +292,54 @@ fun MiniaturaActividadOfertada(
 
         }
 
-        IconButton(onClick = { menuActividad = true }) {
-            Icon(
-                imageVector = Icons.Filled.MoreVert,
-                contentDescription = "abrir submenú",
-                tint = AzulAguaClaro
-            )
+        Box {
+            IconButton(onClick = { menuActividad = true }) {
+                Icon(
+                    imageVector = Icons.Filled.MoreVert,
+                    contentDescription = "abrir submenú",
+                    tint = AzulAguaClaro
+                )
+
+            }
+
+            //Submenu editar
+            DropdownMenu(
+                expanded = menuActividad,
+                onDismissRequest = { menuActividad = false },
+                modifier = Modifier.background(BlancoFondo)
+            ) {
+
+                DropdownMenuItem(
+                    text = { Text(text = "Editar") },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.Edit,
+                            contentDescription = "edit",
+                            tint = AzulAguaClaro
+                        )
+                    },
+                    onClick = {
+                        vm.selectModActividad(activity)
+                        vm.ocultarPanelNavegacion()
+                        navController.navigate(Pantallas.modificarActividad.name)
+                    })
+                DropdownMenuItem(
+                    text = { Text(text = "Eliminar") },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = "borrar",
+                            tint = AzulAguaClaro
+                        )
+                    },
+                    onClick = {
+                        setDeleteActivity(activity)
+                        menuActividad = false
+                    })
+
+            }
 
         }
-
-        //Submenu editar
-        DropdownMenu(
-            expanded = menuActividad,
-            onDismissRequest = { menuActividad = false },
-            modifier = Modifier.background(BlancoFondo)
-        ) {
-
-            DropdownMenuItem(
-                text = { Text(text = "Editar") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Edit,
-                        contentDescription = "edit",
-                        tint = AzulAguaClaro
-                    )
-                },
-                onClick = {
-                    vm.selectModActividad(activity)
-                    vm.ocultarPanelNavegacion()
-                    navController.navigate(Pantallas.modificarActividad.name)
-                })
-            DropdownMenuItem(
-                text = { Text(text = "Eliminar") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Delete,
-                        contentDescription = "borrar",
-                        tint = AzulAguaClaro
-                    )
-                },
-                onClick = {
-                    setBorrarActividad(activity)
-                })
-
-        }
-
     }
 }
 
@@ -345,21 +350,21 @@ fun MiniaturaActividadOfertada(
 fun PrincipalProPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
-    val estado by vm.uiState.collectAsState()
+    val uiState by vm.uiState.collectAsState()
     Scaffold(
         topBar = {
-            BarraSuperiorPro(navController, vm, estado)
+            TopBarMenuPro(navController, vm, uiState)
         },
         content = { innerPadding ->
-            ContenidoPrincipalPro(
+            MainMenuContent(
                 innerPadding,
                 navController,
                 vm,
-                estado,
+                uiState,
                 { }
             )
         },
         //llama a una función de navegación:
-        bottomBar = { PanelNavegacionPro(navController = navController, vm, estado) }
+        bottomBar = { PanelNavegacionPro(navController = navController, vm, uiState) }
     )
 }

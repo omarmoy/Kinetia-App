@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.proyectoi.kinetia.models.UserModel;
 
 public class Reservation {
-    @JsonProperty("id")
+    @JsonProperty("contactId")
     private Long contactId;
     @JsonProperty("contactName")
     private String contactName;

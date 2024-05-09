@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class Chat(
-    val id: Long,
+    val contactId: Long,
     val contactName: String,
     val contactPicture: String,
     val messages: ArrayList<Message> = ArrayList(),
@@ -18,11 +18,11 @@ class Chat(
     override fun equals(other: Any?): Boolean {
         if (javaClass != other?.javaClass) return false
         other as Chat
-        return this.id == other.id
+        return this.contactId == other.contactId
     }
 
     override fun hashCode(): Int {
-        return id.hashCode()
+        return contactId.hashCode()
     }
 
 

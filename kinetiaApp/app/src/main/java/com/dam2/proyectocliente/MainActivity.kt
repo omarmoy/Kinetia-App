@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.dam2.proyectocliente.ui.Principal
-import com.dam2.proyectocliente.ui.formularios.FormularioActividad
 import com.example.proyectocliente.ui.theme.ProyectoClienteTheme
 
 
@@ -23,7 +21,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 
-                    Principal()
+                    Navegation()
 //                    FormularioActividad()
                 }
             }

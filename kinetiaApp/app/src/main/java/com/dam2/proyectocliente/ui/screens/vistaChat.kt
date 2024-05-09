@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.vistas
+package com.dam2.proyectocliente.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -58,6 +59,7 @@ import com.dam2.proyectocliente.utils.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Chat
 import com.dam2.proyectocliente.models.Message
+import com.dam2.proyectocliente.utils.selectorProfilePicture
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulFondo
 import com.example.proyectocliente.ui.theme.AzulLogo
@@ -93,7 +95,7 @@ fun BarraSuperiorChat(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Card(shape = CircleShape) {
                     Image(
-                        painter = painterResource(R.drawable.nofoto),
+                        painter = painterResource(id = selectorProfilePicture(chat.contactPicture)),
                         contentDescription = chat.contactName,
                         modifier = Modifier
                             .height(50.dp)
@@ -133,9 +135,6 @@ fun BarraSuperiorChat(
                 modifier = Modifier.background(BlancoFondo)
             ) {
                 DropdownMenuItem(
-                    text = { Text(text = "Vaciar chat")},
-                    onClick = { /*TODO*/ })
-                DropdownMenuItem(
                     text = { Text(text = "borrar contacto", color = Rojo)},
                     onClick = { /*TODO*/ })
             }
@@ -153,7 +152,7 @@ fun ContenidoChat(innerPadding: PaddingValues, chat: Chat) {
 
     ) {
         items(chat.messages.reversed()) { m ->
-            VistaMensaje(mensaje = m, chat.id)
+            VistaMensaje(mensaje = m, chat.contactId)
         }
     }
 }
@@ -166,7 +165,7 @@ fun VistaMensaje(mensaje: Message, idContacto: Long) {
             .fillMaxWidth()
             .padding(start = 20.dp, end = 20.dp, bottom = 10.dp, top = 10.dp),
         horizontalArrangement = if (
-            mensaje.recipient.toLong() == idContacto) Arrangement.Start else Arrangement.End
+            mensaje.recipient == idContacto) Arrangement.Start else Arrangement.End
     ) {
 
         Card(

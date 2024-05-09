@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.vistas.consumidor
+package com.dam2.proyectocliente.ui.screens.consumidor
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

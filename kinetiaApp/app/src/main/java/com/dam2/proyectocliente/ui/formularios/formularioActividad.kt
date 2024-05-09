@@ -54,7 +54,7 @@ import com.dam2.proyectocliente.utils.AppViewModel
 import com.dam2.proyectocliente.utils.texfieldVacio
 import com.dam2.proyectocliente.utils.validarFechaActividad
 import com.dam2.proyectocliente.models.Category
-import com.dam2.proyectocliente.ui.Pantallas
+import com.dam2.proyectocliente.models.Pantallas
 import com.dam2.proyectocliente.ui.recursos.DialogoInfo
 import com.dam2.proyectocliente.ui.recursos.TextFieldConCabecera
 import com.dam2.proyectocliente.ui.recursos.TextFieldIntroducirNumero

@@ -2,6 +2,7 @@ package com.dam2.proyectocliente.moker
 
 import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.models.Category
+import com.dam2.proyectocliente.models.Reservation
 import com.dam2.proyectocliente.models.Role
 import com.dam2.proyectocliente.models.User
 import java.time.LocalDate
@@ -12,7 +13,7 @@ object Moker {
         id = 1,
         email = "example@example.com",
         password = "password123",
-        role = Role.CONSUMER,
+        role = Role.PROVIDER,
         name = "John",
         surname = "Doe",
         birthDate = LocalDate.now(),
@@ -47,6 +48,83 @@ object Moker {
             )
         )
     )
+
+    val activity = Activity(
+        title = "Actividad 1",
+        description = "Descripción de la actividad 1",
+        picture = "photography",
+        userId = 1,
+        userName = "John Doe",
+        date = LocalDateTime.now(),
+        price = 50.0,
+        location = "Ubicación 1",
+        category = Category.AIRE_LIBRE,
+        vacancies = 20,
+        reservations = arrayListOf(
+            Reservation(
+                contactId=1,
+                contactName = "Pedro Pedro Pedro",
+                contactPicture = "crash"
+            ),
+            Reservation(
+                contactId=2,
+                contactName = "Paco Paquito Kiko",
+                contactPicture = "nina"
+            ),
+            Reservation(
+                contactId=3,
+                contactName = "Pedro No Porfavor",
+                contactPicture = "coco"
+            )
+
+        )
+    )
+
+    val activities = arrayListOf(
+        Activity(
+            title = "Actividad 1",
+            description = "Descripción de la actividad 1",
+            picture = "photography",
+            userId = 1,
+            userName = "John Doe",
+            date = LocalDateTime.now(),
+            price = 50.0,
+            location = "Ubicación 1",
+            category = Category.AIRE_LIBRE,
+            vacancies = 20
+        ),
+        Activity(
+            title = "Actividad 2",
+            description = "Descripción de la actividad 2",
+            picture = "music",
+            userId = 1,
+            userName = "John Doe",
+            date = LocalDateTime.now(),
+            price = 50.0,
+            location = "Ubicación 1",
+            category = Category.SALUD_Y_BIENESTAR,
+            vacancies = 20,
+            reservations = arrayListOf(
+                Reservation(
+                    contactId=1,
+                    contactName = "Pedro Pedro Pedro",
+                    contactPicture = "crash"
+                ),
+                Reservation(
+                    contactId=2,
+                    contactName = "Paco Paquito Kiko",
+                    contactPicture = "nina"
+                ),
+                Reservation(
+                    contactId=3,
+                    contactName = "Pedro No Porfavor",
+                    contactPicture = "coco"
+                )
+
+            )
+        )
+    )
+
 }
 
 

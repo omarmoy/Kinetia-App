@@ -25,18 +25,18 @@ data class Activity(
     var featured: Boolean = false,
     var vacancies: Int,
     var availableVacancies: Int = -1,
-    val reservations: ArrayList<Reservations> = ArrayList()
+    val reservations: ArrayList<Reservation> = ArrayList()
 ){
 
 
 
 
-    fun addReserva(reservation: Reservations){
+    fun addReserva(reservation: Reservation){
         reservations.add(reservation)
         this.availableVacancies--
     }
 
-    fun removeReserva(reservation: Reservations){
+    fun removeReserva(reservation: Reservation){
         reservations.remove(reservation)
         this.availableVacancies++
     }

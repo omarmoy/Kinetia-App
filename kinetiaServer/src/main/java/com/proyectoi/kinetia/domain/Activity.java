@@ -39,6 +39,10 @@ public class Activity {
     @JsonProperty("availableVacancies")
     private int availableVacancies;
 
+    public Activity(){
+
+    }
+
     public Activity(ActivityModel activity) {
         this.id = activity.getId();
         this.title = activity.getTitle();

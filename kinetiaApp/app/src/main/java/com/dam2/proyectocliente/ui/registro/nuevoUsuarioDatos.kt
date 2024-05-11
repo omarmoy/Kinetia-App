@@ -37,12 +37,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
-import com.dam2.proyectocliente.models.Pantallas
-import com.dam2.proyectocliente.ui.recursos.DialogoInfo
-import com.dam2.proyectocliente.ui.recursos.TextFieldConCabecera
-import com.dam2.proyectocliente.ui.recursos.TextFieldIntroducirNumero
+import com.dam2.proyectocliente.models.Screens
+import com.dam2.proyectocliente.ui.resources.DialogInfo
+import com.dam2.proyectocliente.ui.resources.TextFieldWithHeader
+import com.dam2.proyectocliente.ui.resources.TextFieldEnterNumber
 import com.dam2.proyectocliente.utils.fechaNacimientoOK
 import com.dam2.proyectocliente.utils.texfieldVacio
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
@@ -101,7 +101,7 @@ fun NuevoUsuarioDatos(navController: NavHostController, vm: AppViewModel, estado
                         vm.addCampoFormularioRegistro("diaNac", diaT)
                         vm.addCampoFormularioRegistro("mesNac", mesT)
                         vm.addCampoFormularioRegistro("anioNac", anioT)
-                        navController.navigate(Pantallas.addImagen.name)
+                        navController.navigate(Screens.addImagen.name)
                     }
 
                 }) {
@@ -134,15 +134,15 @@ fun NuevoUsuarioDatos(navController: NavHostController, vm: AppViewModel, estado
                     .padding(40.dp)
             ) {
 
-                TextFieldConCabecera(
+                TextFieldWithHeader(
                     cabecera = "Nombre",
                     value = nombre,
                     onValueChange = { nombre = it })
-                TextFieldConCabecera(
+                TextFieldWithHeader(
                     cabecera = "Primer apellido",
                     value = apellido1,
                     onValueChange = { apellido1 = it })
-                TextFieldConCabecera(
+                TextFieldWithHeader(
                     cabecera = "Segundo apellido",
                     value = apellido2,
                     onValueChange = { apellido2 = it })
@@ -155,7 +155,7 @@ fun NuevoUsuarioDatos(navController: NavHostController, vm: AppViewModel, estado
 //                    horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    TextFieldIntroducirNumero(
+                    TextFieldEnterNumber(
                         label = "día",
                         value = diaT,
                         onValueChange = { diaT = it },
@@ -163,7 +163,7 @@ fun NuevoUsuarioDatos(navController: NavHostController, vm: AppViewModel, estado
                             .width(60.dp)
                             .padding(end = 2.dp)
                     )
-                    TextFieldIntroducirNumero(
+                    TextFieldEnterNumber(
                         label = "mes",
                         value = mesT,
                         onValueChange = { mesT = it },
@@ -171,7 +171,7 @@ fun NuevoUsuarioDatos(navController: NavHostController, vm: AppViewModel, estado
                             .width(60.dp)
                             .padding(end = 2.dp)
                     )
-                    TextFieldIntroducirNumero(
+                    TextFieldEnterNumber(
                         label = "año",
                         value = anioT,
                         onValueChange = { anioT = it },
@@ -186,12 +186,12 @@ fun NuevoUsuarioDatos(navController: NavHostController, vm: AppViewModel, estado
             when {
                 error -> {
                     if (texfieldVacio(arrayListOf(nombre, apellido1, diaT, mesT, anioT)))
-                        DialogoInfo(
+                        DialogInfo(
                             onConfirmation = { error = false },
                             dialogText = "Todos los campos son obligatorios"
                         )
                     else if (!fechaNacimientoOK(dia, mes, anio))
-                        DialogoInfo(
+                        DialogInfo(
                             onConfirmation = { error = false },
                             dialogText = "Introduzca una fecha de nacimiento válida"
                         )

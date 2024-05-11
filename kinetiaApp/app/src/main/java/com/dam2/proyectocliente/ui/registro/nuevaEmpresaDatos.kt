@@ -38,11 +38,11 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
-import com.dam2.proyectocliente.models.Pantallas
-import com.dam2.proyectocliente.ui.recursos.DialogoInfo
-import com.dam2.proyectocliente.ui.recursos.TextFieldConCabecera
+import com.dam2.proyectocliente.models.Screens
+import com.dam2.proyectocliente.ui.resources.DialogInfo
+import com.dam2.proyectocliente.ui.resources.TextFieldWithHeader
 import com.dam2.proyectocliente.utils.texfieldVacio
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
@@ -95,7 +95,7 @@ fun NuevaEmpresaDatos(navController: NavHostController, vm: AppViewModel, estado
                         vm.addCampoFormularioRegistro("nombreEmpresa", nombreEmpresa)
                         vm.addCampoFormularioRegistro("direccion", direccion)
                         vm.addCampoFormularioRegistro("cif", cif)
-                        navController.navigate(Pantallas.addImagen.name)
+                        navController.navigate(Screens.addImagen.name)
                     }
 
                 }) {
@@ -127,15 +127,15 @@ fun NuevaEmpresaDatos(navController: NavHostController, vm: AppViewModel, estado
                     .background(Color(0xFFF4F4F4))
                     .padding(40.dp)
             ) {
-                TextFieldConCabecera(
+                TextFieldWithHeader(
                     cabecera = "Denominación",
                     value = nombreEmpresa,
                     onValueChange = { nombreEmpresa = it })
-                TextFieldConCabecera(
+                TextFieldWithHeader(
                     cabecera = "Dirección",
                     value = direccion,
                     onValueChange = { direccion = it })
-                TextFieldConCabecera(
+                TextFieldWithHeader(
                     cabecera = "CIF", value = cif, onValueChange = { cif = it }
                 )
 
@@ -145,15 +145,15 @@ fun NuevaEmpresaDatos(navController: NavHostController, vm: AppViewModel, estado
                     color = AzulAguaOscuro)
                 Spacer(modifier = Modifier.height(8.dp))
 
-                TextFieldConCabecera(
+                TextFieldWithHeader(
                     cabecera = "Nombre",
                     value = nombre,
                     onValueChange = { nombre = it })
-                TextFieldConCabecera(
+                TextFieldWithHeader(
                     cabecera = "Primer apellido",
                     value = apellido1,
                     onValueChange = { apellido1 = it })
-                TextFieldConCabecera(
+                TextFieldWithHeader(
                     cabecera = "Segundo apellido",
                     value = apellido2,
                     onValueChange = { apellido2 = it },
@@ -163,7 +163,7 @@ fun NuevaEmpresaDatos(navController: NavHostController, vm: AppViewModel, estado
 
             when {
                 error -> {
-                    DialogoInfo(
+                    DialogInfo(
                         onConfirmation = { error = false },
                         dialogText = "Todos los campos son obligatorios"
                     )

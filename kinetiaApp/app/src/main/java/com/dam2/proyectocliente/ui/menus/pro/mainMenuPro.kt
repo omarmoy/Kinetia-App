@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,17 +25,20 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,23 +57,25 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.utils.selectorActivityPicture
 import com.dam2.proyectocliente.utils.selectorProfilePicture
 import com.dam2.proyectocliente.PanelNavegacionPro
-import com.dam2.proyectocliente.models.Pantallas
+import com.dam2.proyectocliente.models.Screens
 import com.dam2.proyectocliente.ui.menus.DesplegableConfiguarion
 import com.dam2.proyectocliente.ui.menus.consumer.Titulo
-import com.dam2.proyectocliente.ui.recursos.DialogoInfo
+import com.dam2.proyectocliente.ui.resources.DialogInfo
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
+import com.example.proyectocliente.ui.theme.NegroClaro
 import com.example.proyectocliente.ui.theme.Rojo
-import com.example.proyectocliente.ui.theme.pequena
+import com.example.proyectocliente.ui.theme.small
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,9 +92,9 @@ fun MainMenuPro(navController: NavHostController, vm: AppViewModel, uiState: UiS
     )
 
     if (deleteActivity != null) {
-        DialogoInfo(
+        DialogInfo(
             onDismissRequest = { setDeleteActivity(null) },
-            onConfirmation = { vm.borrarActividad(deleteActivity!!); setDeleteActivity(null) },
+            onConfirmation = { vm.deleteActivity(deleteActivity!!); setDeleteActivity(null) },
             dialogTitle = deleteActivity!!.title,
             dialogText = "¿Quieres borrar este actividad?",
             buttonConfirm = "Aceptar",
@@ -102,6 +109,7 @@ fun MainMenuPro(navController: NavHostController, vm: AppViewModel, uiState: UiS
 @Composable
 fun TopBarMenuPro(navController: NavHostController, vm: AppViewModel, uiState: UiState) {
     var showSetting by remember { mutableStateOf(false) }
+    var showSnackbar by remember { mutableStateOf(false) }
     TopAppBar(
         colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = BlancoFondo),
         title = {
@@ -116,9 +124,9 @@ fun TopBarMenuPro(navController: NavHostController, vm: AppViewModel, uiState: U
                 if (uiState.user!!.tieneMensajesSinLeer()) {
                     vm.filtrarMensajesNoleidos()
                     vm.cambiarBotonNav(2)
-                    navController.navigate(Pantallas.menuMensajes.name)
+                    navController.navigate(Screens.menuMensajes.name)
                 } else {
-                    //TODO dialogo emergente "No tiene mensajes nuevos"
+                    showSnackbar = true
                 }
             }) {
                 Icon(
@@ -142,6 +150,31 @@ fun TopBarMenuPro(navController: NavHostController, vm: AppViewModel, uiState: U
 
         }
     )
+
+    if (showSnackbar) {
+        Snackbar(
+//            modifier = Modifier.padding(16.dp),
+            containerColor = BlancoFondo,
+//            contentColor = BlancoFondo,
+            content = {
+                Text(
+                    "No tiene mensajes nuevos",
+                    color = NegroClaro,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        )
+    }
+
+    LaunchedEffect(showSnackbar) {
+        if (showSnackbar) {
+            // Si la Snackbar está visible, esperar un tiempo y luego ocultarla automáticamente
+            delay(1000)
+            showSnackbar = false
+        }
+    }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -171,10 +204,9 @@ fun MainMenuContent(
                             )
                         }
                     } else {
-                        items(uiState.user!!.activitiesOffered) { actividad ->
-//                    items(Moker.activities) { actividad -> //TODO quitar
+                        items(uiState.user.activitiesOffered) { actividad ->
                             ActivityOffered(
-                                actividad, vm, navController, uiState, setDeleteActivity
+                                actividad, vm, navController, setDeleteActivity
                             )
                         }
                     }
@@ -187,7 +219,7 @@ fun MainMenuContent(
             ) {
                 IconButton(onClick = {
                     vm.ocultarPanelNavegacion()
-                    navController.navigate(Pantallas.formularioActividad.name)
+                    navController.navigate(Screens.formularioActividad.name)
                 }) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -197,7 +229,7 @@ fun MainMenuContent(
                             contentDescription = "Publicar anuncio",
                             tint = AzulAguaOscuro
                         )
-                        Text(text = "Publicar", fontSize = pequena)
+                        Text(text = "Publicar", fontSize = small)
                     }
 
                 }
@@ -224,23 +256,49 @@ fun DatosPerfilPro(uiState: UiState) {
                 .background(BlancoFondo)
                 .padding(4.dp)
         ) {
-            Card(shape = CircleShape) {
+            Card(
+                shape = CircleShape,
+                colors = CardDefaults.cardColors(containerColor = BlancoFondo)
+            ) {
                 Image(
                     painter = painterResource(id = selectorProfilePicture(uiState.user!!.profilePicture)),
-                    contentDescription = uiState.user!!.name,
+                    contentDescription = uiState.user.name,
                     modifier = Modifier
                         .fillMaxHeight()
                         .width(75.dp),
                     contentScale = ContentScale.Crop
                 )
             }
-            Text(
-                text = uiState.user!!.fullName(),
-                fontSize = 18.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            )
+
+            if (uiState.isCompany) {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(start = 12.dp)
+                ) {
+                    Text(
+                        text = uiState.user!!.company,
+                        fontSize = 18.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    )
+                    Text(
+                        text = uiState.user.fullName(),
+                        fontSize = 14.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    )
+                }
+            } else {
+                Text(
+                    text = uiState.user!!.fullName(),
+                    fontSize = 18.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 12.dp)
+                )
+            }
         }
     }
 }
@@ -251,7 +309,6 @@ fun ActivityOffered(
     activity: Activity,
     vm: AppViewModel,
     navController: NavHostController,
-    uiState: UiState,
     setDeleteActivity: (Activity?) -> Unit
 ) {
     Row(
@@ -262,13 +319,13 @@ fun ActivityOffered(
     ) {
 
         val tam = 150.dp
-        var menuActividad by remember { mutableStateOf(false) }
+        var showMenuActivity by remember { mutableStateOf(false) }
 
         Card(//shape = RectangleShape, /*cuadrado*/
             onClick = {
                 vm.selectActividad(activity)
                 vm.ocultarPanelNavegacion()
-                navController.navigate(Pantallas.vistaActividadPro.name)
+                navController.navigate(Screens.vistaActividadPro.name)
             }) {
             Image(
                 painter = painterResource(id = selectorActivityPicture(activity.picture)),
@@ -279,7 +336,7 @@ fun ActivityOffered(
                 contentScale = ContentScale.Crop
             )
         }
-//        Spacer(modifier = Modifier.width(12.dp))
+
         Column(modifier = Modifier.widthIn(max = tam * 8 / 10)) {
             Text(
                 text = activity.title,
@@ -288,12 +345,12 @@ fun ActivityOffered(
                 fontWeight = FontWeight.Bold,
             )
 
-            Text(text = activity.location ?: "", fontSize = pequena)
+            Text(text = activity.location, fontSize = small)
 
         }
 
         Box {
-            IconButton(onClick = { menuActividad = true }) {
+            IconButton(onClick = { showMenuActivity = true }) {
                 Icon(
                     imageVector = Icons.Filled.MoreVert,
                     contentDescription = "abrir submenú",
@@ -304,8 +361,8 @@ fun ActivityOffered(
 
             //Submenu editar
             DropdownMenu(
-                expanded = menuActividad,
-                onDismissRequest = { menuActividad = false },
+                expanded = showMenuActivity,
+                onDismissRequest = { showMenuActivity = false },
                 modifier = Modifier.background(BlancoFondo)
             ) {
 
@@ -321,7 +378,7 @@ fun ActivityOffered(
                     onClick = {
                         vm.selectModActividad(activity)
                         vm.ocultarPanelNavegacion()
-                        navController.navigate(Pantallas.modificarActividad.name)
+                        navController.navigate(Screens.modificarActividad.name)
                     })
                 DropdownMenuItem(
                     text = { Text(text = "Eliminar") },
@@ -334,7 +391,7 @@ fun ActivityOffered(
                     },
                     onClick = {
                         setDeleteActivity(activity)
-                        menuActividad = false
+                        showMenuActivity = false
                     })
 
             }
@@ -360,9 +417,8 @@ fun PrincipalProPreview() {
                 innerPadding,
                 navController,
                 vm,
-                uiState,
-                { }
-            )
+                uiState
+            ) { }
         },
         //llama a una función de navegación:
         bottomBar = { PanelNavegacionPro(navController = navController, vm, uiState) }

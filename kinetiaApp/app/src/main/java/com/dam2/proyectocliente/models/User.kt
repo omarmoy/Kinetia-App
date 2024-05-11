@@ -54,7 +54,7 @@ data class User(
         return activitiesOffered.add(activity)
     }
 
-    fun eliminarActividadOferta(activity: Activity): Boolean {
+    fun deleteActivityOffered(activity: Activity): Boolean {
         return activitiesOffered.remove(activity)
     }
 

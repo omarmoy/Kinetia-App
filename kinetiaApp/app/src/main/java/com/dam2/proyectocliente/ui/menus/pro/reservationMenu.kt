@@ -43,20 +43,20 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.PanelNavegacionPro
-import com.dam2.proyectocliente.models.Pantallas
+import com.dam2.proyectocliente.models.Screens
 import com.dam2.proyectocliente.ui.menus.DesplegableConfiguarion
 import com.dam2.proyectocliente.ui.menus.consumer.Titulo
-import com.dam2.proyectocliente.ui.recursos.DialogoInfo
+import com.dam2.proyectocliente.ui.resources.DialogInfo
 import com.dam2.proyectocliente.utils.selectorActivityPicture
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
 import com.example.proyectocliente.ui.theme.Rojo
-import com.example.proyectocliente.ui.theme.pequena
+import com.example.proyectocliente.ui.theme.small
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,9 +73,9 @@ fun ReservationMenu(navController: NavHostController, vm: AppViewModel, estado: 
     )
 
     if (borrarActivity != null) {
-        DialogoInfo(
+        DialogInfo(
             onDismissRequest = { setBorrarActividad(null) },
-            onConfirmation = { vm.borrarActividad(borrarActivity!!); setBorrarActividad(null) },
+            onConfirmation = { vm.deleteActivity(borrarActivity!!); setBorrarActividad(null) },
             dialogTitle = borrarActivity!!.title,
             dialogText = "¿Quieres borrar este actividad?",
             buttonConfirm = "Aceptar",
@@ -103,7 +103,7 @@ fun BarraSuperiorGR(navController: NavHostController, vm: AppViewModel, estado: 
                     if (estado.user!!.tieneMensajesSinLeer()) {
                         vm.filtrarMensajesNoleidos()
                         vm.cambiarBotonNav(2)
-                        navController.navigate(Pantallas.menuMensajes.name)
+                        navController.navigate(Screens.menuMensajes.name)
                     } else {
                         //TODO dialogo emergente "No tiene mensajes nuevos"
                     }
@@ -212,7 +212,7 @@ fun MiniaturaReserva(
             .padding(1.dp),
         onClick = {
             vm.ocultarPanelNavegacion()
-            navController.navigate(Pantallas.vistaReservasActividad.name)
+            navController.navigate(Screens.vistaReservasActividad.name)
         }
     ) {
         Row(
@@ -230,7 +230,7 @@ fun MiniaturaReserva(
                 onClick = {
                     vm.selectActividad(activity)
                     vm.ocultarPanelNavegacion()
-                    navController.navigate(Pantallas.vistaReservasActividad.name)
+                    navController.navigate(Screens.vistaReservasActividad.name)
                 }) {
                 Image(
                     painter = painterResource(id = selectorActivityPicture(activity.picture)),
@@ -256,11 +256,11 @@ fun MiniaturaReserva(
 
                 Text(
                     text = "Plazas disponibles: " + (activity.vacancies - activity.reservations.size),
-                    fontSize = pequena
+                    fontSize = small
                 )
                 Text(
                     text = "Número de reservas: " + activity.reservations.size,
-                    fontSize = pequena
+                    fontSize = small
                 )
             }
         }

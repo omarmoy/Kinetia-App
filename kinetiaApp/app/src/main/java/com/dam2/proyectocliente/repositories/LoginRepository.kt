@@ -3,21 +3,22 @@ package com.dam2.proyectocliente.repositories
 import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.models.Advertisement
 import com.dam2.proyectocliente.models.User
-import com.dam2.proyectocliente.network.UserApi
+import com.dam2.proyectocliente.network.LoginApi
 import com.dam2.proyectocliente.network.request.Login
 
-class UserRepository {
+class LoginRepository {
     suspend fun login (login: Login): User?{
         return try {
-            UserApi.retrofitService.login(login)
+            LoginApi.retrofitService.login(login)
         } catch (e: Exception) {
+            println(e)
             null
         }
     }
 
     suspend fun getActivities(): ArrayList<Activity>{
         return try {
-            UserApi.retrofitService.getActivities()
+            LoginApi.retrofitService.getActivities()
         }catch (e: Exception){
             arrayListOf()
         }
@@ -25,7 +26,7 @@ class UserRepository {
 
     suspend fun getAdvertisements(): ArrayList<Advertisement>{
         return try {
-            UserApi.retrofitService.getAdvertisements()
+            LoginApi.retrofitService.getAdvertisements()
         }catch (e: Exception){
             arrayListOf()
         }

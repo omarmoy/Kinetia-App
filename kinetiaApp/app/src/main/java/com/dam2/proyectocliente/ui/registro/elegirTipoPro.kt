@@ -34,8 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.utils.AppViewModel
-import com.dam2.proyectocliente.models.Pantallas
+import com.dam2.proyectocliente.AppViewModel
+import com.dam2.proyectocliente.models.Screens
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.AzulAgua
@@ -91,8 +91,8 @@ fun ElegirTipoPro(navController: NavHostController, vm: AppViewModel) {
 
                 OutlinedButton(
                     onClick = {
-                        vm.setEsEmpresa(false)
-                        navController.navigate(Pantallas.nuevoUsuario.name)
+                        vm.setIsCompany(false)
+                        navController.navigate(Screens.nuevoUsuario.name)
                     },
                     border = BorderStroke(
                         ButtonDefaults.outlinedButtonBorder.width,
@@ -106,8 +106,8 @@ fun ElegirTipoPro(navController: NavHostController, vm: AppViewModel) {
                 Spacer(modifier = Modifier.height(24.dp))
                 OutlinedButton(
                     onClick = {
-                        vm.setEsEmpresa(true)
-                        navController.navigate(Pantallas.nuevoUsuario.name)
+                        vm.setIsCompany(true)
+                        navController.navigate(Screens.nuevoUsuario.name)
                     },
                     border = BorderStroke(
                         ButtonDefaults.outlinedButtonBorder.width,

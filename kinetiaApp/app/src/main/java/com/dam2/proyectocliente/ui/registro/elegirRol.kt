@@ -34,9 +34,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.models.Role
-import com.dam2.proyectocliente.models.Pantallas
+import com.dam2.proyectocliente.models.Screens
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.AzulAgua
@@ -92,9 +92,9 @@ fun ElegirRol(navController: NavHostController, vm: AppViewModel) {
 
                 OutlinedButton(
                     onClick = {
-                        vm.setEsEmpresa(false)
+                        vm.setIsCompany(false)
                         vm.addCampoFormularioRegistro("rol", Role.CONSUMER.toString())
-                        navController.navigate(Pantallas.nuevoUsuario.name)
+                        navController.navigate(Screens.nuevoUsuario.name)
                     },
                     border = BorderStroke(
                         ButtonDefaults.outlinedButtonBorder.width,
@@ -109,7 +109,7 @@ fun ElegirRol(navController: NavHostController, vm: AppViewModel) {
                 OutlinedButton(
                     onClick = {
                         vm.addCampoFormularioRegistro("rol", Role.PROVIDER.toString())
-                        navController.navigate(Pantallas.elegirTipoPro.name)
+                        navController.navigate(Screens.elegirTipoPro.name)
                     },
                     border = BorderStroke(
                         ButtonDefaults.outlinedButtonBorder.width,

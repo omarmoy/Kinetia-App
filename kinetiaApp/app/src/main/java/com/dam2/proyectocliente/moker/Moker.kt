@@ -1,10 +1,12 @@
 package com.dam2.proyectocliente.moker
 
 import com.dam2.proyectocliente.models.Activity
+import com.dam2.proyectocliente.models.Advertisement
 import com.dam2.proyectocliente.models.Category
 import com.dam2.proyectocliente.models.Reservation
 import com.dam2.proyectocliente.models.Role
 import com.dam2.proyectocliente.models.User
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -123,6 +125,17 @@ object Moker {
 
             )
         )
+    )
+
+
+    val advertisement = Advertisement(
+        userId = 123,
+        userName = "John Doe",
+        userPhoto = "crash",
+        title = "Venta de coche",
+        description = "Se vende coche en excelente estado",
+        creationDate = Instant.parse("2024-05-11T16:40:00Z"),
+        location = "Ciudad"
     )
 
 }

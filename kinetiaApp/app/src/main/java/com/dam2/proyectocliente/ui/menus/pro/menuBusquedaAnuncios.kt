@@ -52,11 +52,11 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Advertisement
 import com.dam2.proyectocliente.PanelNavegacionPro
-import com.dam2.proyectocliente.models.Pantallas
+import com.dam2.proyectocliente.models.Screens
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaFondo
 import com.example.proyectocliente.ui.theme.BlancoFondo
@@ -192,7 +192,7 @@ fun MiniaturaAnuncioBusqueda(
         onClick = {
             vm.ocultarPanelNavegacion()
             vm.selectAnuncio(advertisement)
-            navController.navigate(Pantallas.vistaAnuncioPro.name)
+            navController.navigate(Screens.vistaAnuncioPro.name)
         }) {
 
         Row(

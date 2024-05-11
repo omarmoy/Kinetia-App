@@ -2,6 +2,7 @@ package com.proyectoi.kinetia.models;
 
 import jakarta.persistence.*;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,7 +25,7 @@ public class MessageModel {
     private String content;
 
     @Column(nullable = false)
-    private LocalDateTime sentAt;
+    private Instant sentAt;
 
     @Column(nullable = false)
     private Boolean isRead = false;
@@ -67,11 +68,11 @@ public class MessageModel {
         this.content = content;
     }
 
-    public LocalDateTime getSentAt() {
+    public Instant getSentAt() {
         return sentAt;
     }
 
-    public void setSentAt(LocalDateTime sentAt) {
+    public void setSentAt(Instant sentAt) {
         this.sentAt = sentAt;
     }
 

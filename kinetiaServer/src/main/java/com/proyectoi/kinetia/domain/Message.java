@@ -3,7 +3,7 @@ package com.proyectoi.kinetia.domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.proyectoi.kinetia.models.MessageModel;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 
 public class Message {
@@ -15,7 +15,7 @@ public class Message {
     @JsonProperty("content")
     private String content;
     @JsonProperty("sentAt")
-    private LocalDateTime sentAt;
+    private Instant sentAt;
     @JsonProperty("isRead")
     private Boolean isRead;
 

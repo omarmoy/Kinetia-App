@@ -46,10 +46,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.models.Advertisement
 import com.dam2.proyectocliente.utils.mostrarFecha
-import com.dam2.proyectocliente.models.Pantallas
+import com.dam2.proyectocliente.models.Screens
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
@@ -57,7 +57,7 @@ import com.example.proyectocliente.ui.theme.AzulAguaFondo2
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
-import com.example.proyectocliente.ui.theme.pequena
+import com.example.proyectocliente.ui.theme.small
 import java.time.LocalDateTime
 import java.time.ZoneId
 
@@ -79,7 +79,7 @@ fun VistaAnuncio(
         },
         content = { innerPadding -> ContenidoAnuncio(innerPadding, advertisement) },
         bottomBar = {
-            if (advertisement.userId != vm.usuario()!!.id)
+            if (advertisement.userId != vm.userCurrent()!!.id)
                 BotonContactar(navController, advertisement, vm)
             if (vistaPrevia)
                 BarraInferiorAnuncioVP(navController, vm)
@@ -133,10 +133,10 @@ fun BarraSuperiorAnuncio(
             }
         },
         actions = {
-            if (advertisement.userId == vm.usuario()!!.id) {
+            if (advertisement.userId == vm.userCurrent()!!.id) {
                 IconButton(onClick = {
                     vm.selectModAnuncio(advertisement)
-                    navController.navigate(Pantallas.modificarAnuncio.name)
+                    navController.navigate(Screens.modificarAnuncio.name)
                 }) {
                     Icon(
                         imageVector = Icons.Filled.Edit,
@@ -272,7 +272,7 @@ fun BotonContactar(
                         )
                     }
                 }
-                Text(text = "Contactar", fontSize = pequena)
+                Text(text = "Contactar", fontSize = small)
             }
 
         }
@@ -304,14 +304,14 @@ fun BarraInferiorAnuncioVP(
             TextButton(onClick = {
                 vm.resetNuevoAnuncio()
                 vm.mostrarPanelNavegacion()
-                navController.navigate(Pantallas.menuUsuario.name)
+                navController.navigate(Screens.menuUsuario.name)
             }) {
                 Text(text = "Cancelar", color = AzulAguaOscuro, fontSize = 16.sp)
             }
             TextButton(onClick = {
                 vm.publicarAnuncio()
                 vm.mostrarPanelNavegacion()
-                navController.navigate(Pantallas.menuUsuario.name)
+                navController.navigate(Screens.menuUsuario.name)
 
             }) {
                 Text(text = "Publicar", color = AzulAguaOscuro, fontSize = 16.sp)

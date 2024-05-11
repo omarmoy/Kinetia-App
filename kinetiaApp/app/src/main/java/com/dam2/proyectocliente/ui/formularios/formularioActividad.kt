@@ -50,14 +50,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.utils.texfieldVacio
 import com.dam2.proyectocliente.utils.validarFechaActividad
 import com.dam2.proyectocliente.models.Category
-import com.dam2.proyectocliente.models.Pantallas
-import com.dam2.proyectocliente.ui.recursos.DialogoInfo
-import com.dam2.proyectocliente.ui.recursos.TextFieldConCabecera
-import com.dam2.proyectocliente.ui.recursos.TextFieldIntroducirNumero
+import com.dam2.proyectocliente.models.Screens
+import com.dam2.proyectocliente.ui.resources.DialogInfo
+import com.dam2.proyectocliente.ui.resources.TextFieldWithHeader
+import com.dam2.proyectocliente.ui.resources.TextFieldEnterNumber
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
@@ -171,12 +171,12 @@ fun FormularioActividad(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                TextFieldConCabecera(
+                TextFieldWithHeader(
                     cabecera = "Título",
                     value = titulo,
                     onValueChange = { titulo = it }
                 )
-                TextFieldConCabecera(
+                TextFieldWithHeader(
                     cabecera = "Ubicación",
                     value = ubicacion,
                     onValueChange = { ubicacion = it }
@@ -195,7 +195,7 @@ fun FormularioActividad(
 //                    horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    TextFieldIntroducirNumero(
+                    TextFieldEnterNumber(
                         label = "día",
                         value = diaT,
                         onValueChange = { diaT = it },
@@ -203,7 +203,7 @@ fun FormularioActividad(
                             .width(60.dp)
                             .padding(end = 2.dp)
                     )
-                    TextFieldIntroducirNumero(
+                    TextFieldEnterNumber(
                         label = "mes",
                         value = mesT,
                         onValueChange = { mesT = it },
@@ -211,7 +211,7 @@ fun FormularioActividad(
                             .width(60.dp)
                             .padding(end = 2.dp)
                     )
-                    TextFieldIntroducirNumero(
+                    TextFieldEnterNumber(
                         label = "año",
                         value = anioT,
                         onValueChange = { anioT = it },
@@ -261,7 +261,7 @@ fun FormularioActividad(
                 ) {
                     Text(text = "Precio: ", color = NegroClaro, fontSize = 16.sp)
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        TextFieldIntroducirNumero(
+                        TextFieldEnterNumber(
                             showLabel = false,
                             //NumberFormat.getCurrencyInstance().format(propina)
                             value = precioT,
@@ -286,7 +286,7 @@ fun FormularioActividad(
                 ) {
                     Text(text = "Número de plazas: ", color = NegroClaro, fontSize = 16.sp)
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        TextFieldIntroducirNumero(
+                        TextFieldEnterNumber(
                             showLabel = false,
                             //NumberFormat.getCurrencyInstance().format(propina)
                             value = nPlazasT,
@@ -326,28 +326,28 @@ fun FormularioActividad(
             // control de entrada
             when (error) {
                 "campoVacio" -> {
-                    DialogoInfo(
+                    DialogInfo(
                         onConfirmation = { error = "" },
                         dialogText = "Todos los campos son obligatorios"
                     )
                 }
 
                 "fecha" -> {
-                    DialogoInfo(
+                    DialogInfo(
                         onConfirmation = { error = "" },
                         dialogText = "Introduzca una fecha válida, superior al día de hoy"
                     )
                 }
 
                 "precioNoInt" -> {
-                    DialogoInfo(
+                    DialogInfo(
                         onConfirmation = { error = "" },
                         dialogText = "El precio debe tener formato numérico"
                     )
                 }
 
                 "plazasNoInt" -> {
-                    DialogoInfo(
+                    DialogInfo(
                         onConfirmation = { error = "" },
                         dialogText = "El número de plazas debe tener formato numérico"
                     )
@@ -436,8 +436,8 @@ fun BarraInferiorFA(
                 else if (nPlazasT.toIntOrNull() == null){
                     setError("plazasNoInt")
                 }else{
-                    vm.nuevaActividad(campos)
-                    navController.navigate(Pantallas.previewNuevaActividad.name)
+                    vm.newActivity(campos)
+                    navController.navigate(Screens.previewNuevaActividad.name)
                     //TODO crear Actividad y pasar a vista previa
                 }
 

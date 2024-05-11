@@ -46,11 +46,11 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Role
-import com.dam2.proyectocliente.models.Pantallas
-import com.dam2.proyectocliente.ui.recursos.DialogoInfo
+import com.dam2.proyectocliente.models.Screens
+import com.dam2.proyectocliente.ui.resources.DialogInfo
 import com.dam2.proyectocliente.utils.emailValido
 import com.dam2.proyectocliente.utils.passwdIguales
 import com.dam2.proyectocliente.utils.texfieldVacio
@@ -102,10 +102,10 @@ fun NuevoUsuario(navController: NavHostController, vm: AppViewModel, estado: UiS
                     } else {
                         vm.addCampoFormularioRegistro("mail", mail)
                         vm.addCampoFormularioRegistro("password", password)
-                        if (estado.esEmpresa && estado.formularioRegistro["rol"] == Role.PROVIDER.toString())
-                            navController.navigate(Pantallas.nuevaEmpresaDatos.name)
+                        if (estado.isCompany && estado.formularioRegistro["rol"] == Role.PROVIDER.toString())
+                            navController.navigate(Screens.nuevaEmpresaDatos.name)
                         else
-                            navController.navigate(Pantallas.nuevoUsuarioDatos.name)
+                            navController.navigate(Screens.nuevoUsuarioDatos.name)
                     }
                 }) {
                     Text(text = "Siguiente", color = AzulAguaOscuro, fontSize = 16.sp)
@@ -201,17 +201,17 @@ fun NuevoUsuario(navController: NavHostController, vm: AppViewModel, estado: UiS
             when {
                 error -> {
                     if (texfieldVacio(arrayListOf(mail, password, repetirPassword)))
-                        DialogoInfo(
+                        DialogInfo(
                             onConfirmation = { error = false },
                             dialogText = "Todos los campos son obligatorios"
                         )
                     else if (!emailValido(mail))
-                        DialogoInfo(
+                        DialogInfo(
                             onConfirmation = { error = false },
                             dialogText = "Introduzca un email válido"
                         )
                     else if (!passwdIguales(password, repetirPassword))
-                        DialogoInfo(
+                        DialogInfo(
                             onConfirmation = { error = false },
                             dialogText = "Las contraseñas introducidas no son iguales"
                         )

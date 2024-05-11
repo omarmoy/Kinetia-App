@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -48,15 +49,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Chat
 import com.dam2.proyectocliente.PanelNavegacion
-import com.dam2.proyectocliente.models.Pantallas
-import com.example.proyectocliente.R
+import com.dam2.proyectocliente.models.Screens
+import com.dam2.proyectocliente.utils.selectorProfilePicture
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAgua
-import com.example.proyectocliente.ui.theme.AzulAguaFondo
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
 import com.example.proyectocliente.ui.theme.NegroClaro
@@ -83,16 +83,19 @@ fun BarraSuperiorConver(vm: AppViewModel, estado: UiState) {
             .background(BlancoFondo)
             .padding(12.dp)
     ) {
-        val textoCabecera = if(estado.filtroMensajesNoleidosActivo) "Mensajes no leídos" else "Mensajes"
+        val textoCabecera =
+            if (estado.filtroMensajesNoleidosActivo) "Mensajes no leídos" else "Mensajes"
         Text(text = textoCabecera, fontWeight = FontWeight.Bold, fontSize = 24.sp)
         IconButton(onClick = {
-            if(estado.filtroMensajesNoleidosActivo)
+            if (estado.filtroMensajesNoleidosActivo)
                 vm.quitarFiltroMensajesNoLeidos()
             else
                 vm.filtrarMensajesNoleidos()
         }) {
-            Icon(imageVector =Icons.Filled.List , contentDescription = "filtro",
-                tint = if(estado.filtroMensajesNoleidosActivo) AmarilloPastel else AzulAgua)
+            Icon(
+                imageVector = Icons.Filled.List, contentDescription = "filtro",
+                tint = if (estado.filtroMensajesNoleidosActivo) AmarilloPastel else AzulAgua
+            )
         }
     }
 }
@@ -129,7 +132,10 @@ fun Conversaciones(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Done  //tipo de botón
                     ),
-                    colors = TextFieldDefaults.textFieldColors(containerColor=BlancoFondo, unfocusedIndicatorColor = Gris2),
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = BlancoFondo,
+                        unfocusedIndicatorColor = Gris2
+                    ),
                     trailingIcon = {
                         if (estado.contactosBuscar != "")
                             IconButton(onClick = { vm.setContactoBuscar("") }) {
@@ -160,9 +166,9 @@ fun MiniaturaContacto(c: Chat, navController: NavHostController, vm: AppViewMode
         onClick = {
             vm.selectContacto(c)
             vm.ocultarPanelNavegacion()
-            navController.navigate(Pantallas.chat.name)
+            navController.navigate(Screens.chat.name)
         },
-        colors = CardDefaults.cardColors(AzulAguaFondo),
+        colors = CardDefaults.cardColors(BlancoFondo),
         shape = RectangleShape,
         modifier = Modifier
             .fillMaxWidth()
@@ -170,11 +176,16 @@ fun MiniaturaContacto(c: Chat, navController: NavHostController, vm: AppViewMode
             .height(75.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Card(shape = CircleShape) {
+            Card(
+                shape = CircleShape,
+                colors = CardDefaults.cardColors(containerColor = BlancoFondo)
+            ) {
                 Image(
-                    painter = painterResource(id = R.drawable.noimagen),
+                    painter = painterResource(id= selectorProfilePicture(c.contactPicture)),
                     contentDescription = c.contactName,
-                    modifier = Modifier.fillMaxHeight(),
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(75.dp),
                     contentScale = ContentScale.Crop
                 )
             }

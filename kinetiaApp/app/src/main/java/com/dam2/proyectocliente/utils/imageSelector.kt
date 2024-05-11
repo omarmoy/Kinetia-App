@@ -35,3 +35,37 @@ fun selectorActivityPicture(activityString: String): Int {
         else -> R.drawable.noimagen
     }
 }
+
+fun getProfilePictureName(drawableId: Int): String {
+    return when (drawableId) {
+        R.drawable.crunch -> "crunch"
+        R.drawable.coco -> "coco"
+        R.drawable.cortex -> "cortex"
+        R.drawable.crash -> "crash"
+        R.drawable.gin -> "gin"
+        R.drawable.nina -> "nina"
+        R.drawable.tawna -> "tawna"
+        R.drawable.tropy -> "tropy"
+        else -> "nofoto"
+    }
+}
+
+fun getActivityPictureName(drawableId: Int): String {
+    return when (drawableId) {
+        R.drawable.tech -> "tech"
+        R.drawable.photography -> "photography"
+        R.drawable.painting -> "painting"
+        R.drawable.music -> "music"
+        R.drawable.lifestyle -> "lifestyle"
+        R.drawable.gaming -> "gaming"
+        R.drawable.film -> "film"
+        R.drawable.fashion -> "fashion"
+        R.drawable.drawing -> "drawing"
+        R.drawable.design -> "design"
+        R.drawable.culinary -> "culinary"
+        R.drawable.crafts -> "crafts"
+        R.drawable.business -> "business"
+        R.drawable.architecture -> "architecture"
+        else -> "noimagen"
+    }
+}

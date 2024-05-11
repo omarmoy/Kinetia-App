@@ -41,9 +41,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
-import com.dam2.proyectocliente.models.Pantallas
+import com.dam2.proyectocliente.models.Screens
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.AzulAguaFondo
 import com.example.proyectocliente.ui.theme.BlancoFondo
@@ -137,7 +137,7 @@ fun Login(navController: NavHostController, vm: AppViewModel, estado: UiState) {
                     onClick = {
                         //TODO
                         vm.login(email, password)
-                        navController.navigate(Pantallas.menuPrincipal.name)
+                        navController.navigate(Screens.menuPrincipal.name)
                     },
                     colors = ButtonDefaults.buttonColors(AzulAguaOscuro),
                     modifier = Modifier.width(150.dp)

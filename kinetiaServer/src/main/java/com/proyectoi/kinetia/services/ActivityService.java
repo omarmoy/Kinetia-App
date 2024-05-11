@@ -1,6 +1,7 @@
 package com.proyectoi.kinetia.services;
 
 import com.proyectoi.kinetia.domain.Activity;
+import com.proyectoi.kinetia.domain.ActivityPro;
 import com.proyectoi.kinetia.domain.Prueba;
 import com.proyectoi.kinetia.models.ActivityModel;
 import com.proyectoi.kinetia.repositories.IActivityRepository;
@@ -46,10 +47,20 @@ public class ActivityService {
         }
     }
 
-    public Boolean updateActivity(ActivityModel activity) {
+    public Boolean updateActivity(ActivityPro activity) {
         Optional<ActivityModel> activityOptional = activityRepository.findById(activity.getId());
         if (activityOptional.isPresent()) {
-            activityRepository.save(activity);
+            ActivityModel activityEdited = activityOptional.get();
+            activityEdited.setTitle(activity.getTitle());
+            activityEdited.setDescription(activity.getDescription());
+            activityEdited.setPrice(activity.getPrice());
+            activityEdited.setDate(activity.getDate());
+            activityEdited.setPrice(activity.getPrice());
+            activityEdited.setLocation(activity.getLocation());
+            activityEdited.setCategory(activity.getCategory());
+            activityEdited.setFeatured(activity.getFeatured());
+            activityEdited.setVacancies(activity.getVacancies());
+            activityRepository.save(activityEdited);
             return true;
         }
         return false;

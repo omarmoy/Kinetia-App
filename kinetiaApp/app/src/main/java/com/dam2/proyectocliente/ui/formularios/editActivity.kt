@@ -36,6 +36,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -50,15 +51,18 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.utils.texfieldVacio
 import com.dam2.proyectocliente.utils.validarFechaActividad
 import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.models.Category
-import com.dam2.proyectocliente.ui.recursos.DialogoInfo
-import com.dam2.proyectocliente.ui.recursos.TextFieldConCabecera
-import com.dam2.proyectocliente.ui.recursos.TextFieldIntroducirNumero
+import com.dam2.proyectocliente.models.Screens
+import com.dam2.proyectocliente.moker.Moker
+import com.dam2.proyectocliente.ui.resources.DialogInfo
+import com.dam2.proyectocliente.ui.resources.TextFieldWithHeader
+import com.dam2.proyectocliente.ui.resources.TextFieldEnterNumber
+import com.dam2.proyectocliente.utils.selectorActivityPicture
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
@@ -114,7 +118,7 @@ fun ModificarActividad(
     var mesT by rememberSaveable { mutableStateOf(activity.date.monthValue.toString()) }
     var anioT by rememberSaveable { mutableStateOf(activity.date.year.toString()) }
     var horaT by rememberSaveable { mutableStateOf(activity.date.hour.toString()) }
-    var minutosT by rememberSaveable { mutableStateOf(activity.date.minute.toString())}
+    var minutosT by rememberSaveable { mutableStateOf(activity.date.minute.toString()) }
     var nPlazasT by rememberSaveable { mutableStateOf(activity.vacancies.toString()) }
 
     var error by rememberSaveable { mutableStateOf("") }
@@ -146,7 +150,10 @@ fun ModificarActividad(
                         .fillMaxWidth()
                 ) {
                     Image(
-                        painter = painterResource(R.drawable.noimagen),
+                        painter = if (estado.selectedPicture == 0)
+                            painterResource(selectorActivityPicture(activity.picture))
+                        else
+                            painterResource(id = estado.selectedPicture),
                         contentDescription = "imagen",
                         modifier = Modifier
                             .fillMaxWidth()
@@ -159,13 +166,13 @@ fun ModificarActividad(
                     ) {
                         IconButton(
                             onClick = {
-                                /*TODO*/
+                                navController.navigate(Screens.selectActivityPicture.name)
                             }
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Edit,
                                 contentDescription = "edit",
-                                tint = AzulAguaOscuro
+                                tint = NegroClaro
                             )
                         }
                     }
@@ -174,12 +181,12 @@ fun ModificarActividad(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                TextFieldConCabecera(
+                TextFieldWithHeader(
                     cabecera = "Título",
                     value = titulo,
                     onValueChange = { titulo = it }
                 )
-                TextFieldConCabecera(
+                TextFieldWithHeader(
                     cabecera = "Ubicación",
                     value = ubicacion,
                     onValueChange = { ubicacion = it }
@@ -199,7 +206,7 @@ fun ModificarActividad(
 //                    horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    TextFieldIntroducirNumero(
+                    TextFieldEnterNumber(
                         label = "día",
                         value = diaT,
                         onValueChange = { diaT = it },
@@ -207,7 +214,7 @@ fun ModificarActividad(
                             .width(60.dp)
                             .padding(end = 2.dp)
                     )
-                    TextFieldIntroducirNumero(
+                    TextFieldEnterNumber(
                         label = "mes",
                         value = mesT,
                         onValueChange = { mesT = it },
@@ -215,7 +222,7 @@ fun ModificarActividad(
                             .width(60.dp)
                             .padding(end = 2.dp)
                     )
-                    TextFieldIntroducirNumero(
+                    TextFieldEnterNumber(
                         label = "año",
                         value = anioT,
                         onValueChange = { anioT = it },
@@ -265,7 +272,7 @@ fun ModificarActividad(
                 ) {
                     Text(text = "Precio: ", color = NegroClaro, fontSize = 16.sp)
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        TextFieldIntroducirNumero(
+                        TextFieldEnterNumber(
                             showLabel = false,
                             //NumberFormat.getCurrencyInstance().format(propina)
                             value = precioT,
@@ -290,7 +297,7 @@ fun ModificarActividad(
                 ) {
                     Text(text = "Número de plazas: ", color = NegroClaro, fontSize = 16.sp)
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        TextFieldIntroducirNumero(
+                        TextFieldEnterNumber(
                             showLabel = false,
                             //NumberFormat.getCurrencyInstance().format(propina)
                             value = nPlazasT,
@@ -330,28 +337,28 @@ fun ModificarActividad(
             // control de entrada
             when (error) {
                 "campoVacio" -> {
-                    DialogoInfo(
+                    DialogInfo(
                         onConfirmation = { error = "" },
                         dialogText = "Todos los campos son obligatorios"
                     )
                 }
 
                 "fecha" -> {
-                    DialogoInfo(
+                    DialogInfo(
                         onConfirmation = { error = "" },
                         dialogText = "Introduzca una fecha válida, superior al día de hoy"
                     )
                 }
 
                 "precioNoInt" -> {
-                    DialogoInfo(
+                    DialogInfo(
                         onConfirmation = { error = "" },
                         dialogText = "El precio debe tener formato numérico"
                     )
                 }
 
                 "plazasNoInt" -> {
-                    DialogoInfo(
+                    DialogInfo(
                         onConfirmation = { error = "" },
                         dialogText = "El número de plazas debe tener formato numérico"
                     )
@@ -376,6 +383,7 @@ fun BarraSuperiorModActividad(navController: NavHostController, vm: AppViewModel
         navigationIcon = {
             IconButton(onClick = {
                 vm.mostrarPanelNavegacion()
+                vm.selectPicture(0)
                 navController.navigateUp()
             }) {
                 Icon(
@@ -406,14 +414,15 @@ fun BarraInferiorModActividad(
     nPlazasT: String,
     setError: (String) -> Unit,
     activity: Activity,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
 
     var dia = diaT.toIntOrNull() ?: 0
     var mes = mesT.toIntOrNull() ?: 0
     var anio = anioT.toIntOrNull() ?: 0
+    val picture = estado.selectedPicture
 
-    val campos = arrayListOf<String>(
+    val campos = arrayListOf(
         titulo, precioT, ubicacion, category?.toString() ?: "", diaT, mesT, anioT, horaT,
         minutosT, contenido, nPlazasT
     )
@@ -436,10 +445,11 @@ fun BarraInferiorModActividad(
                     setError("fecha")
                 else if (precioT.toDoubleOrNull() == null)
                     setError("precioNoInt")
-                else if (nPlazasT.toIntOrNull() == null){
+                else if (nPlazasT.toIntOrNull() == null) {
                     setError("plazasNoInt")
-                }else{
-                    vm.modificarActividad(campos, activity, destacado)
+                } else {
+                    vm.editActivity(campos, activity, destacado, picture)
+                    vm.mostrarPanelNavegacion()
                     navController.navigateUp()
                 }
 
@@ -457,7 +467,8 @@ fun ModificarActividadPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
     val estado by vm.uiState.collectAsState()
-//    ModificarActividad(navController, vm, estado,
-////        DatosPrueba.actividades[0]
-//        )
+    ModificarActividad(
+        navController, vm, estado,
+        Moker.activity
+    )
 }

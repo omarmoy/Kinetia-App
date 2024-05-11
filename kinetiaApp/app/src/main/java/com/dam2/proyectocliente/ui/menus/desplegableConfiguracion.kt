@@ -12,10 +12,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Role
-import com.dam2.proyectocliente.models.Pantallas
+import com.dam2.proyectocliente.models.Screens
 import com.example.proyectocliente.ui.theme.BlancoFondo
 
 @Composable
@@ -44,9 +44,9 @@ fun DesplegableConfiguarion(
                 },
                 onClick = {
                     if (vm.cambiarModo())
-                        navController.navigate(Pantallas.menuPrincipalPro.name)
+                        navController.navigate(Screens.menuPrincipalPro.name)
                     else
-                        navController.navigate(Pantallas.menuPrincipal.name)
+                        navController.navigate(Screens.menuPrincipal.name)
                 })
         }
         DropdownMenuItem(
@@ -66,7 +66,7 @@ fun DesplegableConfiguarion(
                 /*TODO borrar datos usuario*/
                 vm.ocultarPanelNavegacion()
                 vm.cambiarBotonNav(0)
-                navController.navigate(Pantallas.inicio.name)
+                navController.navigate(Screens.inicio.name)
             })
     }
 }

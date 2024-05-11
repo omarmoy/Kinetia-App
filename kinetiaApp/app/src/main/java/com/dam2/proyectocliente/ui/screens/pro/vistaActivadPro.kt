@@ -54,13 +54,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.utils.mostrarFecha
 import com.dam2.proyectocliente.utils.toStringFecha
 import com.dam2.proyectocliente.utils.toStringHora
-import com.dam2.proyectocliente.models.Pantallas
+import com.dam2.proyectocliente.models.Screens
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
@@ -123,7 +123,7 @@ fun BarraSuperiorActividad(
         actions = {
             IconButton(onClick = {
                 vm.selectModActividad(activity)
-                navController.navigate(Pantallas.modificarActividad.name)
+                navController.navigate(Screens.modificarActividad.name)
             }) {
                 Icon(
                     imageVector = Icons.Filled.Edit,
@@ -384,14 +384,14 @@ fun BarraInferiorActividadVP(
 
             TextButton(onClick = {
                 vm.mostrarPanelNavegacion()
-                navController.navigate(Pantallas.menuPrincipalPro.name)
+                navController.navigate(Screens.menuPrincipalPro.name)
             }) {
                 Text(text = "Cancelar", color = AzulAguaOscuro, fontSize = 16.sp)
             }
             TextButton(onClick = {
                 vm.publicarActividad()
                 vm.mostrarPanelNavegacion()
-                navController.navigate(Pantallas.menuPrincipalPro.name)
+                navController.navigate(Screens.menuPrincipalPro.name)
 
             }) {
                 Text(text = "Publicar", color = AzulAguaOscuro, fontSize = 16.sp)

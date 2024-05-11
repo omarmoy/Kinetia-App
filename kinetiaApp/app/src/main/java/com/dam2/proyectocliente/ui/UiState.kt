@@ -6,13 +6,14 @@ import com.dam2.proyectocliente.models.Advertisement
 import com.dam2.proyectocliente.models.Category
 import com.dam2.proyectocliente.models.Chat
 import com.dam2.proyectocliente.models.User
+import com.dam2.proyectocliente.utils.selectorActivityPicture
 import java.time.Instant
 import java.time.LocalDateTime
 
 data class UiState(
 
-//    val user: User? = Moker.user, //TODO cambiar por null
-    val user: User? = null,
+    val user: User? = Moker.user, //TODO cambiar por null
+//    val user: User? = null,
 
     //Formulario inscripción
     val formularioRegistro: MutableMap<String, String> = mutableMapOf(
@@ -29,7 +30,7 @@ data class UiState(
         "cif" to "",
         "direccion" to ""
     ),
-    val esEmpresa: Boolean = false,
+    val isCompany: Boolean = false,
 
     //Formulario publicar
     var nuevoAdvertisement: Advertisement? = null,
@@ -94,6 +95,7 @@ data class UiState(
     ),
     val chatSeleccionado: Chat = Chat(0, "nombre", "R.drawable.nofoto", ArrayList()),
     val categorySelecciononada: Category = Category.TODO,
+    val selectedPicture: Int = 0,
 
     val mostrarPanelNavegacion: Boolean = false, //TODO gestionar
     val botoneraNav: ArrayList<Boolean> = arrayListOf(true, false, false, false),

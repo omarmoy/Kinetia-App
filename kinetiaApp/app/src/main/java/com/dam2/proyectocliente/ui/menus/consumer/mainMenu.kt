@@ -56,12 +56,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.models.Category
 import com.dam2.proyectocliente.PanelNavegacion
-import com.dam2.proyectocliente.models.Pantallas
+import com.dam2.proyectocliente.models.Screens
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAgua
@@ -70,8 +70,8 @@ import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.NegroClaro
 import com.example.proyectocliente.ui.theme.Rojo
-import com.example.proyectocliente.ui.theme.pequena
-import com.example.proyectocliente.ui.theme.subtitulo
+import com.example.proyectocliente.ui.theme.small
+import com.example.proyectocliente.ui.theme.subtitle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,7 +109,7 @@ fun BarraSuperiorMPrincipal(navController: NavHostController, vm: AppViewModel, 
                 if (uiState.user!!.tieneMensajesSinLeer()) {
                     vm.filtrarMensajesNoleidos()
                     vm.cambiarBotonNav(2)
-                    navController.navigate(Pantallas.menuMensajes.name)
+                    navController.navigate(Screens.menuMensajes.name)
                 } else {
                     //TODO dialogo emergente "No tiene mensajes nuevos"
                 }
@@ -125,7 +125,7 @@ fun BarraSuperiorMPrincipal(navController: NavHostController, vm: AppViewModel, 
                 vm.cambiarBotonNav(1)
                 vm.setIndiceCategoria()
                 vm.selectCategoria(Category.TODO)
-                navController.navigate(Pantallas.menuBusquedaDirecta.name)
+                navController.navigate(Screens.menuBusquedaDirecta.name)
             }) {
                 Icon(
                     imageVector = Icons.Filled.Search,
@@ -216,7 +216,7 @@ fun Categorias(
                             if (uiState.botoneraNav[0]) {
                                 vm.cambiarBotonNav(1)
                                 vm.setIndiceCategoria(categoria)
-                                navController.navigate(Pantallas.menuBuscar.name)
+                                navController.navigate(Screens.menuBuscar.name)
                             }
                         },
                         shape = RoundedCornerShape(4.dp),
@@ -270,7 +270,7 @@ fun DestacadosyRecientes(vm: AppViewModel, uiState: UiState, navController: NavH
 @Composable
 fun Titulo(texto: String) {
     Text(
-        text = texto, fontSize = subtitulo,
+        text = texto, fontSize = subtitle,
         fontWeight = FontWeight.Bold, color = AzulAguaOscuro,
         modifier = Modifier.padding(8.dp)
     )
@@ -302,7 +302,7 @@ fun MiniaturaScrollLateral(
             onClick = {
                 vm.selectActividad(a)
                 vm.ocultarPanelNavegacion()
-                navController.navigate(Pantallas.vistaActividad.name)
+                navController.navigate(Screens.vistaActividad.name)
             }) {
             Image(
                 painter = painterResource(id = R.drawable.noimagen),
@@ -337,7 +337,7 @@ fun MiniaturaScrollLateral(
 
                         )
                     if (!mostrarMenos) {
-                        Text(text = a.location, fontSize = pequena)
+                        Text(text = a.location, fontSize = small)
                     }
                 }
 
@@ -390,7 +390,7 @@ fun MiniaturaActividad(a: Activity, vm: AppViewModel, navController: NavHostCont
             onClick = {
                 vm.selectActividad(a)
                 vm.ocultarPanelNavegacion()
-                navController.navigate(Pantallas.vistaActividad.name)
+                navController.navigate(Screens.vistaActividad.name)
             }) {
             Image(
                 painter = painterResource(id = R.drawable.noimagen),
@@ -417,7 +417,7 @@ fun MiniaturaActividad(a: Activity, vm: AppViewModel, navController: NavHostCont
                 )
                 Text(
                     text = a.location,
-                    fontSize = pequena,
+                    fontSize = small,
                     overflow = TextOverflow.Ellipsis,
                 )
 

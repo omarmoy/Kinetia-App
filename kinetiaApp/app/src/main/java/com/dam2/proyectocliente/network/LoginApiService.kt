@@ -20,7 +20,7 @@ private val retrofit = Retrofit.Builder()
     .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
     .baseUrl(BASE_URL)
     .build()
-interface UserApiService {
+interface LoginApiService {
     @POST("/auth/login")
     suspend fun login(@Body login: Login): User
 
@@ -32,8 +32,8 @@ interface UserApiService {
 
 }
 
-object UserApi{
-    val retrofitService: UserApiService by lazy {
-        retrofit.create(UserApiService::class.java)
+object LoginApi{
+    val retrofitService: LoginApiService by lazy {
+        retrofit.create(LoginApiService::class.java)
     }
 }

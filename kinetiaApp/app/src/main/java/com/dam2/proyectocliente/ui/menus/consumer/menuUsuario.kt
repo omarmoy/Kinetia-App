@@ -57,13 +57,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Advertisement
 import com.dam2.proyectocliente.PanelNavegacion
-import com.dam2.proyectocliente.models.Pantallas
+import com.dam2.proyectocliente.models.Screens
 import com.dam2.proyectocliente.ui.menus.DesplegableConfiguarion
-import com.dam2.proyectocliente.ui.recursos.DialogoInfo
+import com.dam2.proyectocliente.ui.resources.DialogInfo
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
@@ -72,7 +72,7 @@ import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
 import com.example.proyectocliente.ui.theme.NegroClaro
 import com.example.proyectocliente.ui.theme.Rojo
-import com.example.proyectocliente.ui.theme.pequena
+import com.example.proyectocliente.ui.theme.small
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -101,7 +101,7 @@ fun MenuUsuario(navController: NavHostController, vm: AppViewModel, estado: UiSt
     )
 
     if (borrarAdvertisement != null) {
-        DialogoInfo(
+        DialogInfo(
             onDismissRequest = { setBorrarAnuncio(null) },
             onConfirmation = { vm.borrarAnuncio(borrarAdvertisement!!); setBorrarAnuncio(null) },
             dialogTitle = borrarAdvertisement!!.title,
@@ -127,7 +127,7 @@ fun BarraSuperiorPerfil(navController: NavHostController, vm: AppViewModel, esta
                 if (estado.user!!.tieneMensajesSinLeer()) {
                     vm.filtrarMensajesNoleidos()
                     vm.cambiarBotonNav(2)
-                    navController.navigate(Pantallas.menuMensajes.name)
+                    navController.navigate(Screens.menuMensajes.name)
                 } else {
                     //TODO dialogo emergente "No tiene mensajes nuevos"
                 }
@@ -328,7 +328,7 @@ fun ContenidoUsuario(
                 ) {
                     IconButton(onClick = {
                         vm.ocultarPanelNavegacion()
-                        navController.navigate(Pantallas.formularioAnuncio.name)
+                        navController.navigate(Screens.formularioAnuncio.name)
                     }) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally
@@ -338,7 +338,7 @@ fun ContenidoUsuario(
                                 contentDescription = "Publicar anuncio",
                                 tint = AzulAguaOscuro
                             )
-                            Text(text = "Publicar", fontSize = pequena)
+                            Text(text = "Publicar", fontSize = small)
                         }
 
                     }
@@ -364,7 +364,7 @@ fun PanelPerfil(navController: NavHostController, vm: AppViewModel, estado: UiSt
 
         Titulo(texto = "Mis reservas")
         OutlinedButton(
-            onClick = { navController.navigate(Pantallas.listaReservas.name) },
+            onClick = { navController.navigate(Screens.listaReservas.name) },
             modifier = Modifier
                 .height(30.dp)
                 .width(75.dp),
@@ -412,7 +412,7 @@ fun PanelPerfil(navController: NavHostController, vm: AppViewModel, estado: UiSt
 
         Titulo(texto = "Favoritos")
         OutlinedButton(
-            onClick = { navController.navigate(Pantallas.listaFavoritos.name) },
+            onClick = { navController.navigate(Screens.listaFavoritos.name) },
             modifier = Modifier
                 .height(30.dp)
                 .width(75.dp),
@@ -502,7 +502,7 @@ fun MiniaturaAnuncio(
             onClick = {
                 vm.ocultarPanelNavegacion()
                 vm.selectAnuncio(advertisement)
-                navController.navigate(Pantallas.vistaAnuncio.name)
+                navController.navigate(Screens.vistaAnuncio.name)
             },
             shape = RectangleShape
         )

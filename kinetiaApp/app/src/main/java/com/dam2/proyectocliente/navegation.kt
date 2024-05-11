@@ -32,10 +32,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.utils.AppViewModel
-import com.dam2.proyectocliente.utils.UserUiState
 import com.dam2.proyectocliente.models.Category
-import com.dam2.proyectocliente.models.Pantallas
+import com.dam2.proyectocliente.models.Screens
 import com.dam2.proyectocliente.models.Role
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.ui.screens.consumidor.ListaActividades
@@ -50,6 +48,7 @@ import com.dam2.proyectocliente.ui.formularios.FormularioActividad
 import com.dam2.proyectocliente.ui.formularios.FormularioAnuncio
 import com.dam2.proyectocliente.ui.formularios.ModificarActividad
 import com.dam2.proyectocliente.ui.formularios.ModificarAnuncio
+import com.dam2.proyectocliente.ui.formularios.SelectPicture
 import com.dam2.proyectocliente.ui.inicio.ErrorScreen
 import com.dam2.proyectocliente.ui.inicio.Inicio
 import com.dam2.proyectocliente.ui.inicio.LoadingScreen
@@ -67,6 +66,7 @@ import com.dam2.proyectocliente.ui.registro.NuevoUsuario
 import com.dam2.proyectocliente.ui.screens.pro.VistaActividadPro
 import com.dam2.proyectocliente.ui.screens.pro.VistaAnuncioPro
 import com.dam2.proyectocliente.ui.screens.pro.ActivityReserves
+import com.dam2.proyectocliente.utils.Images
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
@@ -99,21 +99,15 @@ fun Contenido(
 
         modifier = Modifier.padding(innerPadding),
         navController = navController,
-        startDestination = Pantallas.inicio.name
-//        if (estado.usuario == null) //TODO: cambiar condición
-//            Pantallas.inicio.name
-//        else if (estado.modoPro) //TODO: cambiar condición
-//            Pantallas.menuPrincipalPro.name
-//        else
-//            Pantallas.menuPrincipal.name
+        startDestination = Screens.inicio.name
     ) {
         //Pantallas principales
-        composable(route = Pantallas.menuPrincipal.name) {
+        composable(route = Screens.menuPrincipal.name) {
         if(estado.user != null) {
             when (vm.userUiState) {
                 is UserUiState.Loading -> LoadingScreen(modifier = Modifier.fillMaxSize())
                 is UserUiState.Success -> {
-                    vm.mostrarPanelNavegacion()
+//                    vm.mostrarPanelNavegacion()
                     if (estado.user.role == Role.PROVIDER && estado.modoPro)
                         MainMenuPro(navController, vm, estado)
                     else{
@@ -128,25 +122,25 @@ fun Contenido(
 
         }
 
-        composable(route = Pantallas.menuBuscar.name) {
+        composable(route = Screens.menuBuscar.name) {
             MenuBusqueda(navController, vm, estado)
         }
 
-        composable(route = Pantallas.menuBusquedaDirecta.name) {
+        composable(route = Screens.menuBusquedaDirecta.name) {
             MenuBusqueda(navController, vm, estado, true)
 
         }
 
-        composable(route = Pantallas.menuMensajes.name) {
+        composable(route = Screens.menuMensajes.name) {
             MenuConversaciones(navController, vm, estado)
         }
 
-        composable(route = Pantallas.menuUsuario.name) {
+        composable(route = Screens.menuUsuario.name) {
             MenuUsuario(navController = navController, vm, estado)
         }
 
         //SubPantallas
-        composable(route = Pantallas.listaReservas.name) {
+        composable(route = Screens.listaReservas.name) {
             //TODO: falta funcionalidad reservas
             ListaActividades(
                 "Mis reservas",
@@ -156,7 +150,7 @@ fun Contenido(
                 estado
             )
         }
-        composable(route = Pantallas.listaFavoritos.name) {
+        composable(route = Screens.listaFavoritos.name) {
             ListaActividades(
                 "Favoritos",
                 estado.user!!.activitiesFav,
@@ -165,88 +159,96 @@ fun Contenido(
                 estado
             )
         }
-        composable(route = Pantallas.vistaActividad.name) {
+        composable(route = Screens.vistaActividad.name) {
             VistaActividad(navController, estado.activitySeleccionada, vm, estado)
         }
-        composable(route = Pantallas.chat.name) {
+        composable(route = Screens.chat.name) {
             VistaChat(navController, estado.chatSeleccionado, vm, estado)
         }
-        composable(route = Pantallas.vistaAnuncio.name) {
+        composable(route = Screens.vistaAnuncio.name) {
             VistaAnuncio(navController, estado.advertisementSeleccionado, vm)
         }
 
         //Login
-        composable(route = Pantallas.inicio.name) {
+        composable(route = Screens.inicio.name) {
             Inicio(navController = navController)
         }
-        composable(route = Pantallas.login.name) {
+        composable(route = Screens.login.name) {
             Login(navController = navController, vm, estado)
         }
 
         //Registro
-        composable(route = Pantallas.elegirRol.name) {
+        composable(route = Screens.elegirRol.name) {
             ElegirRol(navController = navController, vm)
         }
-        composable(route = Pantallas.elegirTipoPro.name) {
+        composable(route = Screens.elegirTipoPro.name) {
             ElegirTipoPro(navController = navController, vm)
         }
-        composable(route = Pantallas.nuevoUsuario.name) {
+        composable(route = Screens.nuevoUsuario.name) {
             NuevoUsuario(navController = navController, vm, estado)
         }
-        composable(route = Pantallas.nuevoUsuarioDatos.name) {
+        composable(route = Screens.nuevoUsuarioDatos.name) {
             NuevoUsuarioDatos(navController = navController, vm, estado)
         }
-        composable(route = Pantallas.nuevaEmpresaDatos.name) {
+        composable(route = Screens.nuevaEmpresaDatos.name) {
             NuevaEmpresaDatos(navController = navController, vm, estado)
         }
-        composable(route = Pantallas.addImagen.name) {
+        composable(route = Screens.addImagen.name) {
             AddImagen(navController = navController, vm, estado)
         }
-        composable(route = Pantallas.confirmarRegistro.name) {
+        composable(route = Screens.confirmarRegistro.name) {
             ConfirmarRegistro(navController = navController, vm, estado)
         }
 
         //formularios y previstas Anuncio
-        composable(route = Pantallas.formularioAnuncio.name) {
+        composable(route = Screens.formularioAnuncio.name) {
             FormularioAnuncio(navController = navController, vm, estado)
         }
-        composable(route = Pantallas.previewNuevoAnuncio.name) {
+        composable(route = Screens.previewNuevoAnuncio.name) {
             VistaAnuncio(navController, estado.nuevoAdvertisement!!, vm, true)
         }
-        composable(route = Pantallas.modificarAnuncio.name) {
+        composable(route = Screens.modificarAnuncio.name) {
             ModificarAnuncio(navController, vm, estado, estado.modAdvertisement!!)
         }
 
         //formularios y previstas ACTIVIDAD
-        composable(route = Pantallas.formularioActividad.name) {
+        composable(route = Screens.formularioActividad.name) {
             FormularioActividad(navController = navController, vm)
         }
-        composable(route = Pantallas.previewNuevaActividad.name) {
+        composable(route = Screens.previewNuevaActividad.name) {
             VistaActividadPro(navController, estado.nuevaActivity!!, vm, estado, true)
         }
-        composable(route = Pantallas.vistaActividadPro.name) {
+        composable(route = Screens.vistaActividadPro.name) {
             VistaActividadPro(navController, estado.activitySeleccionada, vm, estado)
         }
 
-        composable(route = Pantallas.modificarActividad.name) {
+        composable(route = Screens.modificarActividad.name) {
             ModificarActividad(navController, vm, estado, estado.modActivity!!)
         }
 
         //Menus Pro
-        composable(route = Pantallas.menuPrincipalPro.name) {
+        composable(route = Screens.menuPrincipalPro.name) {
             MainMenuPro(navController, vm, estado)
         }
-        composable(route = Pantallas.menuBusquedaAnuncios.name) {
+        composable(route = Screens.menuBusquedaAnuncios.name) {
             MenuBusquedaAnuncio(navController, vm, estado)
         }
-        composable(route = Pantallas.vistaAnuncioPro.name) {
+        composable(route = Screens.vistaAnuncioPro.name) {
             VistaAnuncioPro(navController, estado.advertisementSeleccionado, vm)
         }
-        composable(route = Pantallas.menuReservas.name) {
+        composable(route = Screens.menuReservas.name) {
             ReservationMenu(navController, vm, estado)
         }
-        composable(route = Pantallas.vistaReservasActividad.name) {
+        composable(route = Screens.vistaReservasActividad.name) {
             ActivityReserves(navController, vm, estado.activitySeleccionada)
+        }
+
+        //Selectors Pictures
+        composable(route = Screens.selectActivityPicture.name) {
+            SelectPicture(navController, vm, Images.activityPicture)
+        }
+        composable(route = Screens.selectProfilePicture.name) {
+            SelectPicture(navController, vm, Images.profilePicture)
         }
 
     }
@@ -272,7 +274,7 @@ fun PanelNavegacion(navController: NavHostController, vm: AppViewModel, estado: 
                 IconButton(onClick = {
                     vm.cambiarBotonNav(0)
                     vm.setIndiceCategoria()
-                    navController.navigate(Pantallas.menuPrincipal.name)
+                    navController.navigate(Screens.menuPrincipal.name)
                 }) {
                     Icon(
                         imageVector = Icons.Filled.Home,
@@ -283,7 +285,7 @@ fun PanelNavegacion(navController: NavHostController, vm: AppViewModel, estado: 
                 IconButton(onClick = {
                     vm.cambiarBotonNav(1)
                     vm.selectCategoria(Category.TODO)
-                    navController.navigate(Pantallas.menuBuscar.name)
+                    navController.navigate(Screens.menuBuscar.name)
                 }) {
                     Icon(
                         imageVector = Icons.Filled.Search,
@@ -294,7 +296,7 @@ fun PanelNavegacion(navController: NavHostController, vm: AppViewModel, estado: 
 
                 IconButton(onClick = {
                     vm.cambiarBotonNav(2)
-                    navController.navigate(Pantallas.menuMensajes.name)
+                    navController.navigate(Screens.menuMensajes.name)
                 }) {
                     Icon(
                         imageVector = Icons.Filled.MailOutline,
@@ -304,7 +306,7 @@ fun PanelNavegacion(navController: NavHostController, vm: AppViewModel, estado: 
                 }
                 IconButton(onClick = {
                     vm.cambiarBotonNav(3)
-                    navController.navigate(Pantallas.menuUsuario.name)
+                    navController.navigate(Screens.menuUsuario.name)
                 }) {
                     Icon(
                         imageVector = Icons.Filled.AccountCircle,
@@ -337,7 +339,7 @@ fun PanelNavegacionPro(navController: NavHostController, vm: AppViewModel, estad
             ) {
                 IconButton(onClick = {
                     vm.cambiarBotonNav(0)
-                    navController.navigate(Pantallas.menuPrincipalPro.name)
+                    navController.navigate(Screens.menuPrincipalPro.name)
                 }) {
                     Icon(
                         imageVector = Icons.Filled.Menu,
@@ -347,7 +349,7 @@ fun PanelNavegacionPro(navController: NavHostController, vm: AppViewModel, estad
                 }
                 IconButton(onClick = {
                     vm.cambiarBotonNav(1)
-                    navController.navigate(Pantallas.menuReservas.name)
+                    navController.navigate(Screens.menuReservas.name)
                 }) {
                     Icon(
                         imageVector = Icons.Filled.DateRange,
@@ -358,7 +360,7 @@ fun PanelNavegacionPro(navController: NavHostController, vm: AppViewModel, estad
 
                 IconButton(onClick = {
                     vm.cambiarBotonNav(2)
-                    navController.navigate(Pantallas.menuMensajes.name)
+                    navController.navigate(Screens.menuMensajes.name)
                 }) {
                     Icon(
                         imageVector = Icons.Filled.MailOutline,
@@ -368,7 +370,7 @@ fun PanelNavegacionPro(navController: NavHostController, vm: AppViewModel, estad
                 }
                 IconButton(onClick = {
                     vm.cambiarBotonNav(3)
-                    navController.navigate(Pantallas.menuBusquedaAnuncios.name)
+                    navController.navigate(Screens.menuBusquedaAnuncios.name)
                 }) {
                     Icon(
                         imageVector = Icons.Filled.Search,

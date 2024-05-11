@@ -1,6 +1,6 @@
 package com.dam2.proyectocliente.models
 
-enum class Pantallas {
+enum class Screens {
     inicio,
     login,
     elegirRol,
@@ -17,6 +17,8 @@ enum class Pantallas {
     previewNuevoAnuncio,
     modificarActividad,
     modificarAnuncio,
+    selectActivityPicture,
+    selectProfilePicture,
 
     menuPrincipal,
     menuBuscar,

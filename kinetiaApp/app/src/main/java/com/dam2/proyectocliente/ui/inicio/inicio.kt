@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.models.Pantallas
+import com.dam2.proyectocliente.models.Screens
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.AzulAgua
@@ -87,7 +87,7 @@ fun Inicio(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(180.dp))
 
                 OutlinedButton(
-                    onClick = { navController.navigate(Pantallas.elegirRol.name) },
+                    onClick = { navController.navigate(Screens.elegirRol.name) },
                     border = BorderStroke(
                         ButtonDefaults.outlinedButtonBorder.width,
                         color = AzulAgua
@@ -97,7 +97,7 @@ fun Inicio(navController: NavHostController) {
                     Text(text = "Registro", color = AzulAguaOscuro)
                 }
                 Button(
-                    onClick = { navController.navigate(Pantallas.login.name) },
+                    onClick = { navController.navigate(Screens.login.name) },
                     colors = ButtonDefaults.buttonColors(AzulAguaOscuro),
                     modifier = Modifier.fillMaxWidth()
                 ) {

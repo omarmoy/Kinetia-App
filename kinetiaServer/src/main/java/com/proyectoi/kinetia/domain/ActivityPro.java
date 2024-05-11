@@ -12,10 +12,16 @@ public class ActivityPro extends Activity{
     @JsonProperty("reservations")
     private List<Reservation> reservations = new ArrayList<Reservation>();
 
+    public ActivityPro() {
+        super();
+    }
+
     public ActivityPro(ActivityModel activity) {
         super(activity);
         for(UserModel user : activity.getReservations()){
             reservations.add(new Reservation(user));
         }
     }
+
+
 }

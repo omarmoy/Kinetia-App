@@ -44,10 +44,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
-import com.dam2.proyectocliente.models.Pantallas
-import com.dam2.proyectocliente.ui.recursos.DialogoInfo
+import com.dam2.proyectocliente.models.Screens
+import com.dam2.proyectocliente.ui.resources.DialogInfo
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
@@ -60,11 +60,11 @@ fun AddImagen(navController: NavHostController, vm: AppViewModel, estado: UiStat
     var imagenSubida by rememberSaveable { mutableStateOf(false) }
     var error by rememberSaveable { mutableStateOf(false) }
 
-    val titulo = if (estado.esEmpresa) "Añade el logo de tu empresa" else "Sube una foto de perfil"
-    val dialogText = if (estado.esEmpresa) "No has añadido el logo de tu empresa" else "No has subido una foto para tu perfil"
-    val buttonConfirm = if (estado.esEmpresa) "Continuar sin logo" else "Continuar sin foto"
-    val buttonDismiss = if (estado.esEmpresa) "Aladir logo" else "Elegir una foto"
-    val imagePorDefecto = if(estado.esEmpresa) R.drawable.noimagen else R.drawable.nofoto
+    val titulo = if (estado.isCompany) "Añade el logo de tu empresa" else "Sube una foto de perfil"
+    val dialogText = if (estado.isCompany) "No has añadido el logo de tu empresa" else "No has subido una foto para tu perfil"
+    val buttonConfirm = if (estado.isCompany) "Continuar sin logo" else "Continuar sin foto"
+    val buttonDismiss = if (estado.isCompany) "Aladir logo" else "Elegir una foto"
+    val imagePorDefecto = if(estado.isCompany) R.drawable.noimagen else R.drawable.nofoto
 
     Scaffold(
         topBar = {
@@ -94,7 +94,7 @@ fun AddImagen(navController: NavHostController, vm: AppViewModel, estado: UiStat
                         error = true
                     } else {
                         //TODO: añadir imagen
-                        navController.navigate(Pantallas.confirmarRegistro.name)
+                        navController.navigate(Screens.confirmarRegistro.name)
                     }
 
                 }) {
@@ -153,10 +153,10 @@ fun AddImagen(navController: NavHostController, vm: AppViewModel, estado: UiStat
 
             when {
                 error -> {
-                    DialogoInfo(
+                    DialogInfo(
                         onDismissRequest = { error = false },
                         onConfirmation = {
-                            navController.navigate(Pantallas.confirmarRegistro.name)
+                            navController.navigate(Screens.confirmarRegistro.name)
                         },
                         dialogText = dialogText,
                         buttonConfirm = buttonConfirm,

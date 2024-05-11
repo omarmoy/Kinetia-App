@@ -38,12 +38,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.utils.texfieldVacio
-import com.dam2.proyectocliente.models.Pantallas
-import com.dam2.proyectocliente.ui.recursos.DialogoInfo
-import com.dam2.proyectocliente.ui.recursos.TextFieldConCabecera
+import com.dam2.proyectocliente.models.Screens
+import com.dam2.proyectocliente.ui.resources.DialogInfo
+import com.dam2.proyectocliente.ui.resources.TextFieldWithHeader
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
@@ -81,12 +81,12 @@ fun FormularioAnuncio(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                TextFieldConCabecera(
+                TextFieldWithHeader(
                     cabecera = "Título",
                     value = titulo,
                     onValueChange = { titulo = it }
                 )
-                TextFieldConCabecera(
+                TextFieldWithHeader(
                     cabecera = "Ubicación",
                     value = ubicacion,
                     onValueChange = { ubicacion = it }
@@ -112,7 +112,7 @@ fun FormularioAnuncio(
             // control de entrada
             when {
                 error -> {
-                    DialogoInfo(
+                    DialogInfo(
                         onConfirmation = { error = false },
                         dialogText = "Todos los campos son obligatorios"
                     )
@@ -178,7 +178,7 @@ fun BarraInferiorFAN(
                     setError(true)
                 else {
                     vm.nuevoAnuncio(titulo, ubicacion, contenido)
-                    navController.navigate(Pantallas.previewNuevoAnuncio.name)
+                    navController.navigate(Screens.previewNuevoAnuncio.name)
                 }
 
             }) {

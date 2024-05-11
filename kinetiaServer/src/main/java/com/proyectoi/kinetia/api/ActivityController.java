@@ -1,6 +1,7 @@
 package com.proyectoi.kinetia.api;
 
 import com.proyectoi.kinetia.domain.Activity;
+import com.proyectoi.kinetia.domain.ActivityPro;
 import com.proyectoi.kinetia.domain.Prueba;
 import com.proyectoi.kinetia.models.ActivityModel;
 import com.proyectoi.kinetia.services.ActivityService;
@@ -30,7 +31,7 @@ public class ActivityController {
     }
 
     @PutMapping
-    public Boolean updateActivity(@RequestBody ActivityModel activity) {
+    public Boolean updateActivity(@RequestBody ActivityPro activity) {
         return activityService.updateActivity(activity);
     }
 

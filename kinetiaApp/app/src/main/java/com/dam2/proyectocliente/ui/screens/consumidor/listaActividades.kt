@@ -53,15 +53,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Activity
-import com.dam2.proyectocliente.models.Pantallas
+import com.dam2.proyectocliente.models.Screens
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
 import com.example.proyectocliente.ui.theme.NegroClaro
-import com.example.proyectocliente.ui.theme.pequena
+import com.example.proyectocliente.ui.theme.small
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -210,7 +210,7 @@ fun MiniaturaActividadUnaLinea(
             onClick = {
                 vm.selectActividad(a)
                 vm.ocultarPanelNavegacion()
-                navController.navigate(Pantallas.vistaActividad.name)
+                navController.navigate(Screens.vistaActividad.name)
             }) {
             Image(
                 painter = painterResource(id = R.drawable.noimagen),
@@ -230,7 +230,7 @@ fun MiniaturaActividadUnaLinea(
                 fontWeight = FontWeight.Bold,
             )
 
-            Text(text = a.location, fontSize = pequena)
+            Text(text = a.location, fontSize = small)
 
         }
 

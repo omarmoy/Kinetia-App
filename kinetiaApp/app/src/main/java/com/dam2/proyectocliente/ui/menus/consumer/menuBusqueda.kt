@@ -57,17 +57,17 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.dam2.proyectocliente.utils.AppViewModel
+import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.PanelNavegacion
-import com.dam2.proyectocliente.models.Pantallas
+import com.dam2.proyectocliente.models.Screens
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaFondo
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.NegroClaro
-import com.example.proyectocliente.ui.theme.pequena
+import com.example.proyectocliente.ui.theme.small
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -223,7 +223,7 @@ fun MiniaturaActividadBusqueda(
             onClick = {
                 vm.selectActividad(a)
                 vm.ocultarPanelNavegacion()
-                navController.navigate(Pantallas.vistaActividad.name)
+                navController.navigate(Screens.vistaActividad.name)
             }) {
             Image(
                 painter = painterResource(R.drawable.noimagen),
@@ -256,7 +256,7 @@ fun MiniaturaActividadBusqueda(
                         fontWeight = FontWeight.Bold,
 
                         )
-                    Text(text = a.location, fontSize = pequena)
+                    Text(text = a.location, fontSize = small)
                 }
 
                 Column(

@@ -54,7 +54,7 @@ import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Chat
 import com.dam2.proyectocliente.PanelNavegacion
 import com.dam2.proyectocliente.models.Screens
-import com.dam2.proyectocliente.utils.selectorProfilePicture
+import com.dam2.proyectocliente.utils.Picture
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAgua
 import com.example.proyectocliente.ui.theme.BlancoFondo
@@ -181,7 +181,7 @@ fun MiniaturaContacto(c: Chat, navController: NavHostController, vm: AppViewMode
                 colors = CardDefaults.cardColors(containerColor = BlancoFondo)
             ) {
                 Image(
-                    painter = painterResource(id= selectorProfilePicture(c.contactPicture)),
+                    painter = painterResource(id=Picture.getProfilePictureInt(c.contactPicture)),
                     contentDescription = c.contactName,
                     modifier = Modifier
                         .fillMaxHeight()

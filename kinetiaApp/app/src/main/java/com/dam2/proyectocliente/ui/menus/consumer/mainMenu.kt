@@ -300,7 +300,7 @@ fun MiniaturaScrollLateral(
         }
         Card(//shape = RectangleShape, /*cuadrado*/
             onClick = {
-                vm.selectActividad(a)
+                vm.selectActivity(a)
                 vm.ocultarPanelNavegacion()
                 navController.navigate(Screens.vistaActividad.name)
             }) {
@@ -388,7 +388,7 @@ fun MiniaturaActividad(a: Activity, vm: AppViewModel, navController: NavHostCont
     ) {
         Card(shape = RectangleShape,
             onClick = {
-                vm.selectActividad(a)
+                vm.selectActivity(a)
                 vm.ocultarPanelNavegacion()
                 navController.navigate(Screens.vistaActividad.name)
             }) {

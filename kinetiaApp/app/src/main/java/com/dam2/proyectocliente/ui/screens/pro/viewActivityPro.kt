@@ -55,12 +55,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
-import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.utils.mostrarFecha
 import com.dam2.proyectocliente.utils.toStringFecha
 import com.dam2.proyectocliente.utils.toStringHora
 import com.dam2.proyectocliente.models.Screens
+import com.dam2.proyectocliente.moker.Moker
+import com.dam2.proyectocliente.utils.Picture
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
@@ -72,27 +73,26 @@ import java.time.ZoneId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VistaActividadPro(
+fun ViewActivityPro(
     navController: NavHostController,
     activity: Activity,
     vm: AppViewModel,
-    estado: UiState,
-    vistaPrevia: Boolean = false,
+    preView: Boolean = false,
 ) {
 
     Scaffold(
         topBar = {
-            if (vistaPrevia)
-                BarraSuperiorActividadVistaPrevia()
+            if (preView)
+                TopBarVAPreview()
             else
-                BarraSuperiorActividad(navController, vm, activity)
+                TopBarActivityPro(navController, vm, activity)
         },
         content = { innerPadding ->
             ContenidoActividad(innerPadding, activity)
         },
         bottomBar = {
-            if (vistaPrevia)
-                BarraInferiorActividadVP(navController, activity, vm, estado)
+            if (preView)
+                BottomBarPreviewActivityPro(navController, vm)
         }
     )
 }
@@ -100,14 +100,12 @@ fun VistaActividadPro(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorActividad(
+fun TopBarActivityPro(
     navController: NavHostController, vm: AppViewModel, activity: Activity
 ) {
 
     TopAppBar(
-        title = {
-            //Text(actividad.titulo, overflow = TextOverflow.Ellipsis)
-        },
+        title = { },
         colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = BlancoFondo),
         navigationIcon = {
             IconButton(onClick = {
@@ -150,7 +148,7 @@ fun ContenidoActividad(
     ) {
 
         Image(
-            painter = painterResource(id = R.drawable.nofoto),
+            painter = painterResource(id = Picture.getActivityPictureInt(activity.picture)),
             contentDescription = activity.title,
             modifier = Modifier
                 .fillMaxWidth()
@@ -334,7 +332,7 @@ fun PanelContenido(activity: Activity) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorActividadVistaPrevia() {
+fun TopBarVAPreview() {
     TopAppBar(
         title = {
             Text("Vista previa")
@@ -359,11 +357,9 @@ fun BarraSuperiorActividadVistaPrevia() {
 }
 
 @Composable
-fun BarraInferiorActividadVP(
+fun BottomBarPreviewActivityPro(
     navController: NavHostController,
-    activity: Activity,
     vm: AppViewModel,
-    estado: UiState,
 ) {
     Box(
         modifier = Modifier
@@ -389,7 +385,7 @@ fun BarraInferiorActividadVP(
                 Text(text = "Cancelar", color = AzulAguaOscuro, fontSize = 16.sp)
             }
             TextButton(onClick = {
-                vm.publicarActividad()
+                vm.postActivity()
                 vm.mostrarPanelNavegacion()
                 navController.navigate(Screens.menuPrincipalPro.name)
 
@@ -407,10 +403,9 @@ fun BarraInferiorActividadVP(
  */
 @Preview(showBackground = true)
 @Composable
-fun ActividadPreview() {
+fun AproPreview() {
     val vm: AppViewModel = viewModel()
     val navController = rememberNavController()
-//    val a = DatosPrueba.actividades[0]
-//    val estado by vm.uiState.collectAsState()
-//    VistaActividadPro(navController = navController, activity = a, vm, estado)
+    val a = Moker.activity
+    ViewActivityPro(navController = navController, activity = a, vm)
 }

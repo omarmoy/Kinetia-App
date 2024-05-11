@@ -5,6 +5,7 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -19,10 +20,10 @@ private val retrofit = Retrofit.Builder()
 interface ActivityApiService {
 
     @POST("/activities")
-    suspend fun addActivity(activity: Activity): Long
+    suspend fun addActivity(@Body activity: Activity): Long
 
     @PUT("/activities")
-    suspend fun editActivity(activity: Activity): Boolean
+    suspend fun editActivity(@Body activity: Activity): Boolean
 
     @DELETE("/activities/{activityId}")
     suspend fun deleteActivity(@Path("activityId") activityId: Long): Boolean

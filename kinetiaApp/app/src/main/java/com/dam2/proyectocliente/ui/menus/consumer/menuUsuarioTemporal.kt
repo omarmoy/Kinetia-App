@@ -76,21 +76,21 @@ import com.example.proyectocliente.ui.theme.small
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuUsuario(navController: NavHostController, vm: AppViewModel, estado: UiState) {
+fun MenuUsuario2(navController: NavHostController, vm: AppViewModel, estado: UiState) {
 
     var borrarAdvertisement by remember { mutableStateOf<Advertisement?>(null) }
     val setBorrarAnuncio: (Advertisement?) -> Unit = { anuncio -> borrarAdvertisement = anuncio }
 
     Scaffold(
         topBar = {
-            BarraSuperiorPerfil(
+            BarraSuperiorPerfil2(
                 navController = navController,
                 vm,
                 estado
             )
         },
         content = { innerPadding ->
-            ContenidoUsuario(
+            ContenidoUsuario2(
                 innerPadding,
                 navController,
                 vm,
@@ -115,7 +115,7 @@ fun MenuUsuario(navController: NavHostController, vm: AppViewModel, estado: UiSt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorPerfil(navController: NavHostController, vm: AppViewModel, estado: UiState) {
+fun BarraSuperiorPerfil2(navController: NavHostController, vm: AppViewModel, estado: UiState) {
 
     var mostrarMenu by remember { mutableStateOf(false) }
 //    val setMostrarMenu: (Boolean) -> Unit = { value -> mostrarMenu = value }
@@ -158,14 +158,14 @@ fun BarraSuperiorPerfil(navController: NavHostController, vm: AppViewModel, esta
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContenidoUsuario(
+fun ContenidoUsuario2(
     innerPadding: PaddingValues,
     navController: NavHostController,
     vm: AppViewModel,
     estado: UiState,
     setBorrarAnuncio: (Advertisement) -> Unit
 ) {
-    var verPerfil by rememberSaveable { mutableStateOf(true) }
+    var verPerfil by rememberSaveable { mutableStateOf(false) }
     Scaffold(
         modifier = Modifier.padding(innerPadding),
         content = { paddinHijo ->
@@ -215,7 +215,7 @@ fun ContenidoUsuario(
                 LazyColumn {
                     if (verPerfil)
                         item {
-                            PanelPerfil(
+                            PanelPerfil2(
                                 navController,
                                 vm,
                                 estado
@@ -240,7 +240,7 @@ fun ContenidoUsuario(
                             }
                         }
                         items(estado.user!!.advertisements) { anuncio ->
-                            MiniaturaAnuncio(
+                            Anuncio(
                                 anuncio,
                                 navController,
                                 vm,
@@ -294,8 +294,8 @@ fun ContenidoUsuario(
 
 
 @Composable
-fun PanelPerfil(navController: NavHostController, vm: AppViewModel, estado: UiState) {
-    DatosPerfil(estado)
+fun PanelPerfil2(navController: NavHostController, vm: AppViewModel, estado: UiState) {
+    DatosPerfil2(estado)
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -394,7 +394,7 @@ fun PanelPerfil(navController: NavHostController, vm: AppViewModel, estado: UiSt
 }
 
 @Composable
-fun DatosPerfil(estado: UiState) {
+fun DatosPerfil2(estado: UiState) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -428,7 +428,7 @@ fun DatosPerfil(estado: UiState) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MiniaturaAnuncio(
+fun Anuncio(
     advertisement: Advertisement,
     navController: NavHostController,
     vm: AppViewModel,
@@ -484,21 +484,21 @@ fun MiniaturaAnuncio(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun ProfilePreview() {
+fun ProfilePasdfreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
     val estado by vm.uiState.collectAsState()
     val setBorrarAnuncio: (Advertisement) -> Unit = { }
     Scaffold(
         topBar = {
-            BarraSuperiorPerfil(
+            BarraSuperiorPerfil2(
                 navController,
                 vm,
                 estado
             )
         },
         content = { innerPadding ->
-            ContenidoUsuario(
+            ContenidoUsuario2(
                 innerPadding,
                 navController,
                 vm,

@@ -2,9 +2,10 @@ package com.proyectoi.kinetia.services;
 
 import com.proyectoi.kinetia.domain.Activity;
 import com.proyectoi.kinetia.domain.ActivityPro;
-import com.proyectoi.kinetia.domain.Prueba;
 import com.proyectoi.kinetia.models.ActivityModel;
+import com.proyectoi.kinetia.models.UserModel;
 import com.proyectoi.kinetia.repositories.IActivityRepository;
+import com.proyectoi.kinetia.repositories.IUserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,9 +16,11 @@ import java.util.Optional;
 public class ActivityService {
 
     private final IActivityRepository activityRepository;
+    private final IUserRepository userRepository;
 
-    public ActivityService(IActivityRepository activityRepository) {
+    public ActivityService(IActivityRepository activityRepository, IUserRepository userRepository) {
         this.activityRepository = activityRepository;
+        this.userRepository = userRepository;
     }
 
     public List<Activity> getAll() {
@@ -29,18 +32,12 @@ public class ActivityService {
         return activities;
     }
 
-    public List<Prueba> getPrueba(){
-        List<Prueba> pruebas = new ArrayList<>();
-        for (ActivityModel activityModel : activityRepository.findAll()) {
-            pruebas.add(new Prueba(activityModel));
-        }
-        return pruebas;
-    }
-
-
-    public Long createActivity(ActivityModel activity) {
+    public Long createActivity(Activity activity) {
         try {
-            activityRepository.save(activity);
+            UserModel user = userRepository.findById(activity.getUserId()).orElseThrow();
+            ActivityModel activityModel = new ActivityModel(activity);
+            activityModel.setUser(user);
+            activityRepository.save(activityModel);
             return activity.getId();
         } catch (Exception e) {
             return -1L;
@@ -48,17 +45,18 @@ public class ActivityService {
     }
 
     public Boolean updateActivity(ActivityPro activity) {
+        System.out.println(activity);
         Optional<ActivityModel> activityOptional = activityRepository.findById(activity.getId());
         if (activityOptional.isPresent()) {
             ActivityModel activityEdited = activityOptional.get();
             activityEdited.setTitle(activity.getTitle());
             activityEdited.setDescription(activity.getDescription());
-            activityEdited.setPrice(activity.getPrice());
+            activityEdited.setPicture(activity.getPicture());
             activityEdited.setDate(activity.getDate());
             activityEdited.setPrice(activity.getPrice());
             activityEdited.setLocation(activity.getLocation());
             activityEdited.setCategory(activity.getCategory());
-            activityEdited.setFeatured(activity.getFeatured());
+            activityEdited.setFeatured(activity.getFeatured() != null ? activity.getFeatured() : false);
             activityEdited.setVacancies(activity.getVacancies());
             activityRepository.save(activityEdited);
             return true;

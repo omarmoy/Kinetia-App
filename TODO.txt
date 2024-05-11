@@ -11,5 +11,3 @@ funcionalidad:
 
 
 Modo admin
-
-Enchufar la api

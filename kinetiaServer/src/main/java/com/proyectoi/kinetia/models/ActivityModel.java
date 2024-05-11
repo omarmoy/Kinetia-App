@@ -1,5 +1,6 @@
 package com.proyectoi.kinetia.models;
 
+import com.proyectoi.kinetia.domain.Activity;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
-@Table (name = "activities")
+@Table(name = "activities")
 public class ActivityModel {
 
     public enum Category {
@@ -27,14 +28,35 @@ public class ActivityModel {
         SALUD_Y_BIENESTAR
     }
 
+    public ActivityModel() {
+
+    }
+
+    public ActivityModel(Activity activity) {
+//        this.id = id;
+        this.title = activity.getTitle();
+        this.description = activity.getDescription();
+        this.picture = activity.getPicture();
+//        this.user = user;
+        this.date = activity.getDate();
+        this.createdAt = activity.getCreatedAt();
+        this.price = activity.getPrice();
+        this.location = activity.getLocation();
+        this.category = activity.getCategory();
+        this.featured = activity.getFeatured() != null ? activity.getFeatured() : false;
+        this.vacancies = activity.getVacancies();
+//        this.usersWhoFav = usersWhoFav;
+//        this.reservations = reservations;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column (nullable = false)
+    @Column(nullable = false)
     private String title;
 
-    @Column (nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
     @Column
@@ -43,7 +65,7 @@ public class ActivityModel {
     @ManyToOne(fetch = FetchType.LAZY)
     private UserModel user;
 
-    @Column (nullable = false)
+    @Column(nullable = false)
     private LocalDateTime date;
 
     @CreatedDate
@@ -52,17 +74,17 @@ public class ActivityModel {
     @Column
     private BigDecimal price;
 
-    @Column (nullable = false)
+    @Column(nullable = false)
     private String location;
 
-    @Column (nullable = false)
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    @Column (nullable = false)
+    @Column(nullable = false)
     private Boolean featured;
 
-    @Column (nullable = false)
+    @Column(nullable = false)
     private int vacancies;
 
     @ManyToMany(mappedBy = "activitiesFav", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

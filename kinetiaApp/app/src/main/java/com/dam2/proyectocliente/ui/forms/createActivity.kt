@@ -1,7 +1,7 @@
-package com.dam2.proyectocliente.ui.formularios
+package com.dam2.proyectocliente.ui.forms
 
 import ComboBox
-import ComboBoxCategoria
+import ComboBoxCategory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,8 +18,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,7 +36,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -52,36 +51,33 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
-import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.utils.texfieldVacio
 import com.dam2.proyectocliente.utils.validarFechaActividad
-import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.models.Category
 import com.dam2.proyectocliente.models.Screens
-import com.dam2.proyectocliente.moker.Moker
+import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.ui.resources.DialogInfo
 import com.dam2.proyectocliente.ui.resources.TextFieldWithHeader
 import com.dam2.proyectocliente.ui.resources.TextFieldEnterNumber
-import com.dam2.proyectocliente.utils.selectorActivityPicture
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
 import com.example.proyectocliente.ui.theme.NegroClaro
+import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ModificarActividad(
+fun FormActivity(
     navController: NavHostController,
     vm: AppViewModel,
-    estado: UiState,
-    activity: Activity
+    uiState: UiState,
 ) {
 
     val categories: ArrayList<Category> =
         ArrayList(Category.values().filter { it != Category.TODO })
-    val listaHoras = arrayListOf<String>(
+    val listaHoras = arrayListOf(
         "00",
         "01",
         "02",
@@ -106,31 +102,30 @@ fun ModificarActividad(
         "22",
         "23"
     )
-    val listaMinutos = arrayListOf<String>("00", "15", "30", "45")
+    val listaMinutos = arrayListOf("00", "15", "30", "45")
 
-    var titulo by rememberSaveable { mutableStateOf(activity.title) }
-    var precioT by rememberSaveable { mutableStateOf(activity.price.toString()) }
-    var ubicacion by rememberSaveable { mutableStateOf(activity.location) }
-    var category by rememberSaveable { mutableStateOf<Category?>(activity.category) }
-    var destacado by rememberSaveable { mutableStateOf(activity.featured) }
-    var contenido by rememberSaveable { mutableStateOf(activity.description) }
-    var diaT by rememberSaveable { mutableStateOf(activity.date.dayOfMonth.toString()) }
-    var mesT by rememberSaveable { mutableStateOf(activity.date.monthValue.toString()) }
-    var anioT by rememberSaveable { mutableStateOf(activity.date.year.toString()) }
-    var horaT by rememberSaveable { mutableStateOf(activity.date.hour.toString()) }
-    var minutosT by rememberSaveable { mutableStateOf(activity.date.minute.toString()) }
-    var nPlazasT by rememberSaveable { mutableStateOf(activity.vacancies.toString()) }
+    var titulo by rememberSaveable { mutableStateOf("") }
+    var precioT by rememberSaveable { mutableStateOf("") }
+    var ubicacion by rememberSaveable { mutableStateOf("") }
+    var category by rememberSaveable { mutableStateOf<Category?>(null) }
+    var destacado by rememberSaveable { mutableStateOf(false) }
+    var contenido by rememberSaveable { mutableStateOf("") }
+    var diaT by rememberSaveable { mutableStateOf("") }
+    var mesT by rememberSaveable { mutableStateOf("") }
+    var anioT by rememberSaveable { mutableStateOf(LocalDate.now().year.toString()) }
+    var horaT by rememberSaveable { mutableStateOf("") }
+    var minutosT by rememberSaveable { mutableStateOf("") }
+    var nPlazasT by rememberSaveable { mutableStateOf("") }
 
     var error by rememberSaveable { mutableStateOf("") }
     val setError: (String) -> Unit = { e -> error = e }
 
     Scaffold(
-        topBar = { BarraSuperiorModActividad(navController, vm) },
+        topBar = { TopBarFA(navController, vm) },
         bottomBar = {
-            BarraInferiorModActividad(
-                vm, estado, titulo, precioT, ubicacion, category, destacado,
-                contenido, diaT, mesT, anioT, horaT, minutosT, nPlazasT, setError, activity,
-                navController
+            BottomBarCA(
+                vm, navController, uiState, titulo, precioT, ubicacion, category, destacado,
+                contenido, diaT, mesT, anioT, horaT, minutosT, nPlazasT, setError
             )
         }
 
@@ -150,10 +145,10 @@ fun ModificarActividad(
                         .fillMaxWidth()
                 ) {
                     Image(
-                        painter = if (estado.selectedPicture == 0)
-                            painterResource(selectorActivityPicture(activity.picture))
-                        else
-                            painterResource(id = estado.selectedPicture),
+                        painter = painterResource(
+                            id = if (uiState.selectedPicture == 0)
+                                R.drawable.noimagen else uiState.selectedPicture
+                        ),
                         contentDescription = "imagen",
                         modifier = Modifier
                             .fillMaxWidth()
@@ -170,9 +165,9 @@ fun ModificarActividad(
                             }
                         ) {
                             Icon(
-                                imageVector = Icons.Filled.Edit,
-                                contentDescription = "edit",
-                                tint = NegroClaro
+                                imageVector = Icons.Filled.AddCircle,
+                                contentDescription = "addImagen",
+                                tint = AzulAguaOscuro
                             )
                         }
                     }
@@ -193,10 +188,9 @@ fun ModificarActividad(
                 )
 
                 Text(text = "Categoria", color = NegroClaro, fontSize = 16.sp)
-                ComboBoxCategoria(
+                ComboBoxCategory(
                     options = categories,
                     onOptionChosen = { category = it },
-                    selectedOption = category,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(20.dp))
@@ -236,7 +230,6 @@ fun ModificarActividad(
                         .padding(top = 10.dp)
                 ) {
 
-//                    Spacer(modifier = Modifier.width(2.dp))
                     ComboBox(
                         labelText = { Text(text = "hora", fontSize = 12.sp) },
                         options = listaHoras,
@@ -321,10 +314,7 @@ fun ModificarActividad(
                         checked = destacado,
                         onCheckedChange = { destacado = it },
                         colors = SwitchDefaults.colors(
-//                            checkedThumbColor = MaterialTheme.colorScheme.primary,
                             checkedTrackColor = AmarilloPastel,
-//                            uncheckedThumbColor = MaterialTheme.colorScheme.secondary,
-//                            uncheckedTrackColor = MaterialTheme.colorScheme.secondaryContainer,
                         )
                     )
                 }
@@ -363,6 +353,13 @@ fun ModificarActividad(
                         dialogText = "El número de plazas debe tener formato numérico"
                     )
                 }
+
+                "noFoto" -> {
+                    DialogInfo(
+                        onConfirmation = { error = "" },
+                        dialogText = "No ha elegido ninguna foto"
+                    )
+                }
             }
 
 
@@ -376,19 +373,18 @@ fun ModificarActividad(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorModActividad(navController: NavHostController, vm: AppViewModel) {
+fun TopBarFA(navController: NavHostController, vm: AppViewModel) {
     TopAppBar(
-        title = { Text(text = "Modificar Actividad") },
+        title = { Text(text = "Formulario Actividad") },
         colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = BlancoFondo),
         navigationIcon = {
             IconButton(onClick = {
-                vm.mostrarPanelNavegacion()
-                vm.selectPicture(0)
                 navController.navigateUp()
+                vm.mostrarPanelNavegacion()
             }) {
                 Icon(
-                    imageVector = Icons.Filled.Clear,
-                    contentDescription = "cancelar",
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "volver",
                     tint = AzulAguaOscuro
                 )
             }
@@ -397,9 +393,10 @@ fun BarraSuperiorModActividad(navController: NavHostController, vm: AppViewModel
 }
 
 @Composable
-fun BarraInferiorModActividad(
+fun BottomBarCA(
     vm: AppViewModel,
-    estado: UiState,
+    navController: NavHostController,
+    uiState: UiState,
     titulo: String,
     precioT: String,
     ubicacion: String,
@@ -412,19 +409,16 @@ fun BarraInferiorModActividad(
     horaT: String,
     minutosT: String,
     nPlazasT: String,
-    setError: (String) -> Unit,
-    activity: Activity,
-    navController: NavHostController,
+    setError: (String) -> Unit
 ) {
 
-    var dia = diaT.toIntOrNull() ?: 0
-    var mes = mesT.toIntOrNull() ?: 0
-    var anio = anioT.toIntOrNull() ?: 0
-    val picture = estado.selectedPicture
+    val day = diaT.toIntOrNull() ?: 0
+    val month = mesT.toIntOrNull() ?: 0
+    val year = anioT.toIntOrNull() ?: 0
 
-    val campos = arrayListOf(
+    val fields = arrayListOf(
         titulo, precioT, ubicacion, category?.toString() ?: "", diaT, mesT, anioT, horaT,
-        minutosT, contenido, nPlazasT
+        minutosT, contenido, nPlazasT, destacado.toString()
     )
 
     Box(
@@ -439,36 +433,34 @@ fun BarraInferiorModActividad(
                 .background(BlancoFondo)
         ) {
             TextButton(onClick = {
-                if (texfieldVacio(campos))
+                if (texfieldVacio(fields))
                     setError("campoVacio")
-                else if (!validarFechaActividad(dia, mes, anio))
+                else if (!validarFechaActividad(day, month, year))
                     setError("fecha")
                 else if (precioT.toDoubleOrNull() == null)
                     setError("precioNoInt")
                 else if (nPlazasT.toIntOrNull() == null) {
                     setError("plazasNoInt")
-                } else {
-                    vm.editActivity(campos, activity, destacado, picture)
-                    vm.mostrarPanelNavegacion()
-                    navController.navigateUp()
+                } else if (uiState.selectedPicture == 0)
+                    setError("noFoto")
+                else {
+                    vm.newActivity(fields)
+                    navController.navigate(Screens.previewNuevaActividad.name)
+
                 }
 
             }) {
-                Text(text = "Guardar cambios", color = AzulAguaOscuro, fontSize = 16.sp)
+                Text(text = "Vista previa", color = AzulAguaOscuro, fontSize = 16.sp)
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun ModificarActividadPreview() {
+fun CAPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
-    val estado by vm.uiState.collectAsState()
-    ModificarActividad(
-        navController, vm, estado,
-        Moker.activity
-    )
+    val uiState by vm.uiState.collectAsState()
+    FormActivity(navController, vm, uiState)
 }

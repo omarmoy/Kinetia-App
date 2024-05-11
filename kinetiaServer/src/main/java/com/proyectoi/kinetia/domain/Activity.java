@@ -163,4 +163,32 @@ public class Activity {
     public void setAvailableVacancies(int availableVacancies) {
         this.availableVacancies = availableVacancies;
     }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
+    @Override
+    public String toString() {
+        return "Activity{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", picture='" + picture + '\'' +
+                ", userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", date=" + date +
+                ", createdAt=" + createdAt +
+                ", price=" + price +
+                ", location='" + location + '\'' +
+                ", category=" + category +
+                ", featured=" + featured +
+                ", vacancies=" + vacancies +
+                ", availableVacancies=" + availableVacancies +
+                '}';
+    }
 }

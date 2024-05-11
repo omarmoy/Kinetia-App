@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.formularios
+package com.dam2.proyectocliente.ui.forms
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,7 +32,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
-import com.dam2.proyectocliente.utils.Images
+import com.dam2.proyectocliente.utils.Picture
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 
@@ -82,7 +82,7 @@ fun Image(image: Int, navController: NavHostController, vm: AppViewModel,) {
         colors= CardDefaults.cardColors(containerColor = BlancoFondo),
         onClick = {
             println("imagen seleccionada: $image")
-            vm.selectPicture(image)
+            vm.setPicture(image)
             navController.navigateUp()
         }
         ) {
@@ -132,7 +132,7 @@ fun SelectPicturePreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
 //    val estado by vm.uiState.collectAsState()
-val images = Images.profilePicture
+val images = Picture.profilePictures
 //val images = Images.activityPicture
     SelectPicture(navController, vm, images)
 }

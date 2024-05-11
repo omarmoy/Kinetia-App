@@ -221,7 +221,7 @@ fun MiniaturaActividadBusqueda(
         }
         Card(shape = RectangleShape, /*cuadrado*/
             onClick = {
-                vm.selectActividad(a)
+                vm.selectActivity(a)
                 vm.ocultarPanelNavegacion()
                 navController.navigate(Screens.vistaActividad.name)
             }) {

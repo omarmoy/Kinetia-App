@@ -60,13 +60,12 @@ import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Activity
-import com.dam2.proyectocliente.utils.selectorActivityPicture
-import com.dam2.proyectocliente.utils.selectorProfilePicture
 import com.dam2.proyectocliente.PanelNavegacionPro
 import com.dam2.proyectocliente.models.Screens
 import com.dam2.proyectocliente.ui.menus.DesplegableConfiguarion
 import com.dam2.proyectocliente.ui.menus.consumer.Titulo
 import com.dam2.proyectocliente.ui.resources.DialogInfo
+import com.dam2.proyectocliente.utils.Picture
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
@@ -153,9 +152,7 @@ fun TopBarMenuPro(navController: NavHostController, vm: AppViewModel, uiState: U
 
     if (showSnackbar) {
         Snackbar(
-//            modifier = Modifier.padding(16.dp),
             containerColor = BlancoFondo,
-//            contentColor = BlancoFondo,
             content = {
                 Text(
                     "No tiene mensajes nuevos",
@@ -261,7 +258,7 @@ fun DatosPerfilPro(uiState: UiState) {
                 colors = CardDefaults.cardColors(containerColor = BlancoFondo)
             ) {
                 Image(
-                    painter = painterResource(id = selectorProfilePicture(uiState.user!!.profilePicture)),
+                    painter = painterResource(id = Picture.getProfilePictureInt(uiState.user!!.profilePicture)),
                     contentDescription = uiState.user.name,
                     modifier = Modifier
                         .fillMaxHeight()
@@ -323,12 +320,12 @@ fun ActivityOffered(
 
         Card(//shape = RectangleShape, /*cuadrado*/
             onClick = {
-                vm.selectActividad(activity)
+                vm.selectActivity(activity)
                 vm.ocultarPanelNavegacion()
                 navController.navigate(Screens.vistaActividadPro.name)
             }) {
             Image(
-                painter = painterResource(id = selectorActivityPicture(activity.picture)),
+                painter = painterResource(id = Picture. getActivityPictureInt(activity.picture)),
                 contentDescription = activity.title,
                 modifier = Modifier
                     .width(tam)

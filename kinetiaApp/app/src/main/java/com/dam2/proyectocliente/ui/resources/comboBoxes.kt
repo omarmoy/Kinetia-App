@@ -58,7 +58,7 @@ fun ComboBox(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ComboBoxCategoria(
+fun ComboBoxCategory(
     labelText: String = "",
     options: ArrayList<Category>, //= arrayListOf(Categoria.Experiencias, Categoria.Ocio),
     onOptionChosen: (Category) -> Unit,

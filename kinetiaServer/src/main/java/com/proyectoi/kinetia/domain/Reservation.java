@@ -11,6 +11,9 @@ public class Reservation {
     @JsonProperty("contactPicture")
     private String contactPicture;
 
+    public Reservation() {
+    }
+
     public Reservation(UserModel contact) {
         this.contactId = contact.getId();
         this.contactName = contact.fullName();

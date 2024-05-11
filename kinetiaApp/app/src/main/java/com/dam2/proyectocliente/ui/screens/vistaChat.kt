@@ -58,7 +58,7 @@ import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Chat
 import com.dam2.proyectocliente.models.Message
-import com.dam2.proyectocliente.utils.selectorProfilePicture
+import com.dam2.proyectocliente.utils.Picture
 import com.example.proyectocliente.ui.theme.AzulFondo
 import com.example.proyectocliente.ui.theme.AzulLogo
 import com.example.proyectocliente.ui.theme.BlancoFondo
@@ -93,7 +93,7 @@ fun BarraSuperiorChat(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Card(shape = CircleShape) {
                     Image(
-                        painter = painterResource(id = selectorProfilePicture(chat.contactPicture)),
+                        painter = painterResource(id = Picture.getProfilePictureInt(chat.contactPicture)),
                         contentDescription = chat.contactName,
                         modifier = Modifier
                             .height(50.dp)

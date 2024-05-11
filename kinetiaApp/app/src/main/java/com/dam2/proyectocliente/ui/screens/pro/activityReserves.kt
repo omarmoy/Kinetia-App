@@ -27,6 +27,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,6 +46,7 @@ import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.models.Reservation
 import com.dam2.proyectocliente.moker.Moker
 import com.dam2.proyectocliente.models.Screens
+import com.dam2.proyectocliente.ui.resources.DialogInfo
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
 import com.example.proyectocliente.ui.theme.BlancoFondo
@@ -53,11 +58,28 @@ fun ActivityReserves(
     vm: AppViewModel,
     activity: Activity
 ) {
+    var deleteReserve by remember { mutableStateOf<Reservation?>(null) }
+    val setDeleteReserve: (Reservation?) -> Unit = { book -> deleteReserve = book }
 
     Scaffold(
         topBar = { TopBarAR(navController, vm, activity) },
-        content = { innerPadding -> ContentAR(innerPadding, vm, navController, activity) },
+        content = { innerPadding ->
+            ContentAR(
+                innerPadding, vm, navController, activity, setDeleteReserve
+            )
+        },
     )
+
+    if (deleteReserve != null) {
+        DialogInfo(
+            onDismissRequest = { setDeleteReserve(null) },
+            onConfirmation = { /*vm.borrarAnuncio(borrarAdvertisement!!);*/ setDeleteReserve(null) },
+//            dialogTitle = ,
+            dialogText = "Vas a cancelar la reserva de ${deleteReserve!!.contactName}",
+            buttonConfirm = "Continuar",
+            buttonDismiss = "Volver"
+        )
+    }
 }
 
 
@@ -94,7 +116,8 @@ fun ContentAR(
     innerPadding: PaddingValues,
     vm: AppViewModel,
     navController: NavHostController,
-    activity: Activity
+    activity: Activity,
+    setDeleteReserve: (Reservation?) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -104,17 +127,19 @@ fun ContentAR(
 
         LazyColumn {
             items(activity.reservations) { c ->
-                MiniatureReservation(c, navController, vm)
+                MiniatureReservation(c, navController, vm, setDeleteReserve)
             }
         }
     }
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MiniatureReservation(
-    reservation: Reservation, navController: NavHostController, vm: AppViewModel
+    reservation: Reservation,
+    navController: NavHostController,
+    vm: AppViewModel,
+    setDeleteReserve: (Reservation?) -> Unit
 ) {
     Card(
         colors = CardDefaults.cardColors(BlancoFondo),
@@ -127,7 +152,9 @@ fun MiniatureReservation(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxSize().padding(start=12.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = 12.dp)
         ) {
 
 
@@ -138,8 +165,7 @@ fun MiniatureReservation(
             ) {
                 IconButton(
                     onClick = {
-//                        TODO: borrar
-
+                        setDeleteReserve(reservation)
                     }) {
 
                     Icon(

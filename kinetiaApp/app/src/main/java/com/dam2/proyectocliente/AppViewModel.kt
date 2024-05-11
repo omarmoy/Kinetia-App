@@ -16,9 +16,9 @@ import com.dam2.proyectocliente.models.User
 import com.dam2.proyectocliente.network.request.Login
 import com.dam2.proyectocliente.repositories.ActivityRepository
 import com.dam2.proyectocliente.ui.UiState
+import com.dam2.proyectocliente.utils.Picture
 import com.dam2.proyectocliente.utils.buscarActividad
 import com.dam2.proyectocliente.utils.buscarContacto
-import com.dam2.proyectocliente.utils.getActivityPictureName
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -50,12 +50,11 @@ class AppViewModel : ViewModel() {
                 val loginRepository = LoginRepository()
                 val user = loginRepository.login(Login(email, password))
                 println(user)
-                if (user != null && user.role == Role.PROVIDER){
+                if (user != null && user.role == Role.PROVIDER) {
                     setAdvertisement(loginRepository.getAdvertisements())
-                    if(user.company!= null || user.company !="")
+                    if (user.company != null || user.company != "")
                         setIsCompany(true)
-                }
-                else
+                } else
                     cambiarModo()
                 setActivities(loginRepository.getActivities())
                 setUser(user)
@@ -68,7 +67,6 @@ class AppViewModel : ViewModel() {
     }
 
     private fun setUser(user: User?) {
-
         _uiState.value = _uiState.value.copy(user = user)
     }
 
@@ -128,8 +126,9 @@ class AppViewModel : ViewModel() {
         return recientes
     }
 
-    fun selectActividad(a: Activity) {
-        _uiState.update { e -> e.copy(activitySeleccionada = a) }
+    fun selectActivity(a: Activity) {
+//        _uiState.update { e -> e.copy(selectedActivity = a) }
+        _uiState.value = _uiState.value.copy(selectedActivity = a)
     }
 
     fun selectCategoria(c: Category) {
@@ -191,7 +190,7 @@ class AppViewModel : ViewModel() {
         _uiState.update { e -> e.copy(modActivity = activity) }
     }
 
-   fun editActivity(
+    fun editActivity(
         fields: ArrayList<String>,
         activity: Activity,
         featured: Boolean,
@@ -201,7 +200,7 @@ class AppViewModel : ViewModel() {
             id = activity.id,
             title = fields[0],
             description = fields[9],
-            picture = if (picture != 0) getActivityPictureName(picture) else activity.picture,
+            picture = if (picture != 0) Picture.getActivityPictureName(picture) else activity.picture,
             userId = activity.userId,
             userName = activity.userName,
             date = LocalDateTime.of(
@@ -220,10 +219,11 @@ class AppViewModel : ViewModel() {
             availableVacancies = activity.availableVacancies,
             reservations = activity.reservations.clone() as ArrayList<Reservation>
         )
-        viewModelScope.launch{
+        println(editedActivity)
+        viewModelScope.launch {
             val result = activityRepository.edit(editedActivity)
-            if(result)
-                updateActivity(fields,activity, featured, picture)
+            if (result)
+                updateActivity(fields, activity, featured, picture)
         }
     }
 
@@ -248,9 +248,9 @@ class AppViewModel : ViewModel() {
         activity.description = campos[9]
         activity.vacancies = campos[10].toInt()
         activity.featured = destacado
-        if(picture!=0){
-            activity.picture = getActivityPictureName(picture)
-            selectPicture(0)
+        if (picture != 0) {
+            activity.picture = Picture.getActivityPictureName(picture)
+            setPicture(0)
         }
     }
 
@@ -294,20 +294,26 @@ class AppViewModel : ViewModel() {
             featured = fields[11].toBoolean(),
             userId = _uiState.value.user!!.id,
             userName = _uiState.value.user!!.fullName(),
-            picture = "" //TODO
+            picture = Picture.getActivityPictureName(_uiState.value.selectedPicture)
         )
-        _uiState.update { e -> e.copy(nuevaActivity = activity) }
+        _uiState.update { e -> e.copy(newActivity = activity) }
     }
 
-    fun publicarActividad() {
-        val actividad = _uiState.value.nuevaActivity
-        _uiState.value.user!!.addActividadOferta(actividad!!)
+    fun postActivity() {
+        viewModelScope.launch {
+            val activity = _uiState.value.newActivity
+            val result = activityRepository.add(activity!!)
+            activity.id = result
+            _uiState.value.user!!.addActividadOferta(activity!!)
+            setPicture(0)
+//            _uiState.update { e -> e.copy(newActivity = null) }
+        }
     }
 
     fun deleteActivity(activity: Activity) {
-        viewModelScope.launch{
+        viewModelScope.launch {
             val result = activityRepository.delete(activity.id!!)
-            if(result)
+            if (result)
                 _uiState.value.user!!.deleteActivityOffered(activity)
         }
     }
@@ -523,7 +529,7 @@ class AppViewModel : ViewModel() {
             contactPicture = reservation.contactPicture
         )
 
-        if (!_uiState.value.user!!.chats.contains(chat)){
+        if (!_uiState.value.user!!.chats.contains(chat)) {
             _uiState.value.user!!.addChat(chat)
         }
         selectContacto(chat)
@@ -532,9 +538,9 @@ class AppViewModel : ViewModel() {
 
 
     /**
-     PICTURSE
+    PICTURSE
      */
-    fun selectPicture(picture: Int){
+    fun setPicture(picture: Int) {
         _uiState.update { e -> e.copy(selectedPicture = picture) }
     }
 

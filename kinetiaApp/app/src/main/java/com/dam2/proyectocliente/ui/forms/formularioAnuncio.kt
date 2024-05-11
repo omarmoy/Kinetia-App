@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.formularios
+package com.dam2.proyectocliente.ui.forms
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,6 +26,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -34,11 +35,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.utils.texfieldVacio
-import com.dam2.proyectocliente.models.Advertisement
+import com.dam2.proyectocliente.models.Screens
 import com.dam2.proyectocliente.ui.resources.DialogInfo
 import com.dam2.proyectocliente.ui.resources.TextFieldWithHeader
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
@@ -47,25 +50,22 @@ import com.example.proyectocliente.ui.theme.Gris2
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ModificarAnuncio(
+fun FormularioAnuncio(
     navController: NavHostController,
-    vm: AppViewModel, estado: UiState,
-    advertisement: Advertisement
+    vm: AppViewModel, estado: UiState
 ) {
 
-    var titulo by rememberSaveable { mutableStateOf(advertisement.title) }
-    var ubicacion by rememberSaveable { mutableStateOf(advertisement.location) }
-    var contenido by rememberSaveable { mutableStateOf(advertisement.description) }
+    var titulo by rememberSaveable { mutableStateOf("") }
+    var ubicacion by rememberSaveable { mutableStateOf("") }
+    var contenido by rememberSaveable { mutableStateOf("") }
 
     var error by rememberSaveable { mutableStateOf(false) }
     val setError: (Boolean) -> Unit = { e -> error = e }
 
     Scaffold(
-        topBar = { BarraSuperiorModAnuncio(navController, vm) },
+        topBar = { BarraSuperiorFAN(navController, vm) },
         bottomBar = {
-            BarraInferiorModAnuncio(
-                vm, navController, titulo, ubicacion, contenido, setError, advertisement
-            )
+            BarraInferiorFAN(vm, navController, titulo, ubicacion, contenido, setError)
         }
 
     ) { innerPadding ->
@@ -129,11 +129,11 @@ fun ModificarAnuncio(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorModAnuncio(navController: NavHostController, vm: AppViewModel) {
+fun BarraSuperiorFAN(navController: NavHostController, vm: AppViewModel) {
     TopAppBar(
         title = {
             Text(
-                text = "Modificar Anuncio",
+                text = "Publicar Anuncio",
                 modifier = Modifier.padding(start = 32.dp)
             )
         },
@@ -141,8 +141,8 @@ fun BarraSuperiorModAnuncio(navController: NavHostController, vm: AppViewModel) 
         navigationIcon = {
             IconButton(onClick = { navController.navigateUp(); vm.mostrarPanelNavegacion() }) {
                 Icon(
-                    imageVector = Icons.Filled.Clear,
-                    contentDescription = "cancelar",
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "volver",
                     tint = AzulAguaOscuro
                 )
             }
@@ -151,14 +151,13 @@ fun BarraSuperiorModAnuncio(navController: NavHostController, vm: AppViewModel) 
 }
 
 @Composable
-fun BarraInferiorModAnuncio(
+fun BarraInferiorFAN(
     vm: AppViewModel,
     navController: NavHostController,
     titulo: String,
     ubicacion: String,
     contenido: String,
     setError: (Boolean) -> Unit,
-    advertisement: Advertisement,
 ) {
 
     val campos = arrayListOf<String>(titulo, ubicacion, contenido)
@@ -178,12 +177,12 @@ fun BarraInferiorModAnuncio(
                 if (texfieldVacio(campos))
                     setError(true)
                 else {
-                    vm.modAnuncio(titulo, ubicacion, contenido, advertisement)
-                    navController.navigateUp()
+                    vm.nuevoAnuncio(titulo, ubicacion, contenido)
+                    navController.navigate(Screens.previewNuevoAnuncio.name)
                 }
 
             }) {
-                Text(text = "Guardar cambios", color = AzulAguaOscuro, fontSize = 16.sp)
+                Text(text = "Vista previa", color = AzulAguaOscuro, fontSize = 16.sp)
             }
         }
     }
@@ -192,10 +191,9 @@ fun BarraInferiorModAnuncio(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun ModificarAnuncioPreview() {
-//    val navController = rememberNavController()
-//    val vm: AppViewModel = viewModel()
-//    val estado by vm.uiState.collectAsState()
-//    val anuncio = DatosPrueba.anuncios[0]
-//    ModificarAnuncio(navController, vm, estado, anuncio)
+fun FormularioAnuncioPreview() {
+    val navController = rememberNavController()
+    val vm: AppViewModel = viewModel()
+    val estado by vm.uiState.collectAsState()
+    FormularioAnuncio(navController, vm, estado)
 }

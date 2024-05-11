@@ -2,8 +2,6 @@ package com.proyectoi.kinetia.api;
 
 import com.proyectoi.kinetia.domain.Activity;
 import com.proyectoi.kinetia.domain.ActivityPro;
-import com.proyectoi.kinetia.domain.Prueba;
-import com.proyectoi.kinetia.models.ActivityModel;
 import com.proyectoi.kinetia.services.ActivityService;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +23,7 @@ public class ActivityController {
     }
 
     @PostMapping
-    public Long addActivity(@RequestBody ActivityModel activity) {
+    public Long addActivity(@RequestBody Activity activity) {
         System.out.println(activity);
         return this.activityService.createActivity(activity);
     }
@@ -40,10 +38,5 @@ public class ActivityController {
         return activityService.deleteActivity(id);
     }
 
-
-    @GetMapping(path = "/photos")
-    public List<Prueba> prueba() {
-        return activityService.getPrueba();
-    }
 
 }

@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 @Serializable
 data class Activity(
 
-    val id: Long? = null,
+    var id: Long? = null,
     var title: String,
     var description: String,
     var picture: String,

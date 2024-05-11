@@ -21,10 +21,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,10 +38,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -50,53 +52,39 @@ import com.dam2.proyectocliente.PanelNavegacionPro
 import com.dam2.proyectocliente.models.Screens
 import com.dam2.proyectocliente.ui.menus.DesplegableConfiguarion
 import com.dam2.proyectocliente.ui.menus.consumer.Titulo
-import com.dam2.proyectocliente.ui.resources.DialogInfo
-import com.dam2.proyectocliente.utils.selectorActivityPicture
+import com.dam2.proyectocliente.utils.Picture
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
+import com.example.proyectocliente.ui.theme.NegroClaro
 import com.example.proyectocliente.ui.theme.Rojo
 import com.example.proyectocliente.ui.theme.small
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReservationMenu(navController: NavHostController, vm: AppViewModel, estado: UiState) {
+fun ReservationMenu(navController: NavHostController, vm: AppViewModel, uiState: UiState) {
 
-    var borrarActivity by remember { mutableStateOf<Activity?>(null) }
-    val setBorrarActividad: (Activity?) -> Unit = { actividad -> borrarActivity = actividad }
-
-    Scaffold(
-        topBar = { BarraSuperiorGR(navController, vm, estado) },
+    Scaffold(topBar = { TopBarReservations(navController, vm, uiState) },
         content = { innerPadding ->
-            ContenidoGR(innerPadding, navController, vm, estado, setBorrarActividad)
-        }
-    )
+            ContentReservations(innerPadding, navController, vm, uiState)
+        })
 
-    if (borrarActivity != null) {
-        DialogInfo(
-            onDismissRequest = { setBorrarActividad(null) },
-            onConfirmation = { vm.deleteActivity(borrarActivity!!); setBorrarActividad(null) },
-            dialogTitle = borrarActivity!!.title,
-            dialogText = "¿Quieres borrar este actividad?",
-            buttonConfirm = "Aceptar",
-            buttonDismiss = "Cancelar"
-        )
-    }
 
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorGR(navController: NavHostController, vm: AppViewModel, estado: UiState) {
-    var mostrarMenu by remember { mutableStateOf(false) }
+fun TopBarReservations(navController: NavHostController, vm: AppViewModel, estado: UiState) {
+    var showSettings by remember { mutableStateOf(false) }
+    var showSnackbar by remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
             .background(Gris2)
             .padding(bottom = 1.dp)
     ) {
-        TopAppBar(
-            colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = BlancoFondo),
+        TopAppBar(colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = BlancoFondo),
             title = { Titulo(texto = "Mis Reservas") },
             actions = {
                 IconButton(onClick = {
@@ -105,7 +93,7 @@ fun BarraSuperiorGR(navController: NavHostController, vm: AppViewModel, estado: 
                         vm.cambiarBotonNav(2)
                         navController.navigate(Screens.menuMensajes.name)
                     } else {
-                        //TODO dialogo emergente "No tiene mensajes nuevos"
+                        showSnackbar = true
                     }
                 }) {
                     Icon(
@@ -114,10 +102,10 @@ fun BarraSuperiorGR(navController: NavHostController, vm: AppViewModel, estado: 
                         tint = if (estado.user!!.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
                     )
                 }
-                //Spacer(modifier = Modifier.width(12.dp))
+
 
                 //Ajustes
-                IconButton(onClick = { mostrarMenu = !mostrarMenu }) {
+                IconButton(onClick = { showSettings = !showSettings }) {
                     Icon(
                         imageVector = Icons.Filled.Settings,
                         contentDescription = "Ajustes",
@@ -125,85 +113,77 @@ fun BarraSuperiorGR(navController: NavHostController, vm: AppViewModel, estado: 
                     )
                 }
 
-                DesplegableConfiguarion(navController, vm, estado, mostrarMenu) {
-                    mostrarMenu = false
+                DesplegableConfiguarion(navController, vm, estado, showSettings) {
+                    showSettings = false
                 }
 
+            })
+
+        if (showSnackbar) {
+            Snackbar(containerColor = BlancoFondo, content = {
+                Text(
+                    "No tiene mensajes nuevos",
+                    color = NegroClaro,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            })
+        }
+
+        LaunchedEffect(showSnackbar) {
+            if (showSnackbar) {
+                // Si la Snackbar está visible, esperar un tiempo y luego ocultarla automáticamente
+                delay(1000)
+                showSnackbar = false
             }
-        )
+        }
+
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContenidoGR(
-    innerPadding: PaddingValues,
-    navController: NavHostController,
-    vm: AppViewModel,
-    estado: UiState,
-    setBorrarActividad: (Activity?) -> Unit
+fun ContentReservations(
+    innerPadding: PaddingValues, navController: NavHostController, vm: AppViewModel, estado: UiState
 ) {
 
-    Scaffold(
-        modifier = Modifier.padding(innerPadding),
-        content = { paddinHijo ->
-            Column(modifier = Modifier.padding(paddinHijo)) {
-                LazyColumn(modifier = Modifier.padding(8.dp)) {
+    val reservations = estado.user!!.activitiesOffered.filter { activity ->
+        activity.reservations.isNotEmpty()
+    }
 
-                    if (estado.user!!.activitiesOffered.size == 0) {
-                        item {
-                            Text(
-                                text = "Todavía no tienes reservas",
-                                modifier = Modifier.padding(top = 40.dp)
-                            )
-                        }
-                    } else {
-                        items(estado.user!!.activitiesOffered) { actividad ->
-                            MiniaturaReserva(
-                                actividad, vm, navController
-                            )
-                        }
+    Scaffold(modifier = Modifier.padding(innerPadding), content = { paddinHijo ->
+        Column(modifier = Modifier.padding(paddinHijo)) {
+            LazyColumn(modifier = Modifier.padding(8.dp)) {
+
+                if (reservations.isEmpty()) {
+                    item {
+                        Text(
+                            text = "No tienes reservas",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 40.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                } else {
+                    items(reservations) { activity ->
+                        Reservation(
+                            activity, vm, navController
+                        )
                     }
                 }
             }
         }
-    )
+    })
 
 
 }
 
-@Composable
-fun TituloGR() {
-    Box(
-        modifier = Modifier
-            .background(Gris2)
-            .padding(bottom = 1.dp)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(75.dp)
-                .background(BlancoFondo)
-                .padding(4.dp)
-        ) {
-            Text(
-                text = "Gestión de reservas",
-                fontSize = 18.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            )
-        }
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MiniaturaReserva(
-    activity: Activity,
-    vm: AppViewModel,
-    navController: NavHostController
+fun Reservation(
+    activity: Activity, vm: AppViewModel, navController: NavHostController
 ) {
     Card(
         modifier = Modifier
@@ -213,10 +193,8 @@ fun MiniaturaReserva(
         onClick = {
             vm.ocultarPanelNavegacion()
             navController.navigate(Screens.vistaReservasActividad.name)
-        }
-    ) {
+        }) {
         Row(
-//            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
@@ -228,12 +206,12 @@ fun MiniaturaReserva(
             Card(
 //                shape = RectangleShape,
                 onClick = {
-                    vm.selectActividad(activity)
+                    vm.selectActivity(activity)
                     vm.ocultarPanelNavegacion()
                     navController.navigate(Screens.vistaReservasActividad.name)
                 }) {
                 Image(
-                    painter = painterResource(id = selectorActivityPicture(activity.picture)),
+                    painter = painterResource(id = Picture.getActivityPictureInt(activity.picture)),
                     contentDescription = activity.title,
                     modifier = Modifier
                         .width(tam)
@@ -244,9 +222,7 @@ fun MiniaturaReserva(
 
             Spacer(modifier = Modifier.width(24.dp))
 
-            Column(
-//                modifier = Modifier.widthIn(max = tam * 8 / 10)
-            ) {
+            Column {
                 Text(
                     text = activity.title,
                     maxLines = 2,
@@ -259,8 +235,7 @@ fun MiniaturaReserva(
                     fontSize = small
                 )
                 Text(
-                    text = "Número de reservas: " + activity.reservations.size,
-                    fontSize = small
+                    text = "Número de reservas: " + activity.reservations.size, fontSize = small
                 )
             }
         }
@@ -274,21 +249,14 @@ fun MiniaturaReserva(
 fun GRProPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
-    val estado by vm.uiState.collectAsState()
-    Scaffold(
-        topBar = {
-            BarraSuperiorGR(navController, vm, estado)
-        },
-        content = { innerPadding ->
-            ContenidoGR(
-                innerPadding,
-                navController,
-                vm,
-                estado,
-                { }
-            )
-        },
+    val uiState by vm.uiState.collectAsState()
+    Scaffold(topBar = {
+        TopBarReservations(navController, vm, uiState)
+    }, content = { innerPadding ->
+        ContentReservations(
+            innerPadding, navController, vm, uiState
+        )
+    },
         //llama a una función de navegación:
-        bottomBar = { PanelNavegacionPro(navController = navController, vm, estado) }
-    )
+        bottomBar = { PanelNavegacionPro(navController = navController, vm, uiState) })
 }

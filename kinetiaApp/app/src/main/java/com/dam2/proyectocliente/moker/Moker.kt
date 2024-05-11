@@ -48,7 +48,16 @@ object Moker {
                 category = Category.AIRE_LIBRE,
                 vacancies = 20
             )
-        )
+        ),
+        advertisements = arrayListOf(Advertisement(
+            userId = 123,
+            userName = "John Doe",
+            userPhoto = "crash",
+            title = "Venta de coche",
+            description = "Se vende coche en excelente estado",
+            creationDate = Instant.parse("2024-05-11T16:40:00Z"),
+            location = "Ciudad"
+        ))
     )
 
     val activity = Activity(

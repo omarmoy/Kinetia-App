@@ -27,14 +27,18 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -70,16 +74,29 @@ fun ActivityReserves(
         },
     )
 
+    val trigger = remember { mutableIntStateOf(0) }
+
+    fun refreshComposable() {
+        trigger.intValue++
+    }
+
     if (deleteReserve != null) {
         DialogInfo(
             onDismissRequest = { setDeleteReserve(null) },
-            onConfirmation = { /*vm.borrarAnuncio(borrarAdvertisement!!);*/ setDeleteReserve(null) },
-//            dialogTitle = ,
+            onConfirmation = {
+                vm.cancelReservation(activity, deleteReserve!!)
+                refreshComposable()
+                setDeleteReserve(null)
+            },
             dialogText = "Vas a cancelar la reserva de ${deleteReserve!!.contactName}",
             buttonConfirm = "Continuar",
             buttonDismiss = "Volver"
         )
     }
+
+//    LaunchedEffect(trigger.intValue) {
+//
+//    }
 }
 
 
@@ -119,6 +136,7 @@ fun ContentAR(
     activity: Activity,
     setDeleteReserve: (Reservation?) -> Unit
 ) {
+
     Column(
         modifier = Modifier
             .padding(innerPadding)
@@ -126,8 +144,20 @@ fun ContentAR(
     ) {
 
         LazyColumn {
-            items(activity.reservations) { c ->
-                MiniatureReservation(c, navController, vm, setDeleteReserve)
+            if (activity.reservations.isEmpty()) {
+                item {
+                    Text(
+                        text = "No tienes reservas",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 40.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            } else {
+                items(activity.reservations) { c ->
+                    MiniatureReservation(c, navController, vm, setDeleteReserve)
+                }
             }
         }
     }
@@ -160,9 +190,7 @@ fun MiniatureReservation(
 
             Text(text = reservation.contactName, fontSize = 20.sp)
 
-            Row(
-
-            ) {
+            Row {
                 IconButton(
                     onClick = {
                         setDeleteReserve(reservation)
@@ -186,7 +214,6 @@ fun MiniatureReservation(
                         imageVector = Icons.Filled.MailOutline,
                         contentDescription = "contactar",
                         tint = AmarilloPastel,
-//                        modifier = Modifier.size(30.dp)
                     )
                 }
             }
@@ -200,7 +227,7 @@ fun MiniatureReservation(
  */
 @Preview(showBackground = true)
 @Composable
-fun VistaReservaPreview() {
+fun ARPreview() {
     val vm: AppViewModel = viewModel()
     val navController = rememberNavController()
     val ac = Moker.activity

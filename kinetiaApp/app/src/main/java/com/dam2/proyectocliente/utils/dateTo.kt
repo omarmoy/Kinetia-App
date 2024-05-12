@@ -4,25 +4,25 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 
-fun toStringFecha(localDateTime: LocalDateTime): String {
+fun dateToString(localDateTime: LocalDateTime): String {
     return "${localDateTime.dayOfMonth}/${localDateTime.monthValue}/${localDateTime.year}"
 }
 
-fun toStringHora(localDateTime: LocalDateTime): String {
-    val minutos =
+fun timeToString(localDateTime: LocalDateTime): String {
+    val minuts =
         if (localDateTime.minute < 10) "0".plus(localDateTime.minute) else localDateTime.minute
-    return "${localDateTime.hour}:${minutos}"
+    return "${localDateTime.hour}:${minuts}"
 }
 
-fun mostrarFecha(localDateTime: LocalDateTime): String {
-    val hoy = LocalDate.now()
-    val ayer = LocalDate.now().minusDays(1)
+fun showDate(localDateTime: LocalDateTime): String {
+    val today = LocalDate.now()
+    val yesterday = LocalDate.now().minusDays(1)
     val localDate: LocalDate = localDateTime.toLocalDate()
-    if (hoy.isEqual(localDate))
-        return toStringHora(localDateTime)
-    if (ayer.isEqual(localDate.minusDays(1)))
+    if (today.isEqual(localDate))
+        return timeToString(localDateTime)
+    if (yesterday.isEqual(localDate.minusDays(1)))
         return "ayer"
-    return toStringFecha(localDateTime)
+    return dateToString(localDateTime)
 }
 
 fun diaString(localDateTime: LocalDateTime): String {

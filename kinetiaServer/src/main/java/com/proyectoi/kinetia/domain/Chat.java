@@ -25,16 +25,16 @@ public class Chat {
         this.contactPicture = contact.getProfilePicture();
 
         for(MessageModel message: user.getSentMessages()){
-            if(contact.getId().equals(message.getReceiver().getId())){
+            if(contact.getId().equals(message.getReceiver().getId()) && !message.getSenderHasDeleted()){
                 this.messages.add(new Message(message));
             }
         }
 
         for(MessageModel message: user.getReceivedMessages()){
-            if(contact.getId().equals(message.getSender().getId())){
+            if(contact.getId().equals(message.getSender().getId()) && !message.getReceiverHasDeleted()){
                 this.messages.add(new Message(message));
-                if(!message.getRead())
-                    newMessage = true;
+                if(!message.getIsRead())
+                    this.newMessage = true;
             }
         }
     }

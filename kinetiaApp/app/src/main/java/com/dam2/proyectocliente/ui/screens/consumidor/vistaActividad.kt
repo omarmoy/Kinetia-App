@@ -60,8 +60,8 @@ import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Activity
-import com.dam2.proyectocliente.utils.toStringFecha
-import com.dam2.proyectocliente.utils.toStringHora
+import com.dam2.proyectocliente.utils.dateToString
+import com.dam2.proyectocliente.utils.timeToString
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
@@ -247,7 +247,7 @@ fun PanelDatos(navController: NavHostController, activity: Activity, vm: AppView
                     modifier = Modifier.size(tamIcon)
                 )
                 Text(
-                    text = toStringFecha(activity.date),
+                    text = dateToString(activity.date),
                     color = AzulAguaClaro,
                     fontSize = 14.sp
                 )
@@ -261,7 +261,7 @@ fun PanelDatos(navController: NavHostController, activity: Activity, vm: AppView
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = toStringHora(activity.date),
+                    text = timeToString(activity.date),
                     color = AzulAguaClaro,
                     fontSize = 14.sp
                 )
@@ -301,7 +301,7 @@ fun PanelBotones(
             .padding(top = 40.dp, start = 70.dp, end = 70.dp, bottom = 12.dp)
     ) {
         Button(
-            onClick = { vm.reservar(activity); refreshComposable() },
+            onClick = { vm.reserveActivity(activity); refreshComposable() },
             shape = RoundedCornerShape(4.dp),
             colors = ButtonDefaults.buttonColors(AmarilloPastel),
             contentPadding = PaddingValues(8.dp, 0.dp),
@@ -362,7 +362,7 @@ fun PanelContenido(
         if (activity.description.length > 1399) {
             Spacer(modifier = Modifier.height(24.dp))
             Button(
-                onClick = { vm.reservar(activity); refreshComposable() },
+                onClick = { vm.reserveActivity(activity); refreshComposable() },
                 shape = RoundedCornerShape(4.dp),
                 colors = ButtonDefaults.buttonColors(AmarilloPastel),
                 contentPadding = PaddingValues(8.dp, 0.dp),
@@ -382,7 +382,7 @@ fun PanelContenido(
         if (estado.user!!.activitiesReserved.contains(activity)) {
             Spacer(modifier = Modifier.height(24.dp))
             Button(
-                onClick = { vm.cancelarReserva(activity); refreshComposable() },
+                onClick = { vm.cancelReservation(activity); refreshComposable() },
                 shape = RoundedCornerShape(4.dp),
                 colors = ButtonDefaults.buttonColors(AzulAguaOscuro),
                 contentPadding = PaddingValues(8.dp, 0.dp)

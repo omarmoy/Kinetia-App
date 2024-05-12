@@ -14,12 +14,12 @@ import retrofit2.http.POST
 
 //private const val BASE_URL = "http://127.0.0.1:8080"
 //private const val BASE_URL = "http://localhost:8080"
-private const val BASE_URL = "http://10.0.2.2:8080"
-
-private val retrofit = Retrofit.Builder()
-    .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
-    .baseUrl(BASE_URL)
-    .build()
+//private const val BASE_URL = "http://10.0.2.2:8080"
+//
+//private val retrofit = Retrofit.Builder()
+//    .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+//    .baseUrl(BASE_URL)
+//    .build()
 interface LoginApiService {
     @POST("/auth/login")
     suspend fun login(@Body login: Login): User

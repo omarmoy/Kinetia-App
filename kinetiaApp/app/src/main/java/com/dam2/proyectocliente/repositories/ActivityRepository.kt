@@ -1,11 +1,7 @@
 package com.dam2.proyectocliente.repositories
 
 import com.dam2.proyectocliente.models.Activity
-import com.dam2.proyectocliente.models.Advertisement
-import com.dam2.proyectocliente.models.User
 import com.dam2.proyectocliente.network.ActivityApi
-import com.dam2.proyectocliente.network.LoginApi
-import com.dam2.proyectocliente.network.request.Login
 
 class ActivityRepository {
     suspend fun add (activity: Activity): Long?{

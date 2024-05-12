@@ -38,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,41 +54,46 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Chat
 import com.dam2.proyectocliente.models.Message
+import com.dam2.proyectocliente.moker.Moker
 import com.dam2.proyectocliente.utils.Picture
+import com.dam2.proyectocliente.utils.showDate
 import com.example.proyectocliente.ui.theme.AzulFondo
 import com.example.proyectocliente.ui.theme.AzulLogo
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
 import com.example.proyectocliente.ui.theme.Rojo
+import java.time.ZoneId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VistaChat(
+fun Chat(
     navController: NavHostController,
     chat: Chat,
     vm: AppViewModel,
-    estado: UiState
+    uiState: UiState
 ) {
 
     Scaffold(
-        topBar = { BarraSuperiorChat(navController, chat, vm) },
-        content = { innerPadding -> ContenidoChat(innerPadding, chat) },
-        bottomBar = { EntradaDeTexto(vm, estado) }
+        topBar = { TopBarChat(navController, chat, vm) },
+        content = { innerPadding -> ContentChat(innerPadding, chat) },
+        bottomBar = { TextInput(vm, uiState, chat) }
     )
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorChat(
+fun TopBarChat(
     navController: NavHostController, chat: Chat, vm: AppViewModel
 ) {
-    var mostrarMenu by remember{ mutableStateOf(false) }
+    var showMenu by remember { mutableStateOf(false) }
     TopAppBar(
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -120,7 +126,7 @@ fun BarraSuperiorChat(
         actions = {
 
             IconButton(onClick = {
-                mostrarMenu = !mostrarMenu
+                showMenu = !showMenu
             }) {
                 Icon(
                     imageVector = Icons.Filled.MoreVert,
@@ -128,20 +134,24 @@ fun BarraSuperiorChat(
                 )
             }
             DropdownMenu(
-                expanded = mostrarMenu,
-                onDismissRequest = { mostrarMenu=false},
+                expanded = showMenu,
+                onDismissRequest = { showMenu = false },
                 modifier = Modifier.background(BlancoFondo)
             ) {
                 DropdownMenuItem(
-                    text = { Text(text = "borrar contacto", color = Rojo)},
-                    onClick = { /*TODO*/ })
+                    text = { Text(text = "borrar contacto", color = Rojo) },
+                    onClick = {
+                        vm.deleteContact(chat)
+                        vm.mostrarPanelNavegacion()
+                        navController.navigateUp()
+                    })
             }
         }
     )
 }
 
 @Composable
-fun ContenidoChat(innerPadding: PaddingValues, chat: Chat) {
+fun ContentChat(innerPadding: PaddingValues, chat: Chat) {
     LazyColumn(
         reverseLayout = true,
         modifier = Modifier
@@ -163,7 +173,7 @@ fun VistaMensaje(mensaje: Message, idContacto: Long) {
             .fillMaxWidth()
             .padding(start = 20.dp, end = 20.dp, bottom = 10.dp, top = 10.dp),
         horizontalArrangement = if (
-            mensaje.recipient == idContacto) Arrangement.Start else Arrangement.End
+            mensaje.sender == idContacto) Arrangement.Start else Arrangement.End
     ) {
 
         Card(
@@ -171,7 +181,13 @@ fun VistaMensaje(mensaje: Message, idContacto: Long) {
             colors = CardDefaults.cardColors(AzulFondo)
         ) {
             Column(modifier = Modifier.padding(8.dp)) {
-                Text(text = mensaje.sentAt.toString(), fontSize = 10.sp, textAlign = TextAlign.End)
+                Text(
+                    text = showDate(
+                        mensaje.sentAt.atZone(ZoneId.systemDefault()).toLocalDateTime()
+                    ),
+                    fontSize = 10.sp,
+                    textAlign = TextAlign.End
+                )
                 Text(text = mensaje.content)
             }
         }
@@ -180,7 +196,7 @@ fun VistaMensaje(mensaje: Message, idContacto: Long) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EntradaDeTexto(vm: AppViewModel, estado: UiState) {
+fun TextInput(vm: AppViewModel, uiState: UiState, chat: Chat) {
     Box(
         modifier = Modifier
             .background(Gris2)
@@ -197,7 +213,7 @@ fun EntradaDeTexto(vm: AppViewModel, estado: UiState) {
         ) {
 
             OutlinedTextField(
-                value = estado.mensajeEnviar,
+                value = uiState.mensajeEnviar,
                 onValueChange = { vm.setMensaje(it) },
                 singleLine = false,
                 keyboardOptions = KeyboardOptions.Default.copy(
@@ -212,7 +228,7 @@ fun EntradaDeTexto(vm: AppViewModel, estado: UiState) {
             )
             IconButton(
                 modifier = Modifier.weight(.1f),
-                onClick = { vm.enviarMensaje()}
+                onClick = { vm.sendMessage(chat.contactId) }
             ) {
                 Icon(
                     imageVector = Icons.Filled.Send,
@@ -232,9 +248,9 @@ fun EntradaDeTexto(vm: AppViewModel, estado: UiState) {
 @Preview(showBackground = true)
 @Composable
 fun ChatPreview() {
-//    val vm: AppViewModel = viewModel()
-//    val navController = rememberNavController()
-//    val a = DatosPrueba.cargarConversaciones()[0]
-//    val estado by vm.uiState.collectAsState()
-//    VistaChat(navController = navController, a, vm, estado)
+    val vm: AppViewModel = viewModel()
+    val navController = rememberNavController()
+    val a = Moker.chat
+    val uiState by vm.uiState.collectAsState()
+    Chat(navController = navController, a, vm, uiState)
 }

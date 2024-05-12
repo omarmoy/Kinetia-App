@@ -56,9 +56,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.models.Activity
-import com.dam2.proyectocliente.utils.mostrarFecha
-import com.dam2.proyectocliente.utils.toStringFecha
-import com.dam2.proyectocliente.utils.toStringHora
+import com.dam2.proyectocliente.utils.showDate
+import com.dam2.proyectocliente.utils.dateToString
+import com.dam2.proyectocliente.utils.timeToString
 import com.dam2.proyectocliente.models.Screens
 import com.dam2.proyectocliente.moker.Moker
 import com.dam2.proyectocliente.utils.Picture
@@ -190,7 +190,7 @@ fun PanelTitulo(activity: Activity) {
             )
         }
         Text(
-            text = "publicado: " + mostrarFecha(LocalDateTime.ofInstant(activity.createdAt, ZoneId.systemDefault())),
+            text = "publicado: " + showDate(LocalDateTime.ofInstant(activity.createdAt, ZoneId.systemDefault())),
             textAlign = TextAlign.End, color = AzulAguaClaro, fontSize = 14.sp,
             modifier = Modifier.fillMaxWidth()
         )
@@ -220,7 +220,7 @@ fun PanelDatos(activity: Activity) {
                     modifier = Modifier.size(tamIcon)
                 )
                 Text(
-                    text = toStringFecha(activity.date),
+                    text = dateToString(activity.date),
                     color = AzulAguaClaro,
                     fontSize = 14.sp
                 )
@@ -234,7 +234,7 @@ fun PanelDatos(activity: Activity) {
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = toStringHora(activity.date),
+                    text = timeToString(activity.date),
                     color = AzulAguaClaro,
                     fontSize = 14.sp
                 )

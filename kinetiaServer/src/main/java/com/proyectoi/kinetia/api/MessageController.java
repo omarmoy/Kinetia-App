@@ -1,6 +1,6 @@
 package com.proyectoi.kinetia.api;
 
-import com.proyectoi.kinetia.models.MessageModel;
+import com.proyectoi.kinetia.domain.Message;
 import com.proyectoi.kinetia.services.MessageService;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +15,7 @@ public class MessageController {
     }
 
     @PostMapping
-    public Boolean sendMessage(@RequestBody MessageModel message) {
+    public Boolean sendMessage(@RequestBody Message message) {
         return messageService.saveMessage(message);
     }
 

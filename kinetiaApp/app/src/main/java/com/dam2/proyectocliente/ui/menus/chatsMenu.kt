@@ -64,16 +64,16 @@ import com.example.proyectocliente.ui.theme.Rojo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuConversaciones(navController: NavHostController, vm: AppViewModel, estado: UiState) {
+fun ChatsMenu(navController: NavHostController, vm: AppViewModel, uiState: UiState) {
     Scaffold(
-        topBar = { BarraSuperiorConver(vm, estado) },
-        content = { innerPadding -> Conversaciones(innerPadding, navController, vm, estado) }
+        topBar = { TopBarChats(vm, uiState) },
+        content = { innerPadding -> Chats(innerPadding, navController, vm, uiState) }
     )
 }
 
 
 @Composable
-fun BarraSuperiorConver(vm: AppViewModel, estado: UiState) {
+fun TopBarChats(vm: AppViewModel, uiState: UiState) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -83,18 +83,18 @@ fun BarraSuperiorConver(vm: AppViewModel, estado: UiState) {
             .background(BlancoFondo)
             .padding(12.dp)
     ) {
-        val textoCabecera =
-            if (estado.filtroMensajesNoleidosActivo) "Mensajes no leídos" else "Mensajes"
-        Text(text = textoCabecera, fontWeight = FontWeight.Bold, fontSize = 24.sp)
+        val headerText =
+            if (uiState.filterUnreadMessagesActive) "Mensajes no leídos" else "Mensajes"
+        Text(text = headerText, fontWeight = FontWeight.Bold, fontSize = 24.sp)
         IconButton(onClick = {
-            if (estado.filtroMensajesNoleidosActivo)
+            if (uiState.filterUnreadMessagesActive)
                 vm.quitarFiltroMensajesNoLeidos()
             else
                 vm.filtrarMensajesNoleidos()
         }) {
             Icon(
                 imageVector = Icons.Filled.List, contentDescription = "filtro",
-                tint = if (estado.filtroMensajesNoleidosActivo) AmarilloPastel else AzulAgua
+                tint = if (uiState.filterUnreadMessagesActive) AmarilloPastel else AzulAgua
             )
         }
     }
@@ -102,11 +102,11 @@ fun BarraSuperiorConver(vm: AppViewModel, estado: UiState) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Conversaciones(
+fun Chats(
     innerPadding: PaddingValues,
     navController: NavHostController,
     vm: AppViewModel,
-    estado: UiState
+    uiState: UiState
 ) {
     Column(
         modifier = Modifier
@@ -117,7 +117,7 @@ fun Conversaciones(
         LazyColumn {
             item {
                 TextField(
-                    value = estado.contactosBuscar,
+                    value = uiState.contactosBuscar,
                     onValueChange = { vm.setContactoBuscar(it) },
                     singleLine = true,
                     label = { Text(text = "Buscar") },
@@ -137,7 +137,7 @@ fun Conversaciones(
                         unfocusedIndicatorColor = Gris2
                     ),
                     trailingIcon = {
-                        if (estado.contactosBuscar != "")
+                        if (uiState.contactosBuscar != "")
                             IconButton(onClick = { vm.setContactoBuscar("") }) {
                                 Icon(
                                     imageVector = Icons.Filled.Clear,
@@ -152,7 +152,7 @@ fun Conversaciones(
             }
 
             items(vm.listaContactos()) { c ->
-                MiniaturaContacto(c, navController, vm)
+                Contact(c, navController, vm)
             }
         }
     }
@@ -161,7 +161,7 @@ fun Conversaciones(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MiniaturaContacto(c: Chat, navController: NavHostController, vm: AppViewModel) {
+fun Contact(c: Chat, navController: NavHostController, vm: AppViewModel) {
     Card(
         onClick = {
             vm.selectContacto(c)
@@ -216,17 +216,17 @@ fun MiniaturaContacto(c: Chat, navController: NavHostController, vm: AppViewMode
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun ConverPreview() {
+fun ChatsPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
-    val estado by vm.uiState.collectAsState()
+    val uiState by vm.uiState.collectAsState()
     Scaffold(
-        topBar = { BarraSuperiorConver(vm, estado) },
-        content = { innerPadding -> Conversaciones(innerPadding, navController, vm, estado) },
+        topBar = { TopBarChats(vm, uiState) },
+        content = { innerPadding -> Chats(innerPadding, navController, vm, uiState) },
         //llama a una función de navegación:
-        bottomBar = { PanelNavegacion(navController = navController, vm, estado) }
+        bottomBar = { PanelNavegacion(navController = navController, vm, uiState) }
     )
 
 
-    //MiniaturaContacto(c = DatosPrueba.usuario.contactos[0])
+//    MiniaturaContacto(c = Moker.user.chats[0])
 }

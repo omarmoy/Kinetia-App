@@ -36,7 +36,7 @@ data class Activity(
         this.availableVacancies--
     }
 
-    fun removeReserva(reservation: Reservation){
+    fun removeReservation(reservation: Reservation){
         reservations.remove(reservation)
         this.availableVacancies++
     }

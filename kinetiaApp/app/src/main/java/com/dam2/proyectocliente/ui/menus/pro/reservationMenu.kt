@@ -1,5 +1,7 @@
 package com.dam2.proyectocliente.ui.menus.pro
 
+import android.os.Handler
+import android.os.Looper
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -208,7 +210,10 @@ fun Reservation(
                 onClick = {
                     vm.selectActivity(activity)
                     vm.ocultarPanelNavegacion()
-                    navController.navigate(Screens.vistaReservasActividad.name)
+                    val mainHandler = Handler(Looper.getMainLooper())
+                    mainHandler.postDelayed({
+                        navController.navigate(Screens.vistaReservasActividad.name)
+                    }, 100)
                 }) {
                 Image(
                     painter = painterResource(id = Picture.getActivityPictureInt(activity.picture)),

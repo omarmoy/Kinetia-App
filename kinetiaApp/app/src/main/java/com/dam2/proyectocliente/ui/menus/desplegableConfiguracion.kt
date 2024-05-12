@@ -43,7 +43,7 @@ fun DesplegableConfiguarion(
                     Icon(imageVector = Icons.Filled.Refresh, contentDescription = "modo")
                 },
                 onClick = {
-                    if (vm.cambiarModo())
+                    if (vm.changeMode())
                         navController.navigate(Screens.menuPrincipalPro.name)
                     else
                         navController.navigate(Screens.menuPrincipal.name)
@@ -64,6 +64,7 @@ fun DesplegableConfiguarion(
             },
             onClick = {
                 /*TODO borrar datos usuario*/
+                vm.changeMode()
                 vm.ocultarPanelNavegacion()
                 vm.cambiarBotonNav(0)
                 navController.navigate(Screens.inicio.name)

@@ -80,7 +80,7 @@ data class User(
         return chats.remove(chat)
     }
 
-    fun marcarMensajeLeido(chat: Chat) {
+    fun messageRead(chat: Chat) {
         val indice = chats.indexOf(chat)
         chats[indice].newMessage = false
     }
@@ -91,31 +91,31 @@ data class User(
     }
 
     fun tieneMensajesSinLeer(): Boolean {
-        for (contacto in chats) {
-            if (contacto.newMessage)
+        for (chat in chats) {
+            if (chat.newMessage)
                 return true
         }
         return false
     }
 
-    /**
-    RESERVAS MODO PRO
-     */
-    //TODO???
-
-    /**
+        /**
     RESERVAS MODO CONSUMIDOR
      */
 
-    fun reseservar(activity: Activity){
+    fun reserveActivity(activity: Activity){
         activitiesReserved.add(activity)
-//        activity.addReserva(Chat(id=this.id, contactName=this.nombreCompleto(), contactPicture=this.profilePicture))
-        //TODO: api
     }
-    fun cancelarReserva(activity: Activity){
+    fun cancelReservation(activity: Activity){
         activitiesReserved.remove(activity)
-//        activity.removeReserva(Chat(id=this.id, contactName=this.nombreCompleto(), contactPicture=this.profilePicture))
-        //TODO: api
+    }
+
+    /**
+    RESERVAS MODO PRO
+     */
+    fun cancelReservation(activity: Activity, reservation: Reservation){
+        activity.removeReservation(reservation)
+        this.activitiesOffered.remove(activity)
+        this.activitiesOffered.add(activity)
     }
 }
 

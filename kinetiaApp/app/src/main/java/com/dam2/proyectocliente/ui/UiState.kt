@@ -7,7 +7,6 @@ import com.dam2.proyectocliente.models.Category
 import com.dam2.proyectocliente.models.Chat
 import com.dam2.proyectocliente.models.User
 import java.time.Instant
-import java.time.LocalDateTime
 
 data class UiState(
 
@@ -110,7 +109,7 @@ data class UiState(
     val actividadUsuarioBuscar: String = "",
 
     //Filtros
-    val filtroMensajesNoleidosActivo: Boolean = false
+    val filterUnreadMessagesActive: Boolean = false
 
 
 ) {

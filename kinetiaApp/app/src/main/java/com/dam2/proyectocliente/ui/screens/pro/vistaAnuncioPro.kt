@@ -46,7 +46,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.models.Advertisement
-import com.dam2.proyectocliente.utils.mostrarFecha
+import com.dam2.proyectocliente.utils.showDate
 import com.dam2.proyectocliente.models.Screens
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AmarilloPastel
@@ -145,7 +145,7 @@ fun ContenidoAnuncio(innerPadding: PaddingValues, advertisement: Advertisement) 
             )
 
             Text(
-                text = "Publicado " + mostrarFecha(LocalDateTime.ofInstant(advertisement.creationDate, ZoneId.systemDefault())),
+                text = "Publicado " + showDate(LocalDateTime.ofInstant(advertisement.creationDate, ZoneId.systemDefault())),
                 color = AzulAguaClaro,
                 fontSize = 16.sp
             )

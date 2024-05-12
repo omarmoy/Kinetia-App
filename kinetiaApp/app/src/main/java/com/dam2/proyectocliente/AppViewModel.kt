@@ -10,11 +10,14 @@ import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.models.Advertisement
 import com.dam2.proyectocliente.models.Category
 import com.dam2.proyectocliente.models.Chat
+import com.dam2.proyectocliente.models.Message
 import com.dam2.proyectocliente.models.Reservation
 import com.dam2.proyectocliente.models.Role
 import com.dam2.proyectocliente.models.User
 import com.dam2.proyectocliente.network.request.Login
 import com.dam2.proyectocliente.repositories.ActivityRepository
+import com.dam2.proyectocliente.repositories.MessageRepository
+import com.dam2.proyectocliente.repositories.ReservationRepository
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.utils.Picture
 import com.dam2.proyectocliente.utils.buscarActividad
@@ -40,8 +43,9 @@ class AppViewModel : ViewModel() {
     var userUiState: UserUiState by mutableStateOf(UserUiState.Loading)
         private set
 
-    val activityRepository = ActivityRepository()
-
+    private val activityRepository = ActivityRepository()
+    private val reservationRepository = ReservationRepository()
+    private val messageRepository = MessageRepository()
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
@@ -49,13 +53,12 @@ class AppViewModel : ViewModel() {
             userUiState = try {
                 val loginRepository = LoginRepository()
                 val user = loginRepository.login(Login(email, password))
-                println(user)
                 if (user != null && user.role == Role.PROVIDER) {
                     setAdvertisement(loginRepository.getAdvertisements())
                     if (user.company != null || user.company != "")
                         setIsCompany(true)
                 } else
-                    cambiarModo()
+                    changeMode()
                 setActivities(loginRepository.getActivities())
                 setUser(user)
                 mostrarPanelNavegacion()
@@ -127,8 +130,9 @@ class AppViewModel : ViewModel() {
     }
 
     fun selectActivity(a: Activity) {
-//        _uiState.update { e -> e.copy(selectedActivity = a) }
-        _uiState.value = _uiState.value.copy(selectedActivity = a)
+        _uiState.update { e -> e.copy(selectedActivity = a) }
+//            _uiState.value = _uiState.value.copy(selectedActivity = a)
+
     }
 
     fun selectCategoria(c: Category) {
@@ -138,8 +142,6 @@ class AppViewModel : ViewModel() {
     fun setIndiceCategoria(c: Category? = null) {
         val indice =
             if (c != null) {
-                println("indice: " + uiState.value.categories.indexOf(c))
-                println(c)
                 uiState.value.categories.indexOf(c)
             } else {
                 0
@@ -324,37 +326,60 @@ class AppViewModel : ViewModel() {
     fun selectContacto(c: Chat) {
         _uiState.update { e -> e.copy(chatSeleccionado = c) }
         if (c.newMessage) {
-            marcarLeido()
+            messageRead()
         }
     }
 
-    private fun marcarLeido() {
-        _uiState.value.user!!.marcarMensajeLeido(_uiState.value.chatSeleccionado)
+    private fun messageRead() {
+        _uiState.value.user!!.messageRead(_uiState.value.chatSeleccionado)
+        viewModelScope.launch {
+            val chat = _uiState.value.chatSeleccionado
+            for(message in chat.messages){
+                if(message.sender!=_uiState.value.user!!.id && !message.isRead)
+                    messageRepository.messageRead(message.id!!)
+            }
+        }
     }
 
     fun setMensaje(mensaje: String) {
         _uiState.update { e -> e.copy(mensajeEnviar = mensaje) }
     }
 
-    fun enviarMensaje() {
+    fun sendMessage(recipientId: Long) {
 
-//        val mensajeNuevo = Message(
-//            _uiState.value.user!!.id, Fecha.ahora(), _uiState.value.mensajeEnviar, true
-//        )
-//        _uiState.value.user!!.addMensaje(_uiState.value.chatSeleccionado, mensajeNuevo)
-//        _uiState.update { e -> e.copy(mensajeEnviar = "") }
-        //TODO("enviar mensaje")
+        val newMessage = Message(
+            sender = _uiState.value.user!!.id,
+            recipient =recipientId,
+            content= _uiState.value.mensajeEnviar
+        )
+        _uiState.value.user!!.addMensaje(_uiState.value.chatSeleccionado, newMessage)
+        _uiState.update { e -> e.copy(mensajeEnviar = "") }
+
+        viewModelScope.launch {
+            messageRepository.sendMessage(newMessage)
+        }
+
+    }
+
+    fun deleteContact(chat: Chat){
+        viewModelScope.launch {
+            messageRepository.deleteContact(_uiState.value.user!!.id, chat.contactId)
+        }
+
+        val user = _uiState.value.user!!
+        user.chats.remove(chat)
+        _uiState.update { e-> e.copy(user = user) }
 
     }
 
     fun filtrarMensajesNoleidos() {
         if (_uiState.value.user!!.tieneMensajesSinLeer()) {
-            _uiState.update { e -> e.copy(filtroMensajesNoleidosActivo = true) }
+            _uiState.update { e -> e.copy(filterUnreadMessagesActive = true) }
         }
     }
 
     fun quitarFiltroMensajesNoLeidos() {
-        _uiState.update { e -> e.copy(filtroMensajesNoleidosActivo = false) }
+        _uiState.update { e -> e.copy(filterUnreadMessagesActive = false) }
     }
 
 
@@ -366,7 +391,7 @@ class AppViewModel : ViewModel() {
             uiState.value.user!!.chats
         }
 
-        return if (uiState.value.filtroMensajesNoleidosActivo)
+        return if (uiState.value.filterUnreadMessagesActive)
             ArrayList(listaContactos.filter { it.newMessage })
         else
             listaContactos
@@ -419,10 +444,14 @@ class AppViewModel : ViewModel() {
     /**
     FUNCIONALIDADES
      */
-    fun cambiarModo(): Boolean {
-        val cambioModo = !uiState.value.modoPro
-        _uiState.update { e -> e.copy(modoPro = cambioModo) }
-        return cambioModo
+    fun changeMode(): Boolean {
+        val mode = !uiState.value.modoPro
+        _uiState.update { e -> e.copy(modoPro = mode) }
+        return mode
+    }
+
+    fun resetMode(){
+        _uiState.update { e -> e.copy(modoPro = true) }
     }
 
     /**
@@ -509,18 +538,30 @@ class AppViewModel : ViewModel() {
     /**
     RESERVAS CONSUMIDOR
      */
-    fun reservar(activity: Activity) {
-        _uiState.value.user!!.reseservar(activity)
-
+    fun reserveActivity(activity: Activity) {
+        _uiState.value.user!!.reserveActivity(activity)
+        //TODO
     }
 
-    fun cancelarReserva(activity: Activity) {
-        _uiState.value.user!!.cancelarReserva(activity)
+    fun cancelReservation(activity: Activity) {
+        _uiState.value.user!!.cancelReservation(activity)
+        //TODO
     }
 
     /**
     RESERVAS PRO
      */
+    fun cancelReservation(activity: Activity, reservation: Reservation){
+        viewModelScope.launch {
+            val result = reservationRepository.cancel(reservation.contactId, activity.id!!)
+            if (result) {
+//                _uiState.value.user!!.cancelReservation(activity, reservation)
+                val user = _uiState.value.user!!
+                user.cancelReservation(activity, reservation)
+                _uiState.update { e -> e.copy(user = user) }
+            }
+        }
+    }
 
     fun createChatIfNoExist(reservation: Reservation) {
         val chat = Chat(

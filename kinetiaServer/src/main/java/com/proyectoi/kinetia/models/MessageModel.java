@@ -1,9 +1,9 @@
 package com.proyectoi.kinetia.models;
 
+import com.proyectoi.kinetia.domain.Message;
 import jakarta.persistence.*;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name="messages")
@@ -35,6 +35,13 @@ public class MessageModel {
 
     @Column(nullable = false)
     private Boolean receiverHasDeleted = false;
+
+    public MessageModel() {}
+
+    public MessageModel(Message message){
+        this.content = message.getContent();
+        this.sentAt = message.getSentAt();
+    }
 
     public Long getId() {
         return id;
@@ -76,11 +83,11 @@ public class MessageModel {
         this.sentAt = sentAt;
     }
 
-    public Boolean getRead() {
+    public Boolean getIsRead() {
         return isRead;
     }
 
-    public void setRead(Boolean read) {
+    public void setIsRead(Boolean read) {
         isRead = read;
     }
 

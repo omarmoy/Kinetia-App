@@ -9,7 +9,6 @@ https://openwebinars.net/academia/aprende/apps-escritorio-javafx/?enroll=1&from_
 
 
 
-evento de navegación para cambiar entre las pantallas
+mensajes ok pero ahora me los muestra no ordenados, revisar. Siguietne anuncios pro
 
 
-consumir API kotlin Retrofit

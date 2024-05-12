@@ -38,12 +38,12 @@ import com.dam2.proyectocliente.models.Role
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.ui.screens.consumidor.ListaActividades
 import com.dam2.proyectocliente.ui.menus.consumer.MenuBusqueda
-import com.dam2.proyectocliente.ui.menus.MenuConversaciones
+import com.dam2.proyectocliente.ui.menus.ChatsMenu
 import com.dam2.proyectocliente.ui.menus.consumer.MainMenu
 import com.dam2.proyectocliente.ui.menus.consumer.MenuUsuario
 import com.dam2.proyectocliente.ui.screens.consumidor.VistaActividad
 import com.dam2.proyectocliente.ui.screens.consumidor.VistaAnuncio
-import com.dam2.proyectocliente.ui.screens.VistaChat
+import com.dam2.proyectocliente.ui.screens.Chat
 import com.dam2.proyectocliente.ui.forms.FormActivity
 import com.dam2.proyectocliente.ui.forms.FormularioAnuncio
 import com.dam2.proyectocliente.ui.forms.EditActivity
@@ -132,7 +132,7 @@ fun Contenido(
         }
 
         composable(route = Screens.menuMensajes.name) {
-            MenuConversaciones(navController, vm, uiState)
+            ChatsMenu(navController, vm, uiState)
         }
 
         composable(route = Screens.menuUsuario.name) {
@@ -163,7 +163,7 @@ fun Contenido(
             VistaActividad(navController, uiState.selectedActivity!!, vm, uiState)
         }
         composable(route = Screens.chat.name) {
-            VistaChat(navController, uiState.chatSeleccionado, vm, uiState)
+            Chat(navController, uiState.chatSeleccionado, vm, uiState)
         }
         composable(route = Screens.vistaAnuncio.name) {
             VistaAnuncio(navController, uiState.advertisementSeleccionado, vm)

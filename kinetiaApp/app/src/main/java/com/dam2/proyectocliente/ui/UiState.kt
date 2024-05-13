@@ -102,18 +102,18 @@ data class UiState(
     val modoPro: Boolean = true, //TODO gestionar
 
     //Entradas de texto
-    val mensajeEnviar: String = "",
-    val actividadBuscar: String = "",
-    val anuncioBuscar: String = "",
-    val contactosBuscar: String = "",
-    val actividadUsuarioBuscar: String = "",
+    val messageSend: String = "",
+    val activitySearched: String = "",
+    val advertisementSearched: String = "",
+    val contactSearched: String = "",
+    val activityUserSearched: String = "",
 
     //Filtros
     val filterUnreadMessagesActive: Boolean = false
 
 
 ) {
-    fun esFavorita(activity: Activity): Boolean {
+    fun isFavorite(activity: Activity): Boolean {
         if (user!!.activitiesFav.size == 0)
             return false
         return user!!.activitiesFav.contains(activity)

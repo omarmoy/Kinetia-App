@@ -62,7 +62,7 @@ import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Chat
 import com.dam2.proyectocliente.models.Message
 import com.dam2.proyectocliente.moker.Moker
-import com.dam2.proyectocliente.utils.Picture
+import com.dam2.proyectocliente.utils.Painter
 import com.dam2.proyectocliente.utils.showDate
 import com.example.proyectocliente.ui.theme.AzulFondo
 import com.example.proyectocliente.ui.theme.AzulLogo
@@ -99,7 +99,7 @@ fun TopBarChat(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Card(shape = CircleShape) {
                     Image(
-                        painter = painterResource(id = Picture.getProfilePictureInt(chat.contactPicture)),
+                        painter = painterResource(id = Painter.getProfilePictureInt(chat.contactPicture)),
                         contentDescription = chat.contactName,
                         modifier = Modifier
                             .height(50.dp)
@@ -159,7 +159,7 @@ fun ContentChat(innerPadding: PaddingValues, chat: Chat) {
             .padding(innerPadding)
 
     ) {
-        items(chat.messages.reversed()) { m ->
+        items(chat.messages.sortedByDescending { it.sentAt }) { m ->
             VistaMensaje(mensaje = m, chat.contactId)
         }
     }
@@ -213,7 +213,7 @@ fun TextInput(vm: AppViewModel, uiState: UiState, chat: Chat) {
         ) {
 
             OutlinedTextField(
-                value = uiState.mensajeEnviar,
+                value = uiState.messageSend,
                 onValueChange = { vm.setMensaje(it) },
                 singleLine = false,
                 keyboardOptions = KeyboardOptions.Default.copy(

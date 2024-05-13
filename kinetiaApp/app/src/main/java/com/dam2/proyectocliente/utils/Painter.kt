@@ -2,7 +2,7 @@ package com.dam2.proyectocliente.utils
 
 import com.example.proyectocliente.R
 
-object Picture {
+object Painter {
     val profilePictures = arrayListOf(
         R.drawable.crunch,
         R.drawable.coco,

@@ -32,6 +32,17 @@ public class ActivityService {
         return activities;
     }
 
+    public List<Activity> getAll(Long userId) {
+        List<ActivityModel> activityModels = activityRepository.findAll();
+        List<Activity> activities = new ArrayList<>();
+        for (ActivityModel activityModel : activityModels) {
+            if (!activityModel.getUser().getId().equals(userId)) {
+                activities.add(new Activity(activityModel));
+            }
+        }
+        return activities;
+    }
+
     public Long createActivity(Activity activity) {
         try {
             UserModel user = userRepository.findById(activity.getUserId()).orElseThrow();

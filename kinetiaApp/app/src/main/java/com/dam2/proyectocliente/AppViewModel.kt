@@ -17,11 +17,11 @@ import com.dam2.proyectocliente.models.User
 import com.dam2.proyectocliente.network.request.Login
 import com.dam2.proyectocliente.repositories.ActivityRepository
 import com.dam2.proyectocliente.repositories.MessageRepository
-import com.dam2.proyectocliente.repositories.ReservationRepository
 import com.dam2.proyectocliente.ui.UiState
-import com.dam2.proyectocliente.utils.Picture
+import com.dam2.proyectocliente.utils.Painter
 import com.dam2.proyectocliente.utils.buscarActividad
 import com.dam2.proyectocliente.utils.buscarContacto
+import com.dam2.proyectocliente.utils.searchAdvertisements
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -44,7 +44,6 @@ class AppViewModel : ViewModel() {
         private set
 
     private val activityRepository = ActivityRepository()
-    private val reservationRepository = ReservationRepository()
     private val messageRepository = MessageRepository()
 
     fun login(email: String, password: String) {
@@ -54,12 +53,12 @@ class AppViewModel : ViewModel() {
                 val loginRepository = LoginRepository()
                 val user = loginRepository.login(Login(email, password))
                 if (user != null && user.role == Role.PROVIDER) {
-                    setAdvertisement(loginRepository.getAdvertisements())
+                    setAdvertisement(loginRepository.getAdvertisements(user.id))
                     if (user.company != null || user.company != "")
                         setIsCompany(true)
                 } else
                     changeMode()
-                setActivities(loginRepository.getActivities())
+                setActivities(loginRepository.getActivities(user!!.id))
                 setUser(user)
                 mostrarPanelNavegacion()
                 UserUiState.Success(user)
@@ -151,7 +150,7 @@ class AppViewModel : ViewModel() {
 
     fun listaActividades(): ArrayList<Activity> {
 
-        val listaActividades = if (uiState.value.actividadBuscar != "") {
+        val listaActividades = if (uiState.value.activitySearched != "") {
             resultadoBusquedaActividad()
         } else {
             uiState.value.activities
@@ -166,16 +165,16 @@ class AppViewModel : ViewModel() {
     }
 
     fun setActividadBuscar(actividad: String) {
-        _uiState.update { e -> e.copy(actividadBuscar = actividad) }
+        _uiState.update { e -> e.copy(activitySearched = actividad) }
     }
 
-    fun resultadoBusquedaActividad(tituloBuscar: String = uiState.value.actividadBuscar): ArrayList<Activity> {
+    fun resultadoBusquedaActividad(tituloBuscar: String = uiState.value.activitySearched): ArrayList<Activity> {
         return buscarActividad(uiState.value.activities, tituloBuscar)
     }
 
     //actividades de usuario
     fun cargarActividadesUsuario(lista: ArrayList<Activity>): ArrayList<Activity> {
-        val actividadBuscada = uiState.value.actividadUsuarioBuscar
+        val actividadBuscada = uiState.value.activityUserSearched
 
         if (actividadBuscada == "") {
             return lista
@@ -185,7 +184,7 @@ class AppViewModel : ViewModel() {
     }
 
     fun setActividadUsuarioBuscar(actividad: String) {
-        _uiState.update { e -> e.copy(actividadUsuarioBuscar = actividad) }
+        _uiState.update { e -> e.copy(activityUserSearched = actividad) }
     }
 
     fun selectModActividad(activity: Activity) {
@@ -202,7 +201,7 @@ class AppViewModel : ViewModel() {
             id = activity.id,
             title = fields[0],
             description = fields[9],
-            picture = if (picture != 0) Picture.getActivityPictureName(picture) else activity.picture,
+            picture = if (picture != 0) Painter.getActivityPictureName(picture) else activity.picture,
             userId = activity.userId,
             userName = activity.userName,
             date = LocalDateTime.of(
@@ -251,7 +250,7 @@ class AppViewModel : ViewModel() {
         activity.vacancies = campos[10].toInt()
         activity.featured = destacado
         if (picture != 0) {
-            activity.picture = Picture.getActivityPictureName(picture)
+            activity.picture = Painter.getActivityPictureName(picture)
             setPicture(0)
         }
     }
@@ -296,7 +295,7 @@ class AppViewModel : ViewModel() {
             featured = fields[11].toBoolean(),
             userId = _uiState.value.user!!.id,
             userName = _uiState.value.user!!.fullName(),
-            picture = Picture.getActivityPictureName(_uiState.value.selectedPicture)
+            picture = Painter.getActivityPictureName(_uiState.value.selectedPicture)
         )
         _uiState.update { e -> e.copy(newActivity = activity) }
     }
@@ -334,26 +333,26 @@ class AppViewModel : ViewModel() {
         _uiState.value.user!!.messageRead(_uiState.value.chatSeleccionado)
         viewModelScope.launch {
             val chat = _uiState.value.chatSeleccionado
-            for(message in chat.messages){
-                if(message.sender!=_uiState.value.user!!.id && !message.isRead)
+            for (message in chat.messages) {
+                if (message.sender != _uiState.value.user!!.id && !message.isRead)
                     messageRepository.messageRead(message.id!!)
             }
         }
     }
 
     fun setMensaje(mensaje: String) {
-        _uiState.update { e -> e.copy(mensajeEnviar = mensaje) }
+        _uiState.update { e -> e.copy(messageSend = mensaje) }
     }
 
     fun sendMessage(recipientId: Long) {
 
         val newMessage = Message(
             sender = _uiState.value.user!!.id,
-            recipient =recipientId,
-            content= _uiState.value.mensajeEnviar
+            recipient = recipientId,
+            content = _uiState.value.messageSend
         )
         _uiState.value.user!!.addMensaje(_uiState.value.chatSeleccionado, newMessage)
-        _uiState.update { e -> e.copy(mensajeEnviar = "") }
+        _uiState.update { e -> e.copy(messageSend = "") }
 
         viewModelScope.launch {
             messageRepository.sendMessage(newMessage)
@@ -361,14 +360,14 @@ class AppViewModel : ViewModel() {
 
     }
 
-    fun deleteContact(chat: Chat){
+    fun deleteContact(chat: Chat) {
         viewModelScope.launch {
             messageRepository.deleteContact(_uiState.value.user!!.id, chat.contactId)
         }
 
         val user = _uiState.value.user!!
         user.chats.remove(chat)
-        _uiState.update { e-> e.copy(user = user) }
+        _uiState.update { e -> e.copy(user = user) }
 
     }
 
@@ -385,7 +384,7 @@ class AppViewModel : ViewModel() {
 
     fun listaContactos(): ArrayList<Chat> {
 
-        val listaContactos = if (uiState.value.contactosBuscar != "") {
+        val listaContactos = if (uiState.value.contactSearched != "") {
             resultadoBusquedaContacto()
         } else {
             uiState.value.user!!.chats
@@ -398,10 +397,10 @@ class AppViewModel : ViewModel() {
     }
 
     fun setContactoBuscar(contacto: String) {
-        _uiState.update { e -> e.copy(contactosBuscar = contacto) }
+        _uiState.update { e -> e.copy(contactSearched = contacto) }
     }
 
-    fun resultadoBusquedaContacto(contactoBuscar: String = uiState.value.contactosBuscar): ArrayList<Chat> {
+    fun resultadoBusquedaContacto(contactoBuscar: String = uiState.value.contactSearched): ArrayList<Chat> {
         return buscarContacto(uiState.value.user!!.chats, contactoBuscar)
     }
 
@@ -432,13 +431,22 @@ class AppViewModel : ViewModel() {
     /**
     FAVORITOS
      */
-    fun addFavorito(activity: Activity) {
-        if (!_uiState.value.user!!.activitiesFav.contains(activity))
+    fun addFav(activity: Activity) {
+        if (!_uiState.value.user!!.activitiesFav.contains(activity)) {
             _uiState.value.user!!.addActividadFav(activity)
+
+            viewModelScope.launch {
+                activityRepository.addFav(_uiState.value.user!!.id, activity.id!!)
+            }
+
+        }
     }
 
-    fun eliminarFavorito(activity: Activity) {
+    fun deleteFav(activity: Activity) {
         _uiState.value.user!!.activitiesFav.remove(activity)
+        viewModelScope.launch {
+            activityRepository.deleteFav(_uiState.value.user!!.id, activity.id!!)
+        }
     }
 
     /**
@@ -450,7 +458,7 @@ class AppViewModel : ViewModel() {
         return mode
     }
 
-    fun resetMode(){
+    fun resetMode() {
         _uiState.update { e -> e.copy(modoPro = true) }
     }
 
@@ -496,43 +504,33 @@ class AppViewModel : ViewModel() {
         //TODO peta cuando llama a esta función
     }
 
-    fun publicarAnuncio() {
+    fun postAdvertisement() {
         val anuncio = _uiState.value.nuevoAdvertisement
         _uiState.value.user!!.addAnuncio(anuncio!!)
         resetNuevoAnuncio()
     }
 
-    fun borrarAnuncio(advertisement: Advertisement) {
+    fun deleteAdvertisement(advertisement: Advertisement) {
         _uiState.value.user!!.eliminarAnuncio(advertisement)
     }
 
 
-    fun listaAnuncios(): ArrayList<Advertisement> {
+    fun advertisementsList(): ArrayList<Advertisement> {
 
-//        val listaActividades = if (uiState.value.actividadBuscar != "") {
-//            resultadoBusquedaActividad()
-//        } else {
-//            uiState.value.actividades
-//        }
-//
-//        return if (uiState.value.categoriaSelecciononada == Categoria.Todo)
-//            listaActividades
-//        else
-//            ArrayList(listaActividades.filter {
-//                it.categoria == uiState.value.categoriaSelecciononada
-//            })
-        //TODO
-        return _uiState.value.advertisements
+        return if (uiState.value.advertisementSearched != "") {
+            resultSearchAdvertisements()
+        } else {
+            uiState.value.advertisements
+        }
     }
 
-    fun setAuncioBuscar(anuncio: String) {
-        _uiState.update { e -> e.copy(anuncioBuscar = anuncio) }
+    fun setAdvertisementSearched(ad: String) {
+        _uiState.update { e -> e.copy(advertisementSearched = ad) }
     }
 
-    //TODO resultadoBusquedaAnuncio
-//    fun resultadoBusquedaActividad(tituloBuscar: String = uiState.value.actividadBuscar): ArrayList<Actividad> {
-//        return buscarActividad(uiState.value.actividades, tituloBuscar)
-//    }
+    private fun resultSearchAdvertisements(titleSearched: String = uiState.value.advertisementSearched): ArrayList<Advertisement> {
+        return searchAdvertisements(uiState.value.advertisements, titleSearched)
+    }
 
 
     /**
@@ -540,22 +538,25 @@ class AppViewModel : ViewModel() {
      */
     fun reserveActivity(activity: Activity) {
         _uiState.value.user!!.reserveActivity(activity)
-        //TODO
+        viewModelScope.launch {
+            activityRepository.reserve(_uiState.value.user!!.id, activity.id!!)
+        }
     }
 
     fun cancelReservation(activity: Activity) {
         _uiState.value.user!!.cancelReservation(activity)
-        //TODO
+        viewModelScope.launch {
+            activityRepository.cancelReserve(_uiState.value.user!!.id, activity.id!!)
+        }
     }
 
     /**
     RESERVAS PRO
      */
-    fun cancelReservation(activity: Activity, reservation: Reservation){
+    fun cancelReservation(activity: Activity, reservation: Reservation) {
         viewModelScope.launch {
-            val result = reservationRepository.cancel(reservation.contactId, activity.id!!)
+            val result = activityRepository.cancelReserve(reservation.contactId, activity.id!!)
             if (result) {
-//                _uiState.value.user!!.cancelReservation(activity, reservation)
                 val user = _uiState.value.user!!
                 user.cancelReservation(activity, reservation)
                 _uiState.update { e -> e.copy(user = user) }
@@ -563,11 +564,29 @@ class AppViewModel : ViewModel() {
         }
     }
 
+
+    /**
+     * CHATS NUEVO
+     */
     fun createChatIfNoExist(reservation: Reservation) {
         val chat = Chat(
             contactId = reservation.contactId,
             contactName = reservation.contactName,
             contactPicture = reservation.contactPicture
+        )
+
+        if (!_uiState.value.user!!.chats.contains(chat)) {
+            _uiState.value.user!!.addChat(chat)
+        }
+        selectContacto(chat)
+
+    }
+
+    fun createChatIfNoExist(advertisement: Advertisement) {
+        val chat = Chat(
+            contactId = advertisement.userId,
+            contactName = advertisement.userName,
+            contactPicture = advertisement.userPhoto
         )
 
         if (!_uiState.value.user!!.chats.contains(chat)) {

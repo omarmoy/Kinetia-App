@@ -23,6 +23,17 @@ public class AdvertisementService {
         return advertisements;
     }
 
+    public List<Advertisement> getAll(Long userId) {
+        List<AdvertisementModel> advertisementModels = advertisementRepository.findAll();
+        List<Advertisement> advertisements = new ArrayList<>();
+        for (AdvertisementModel advertisementModel : advertisementModels) {
+            if (!advertisementModel.getUser().getId().equals(userId)) {
+                advertisements.add(new Advertisement(advertisementModel));
+            }
+        }
+        return advertisements;
+    }
+
     public AdvertisementService(IAdvertisementRepository advertisementRepository) {
         this.advertisementRepository = advertisementRepository;
     }

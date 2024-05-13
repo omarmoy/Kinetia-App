@@ -22,6 +22,11 @@ public class ActivityController {
         return activityService.getAll();
     }
 
+    @GetMapping(path = "/{userId}")
+    public List<Activity> activitiesForUser(@PathVariable("userId") Long userId) {
+        return activityService.getAll(userId);
+    }
+
     @PostMapping
     public Long addActivity(@RequestBody Activity activity) {
         System.out.println(activity);

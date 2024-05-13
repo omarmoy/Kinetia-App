@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.inicio
+package com.dam2.proyectocliente.ui.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -54,8 +54,8 @@ import com.example.proyectocliente.ui.theme.NegroClaro
 @Composable
 fun Login(navController: NavHostController, vm: AppViewModel, estado: UiState) {
 
-    var email by rememberSaveable { mutableStateOf("antonia@correo.es") }
-    var password by rememberSaveable { mutableStateOf("antonia") }
+    var email by rememberSaveable { mutableStateOf("juan@correo.es") }
+    var password by rememberSaveable { mutableStateOf("juan") }
 
     Scaffold(
         topBar = {

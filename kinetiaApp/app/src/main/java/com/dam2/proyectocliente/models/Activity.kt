@@ -50,5 +50,15 @@ data class Activity(
         return id.hashCode()
     }
 
+    override fun toString(): String {
+        return "$title\n" +
+                "$description\n" +
+                "Anunciante: $userName\n" +
+                "Fecha: $date\n" +
+                "Precio: $price\n" +
+                "Lugar: $location\n" +
+                "Plazas disponibles: $availableVacancies"
+    }
+
 
 }

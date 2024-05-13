@@ -54,7 +54,7 @@ import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Chat
 import com.dam2.proyectocliente.PanelNavegacion
 import com.dam2.proyectocliente.models.Screens
-import com.dam2.proyectocliente.utils.Picture
+import com.dam2.proyectocliente.utils.Painter
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAgua
 import com.example.proyectocliente.ui.theme.BlancoFondo
@@ -117,7 +117,7 @@ fun Chats(
         LazyColumn {
             item {
                 TextField(
-                    value = uiState.contactosBuscar,
+                    value = uiState.contactSearched,
                     onValueChange = { vm.setContactoBuscar(it) },
                     singleLine = true,
                     label = { Text(text = "Buscar") },
@@ -137,7 +137,7 @@ fun Chats(
                         unfocusedIndicatorColor = Gris2
                     ),
                     trailingIcon = {
-                        if (uiState.contactosBuscar != "")
+                        if (uiState.contactSearched != "")
                             IconButton(onClick = { vm.setContactoBuscar("") }) {
                                 Icon(
                                     imageVector = Icons.Filled.Clear,
@@ -181,7 +181,7 @@ fun Contact(c: Chat, navController: NavHostController, vm: AppViewModel) {
                 colors = CardDefaults.cardColors(containerColor = BlancoFondo)
             ) {
                 Image(
-                    painter = painterResource(id=Picture.getProfilePictureInt(c.contactPicture)),
+                    painter = painterResource(id=Painter.getProfilePictureInt(c.contactPicture)),
                     contentDescription = c.contactName,
                     modifier = Modifier
                         .fillMaxHeight()

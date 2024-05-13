@@ -19,7 +19,7 @@ import com.dam2.proyectocliente.models.Screens
 import com.example.proyectocliente.ui.theme.BlancoFondo
 
 @Composable
-fun DesplegableConfiguarion(
+fun DropdownConfig(
     navController: NavHostController,
     vm: AppViewModel,
     estado: UiState,

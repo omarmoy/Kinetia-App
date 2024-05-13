@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.inicio
+package com.dam2.proyectocliente.ui.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

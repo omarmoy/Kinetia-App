@@ -133,7 +133,7 @@ fun BarraSuperiorBusqueda(vm: AppViewModel, estado: UiState, obtenerFoco: FocusR
             .padding(12.dp)
     ) {
         TextField(
-            value = estado.actividadBuscar,
+            value = estado.activitySearched,
             onValueChange = { vm.setActividadBuscar(it) },
             singleLine = true,
             label = { Text(text = "Buscar") },
@@ -142,7 +142,7 @@ fun BarraSuperiorBusqueda(vm: AppViewModel, estado: UiState, obtenerFoco: FocusR
                 imeAction = ImeAction.Default  //tipo de botón
             ),
             trailingIcon = {
-                if (estado.actividadBuscar != "")
+                if (estado.activitySearched != "")
                     IconButton(onClick = { vm.setActividadBuscar("")}) {
                         Icon(
                             imageVector = Icons.Filled.Clear,
@@ -175,7 +175,7 @@ fun ContenidoBusqueda(
     ) {
 
         LazyColumn(state = estadoLista) {
-            item { Categorias(navController, vm, estado) } //función definida en menuPrincipal
+            item { Categories(navController, vm, estado) } //función definida en menuPrincipal
             if (vm.listaActividades().size > 0) {
                 items(vm.listaActividades()) { a ->
                     MiniaturaActividadBusqueda(
@@ -268,14 +268,14 @@ fun MiniaturaActividadBusqueda(
                 ) {
 
                     IconButton(onClick = {
-                        if (estado.esFavorita(a))
-                            vm.eliminarFavorito(a)
+                        if (estado.isFavorite(a))
+                            vm.deleteFav(a)
                         else
-                            vm.addFavorito(a)
+                            vm.addFav(a)
                         refreshComposable()
                     }) {
                         Icon(
-                            imageVector = if (estado.esFavorita(a)) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                            imageVector = if (estado.isFavorite(a)) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                             contentDescription = "Fav",
                             tint = AzulAguaOscuro
                         )

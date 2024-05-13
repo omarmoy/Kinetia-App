@@ -28,13 +28,23 @@ fun buscarActividad(
     return resultado
 }
 
-fun buscarAnuncio(
+fun searchAdvertisements(
     advertisements: ArrayList<Advertisement>,
     cadenaABuscar: String,
     umbral: Int = umbral()
 ): ArrayList<Advertisement> {
-    //TODO
-    return ArrayList()
+    val lista = mutableListOf<Pair<Advertisement, Int>>()
+    for (ad in advertisements) {
+        val distancia = calcularDistanciaLevenshtein(ad.title, cadenaABuscar)
+        if (distancia <= umbral)
+            lista.add(ad to distancia)
+    }
+    val listaOrdenada = lista.sortedBy { it.second }
+    val resultado = ArrayList<Advertisement>()
+    for ((ad, _) in listaOrdenada) {
+        resultado.add(ad)
+    }
+    return resultado
 }
 
 fun buscarContacto(

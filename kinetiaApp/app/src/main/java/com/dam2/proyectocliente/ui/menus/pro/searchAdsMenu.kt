@@ -1,19 +1,16 @@
 package com.dam2.proyectocliente.ui.menus.pro
 
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -40,8 +37,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -57,23 +52,22 @@ import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Advertisement
 import com.dam2.proyectocliente.PanelNavegacionPro
 import com.dam2.proyectocliente.models.Screens
-import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaFondo
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.NegroClaro
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuBusquedaAnuncio(
-    navController: NavHostController, vm: AppViewModel, estado: UiState
+fun SearchAdsMenu(
+    navController: NavHostController, vm: AppViewModel, uiState: UiState
 ) {
-    var volverArriba by remember { mutableStateOf(false) }
-    val estadoLista = rememberLazyListState()
+    var backToUp by remember { mutableStateOf(false) }
+    val listState = rememberLazyListState()
 
     Scaffold(topBar = {
-        BarraSuperiorBusqueda(vm, estado)
+        TopBarSearchAds(vm, uiState)
     }, content = { innerPadding ->
-        ContenidoBusqueda(innerPadding, navController, vm, estado, estadoLista)
+        Advertisements(innerPadding, navController, vm, listState)
     }, floatingActionButton = {
         Surface(
             //shadowElevation = 4.dp, // Establece la elevación a 4dp
@@ -81,7 +75,7 @@ fun MenuBusquedaAnuncio(
             color = BlancoFondo.copy(alpha = 0.5f) //establece el color con transparencia
         ) {
             IconButton(onClick = {
-                volverArriba = true
+                backToUp = true
             }) {
                 Icon(
                     imageVector = Icons.Filled.KeyboardArrowUp,
@@ -91,10 +85,10 @@ fun MenuBusquedaAnuncio(
             }
         }
     })
-    LaunchedEffect(volverArriba) {
-        if (volverArriba) {
-            estadoLista.animateScrollToItem(index = 0)
-            volverArriba = false
+    LaunchedEffect(backToUp) {
+        if (backToUp) {
+            listState.animateScrollToItem(index = 0)
+            backToUp = false
         }
     }
 
@@ -103,7 +97,7 @@ fun MenuBusquedaAnuncio(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorBusqueda(vm: AppViewModel, estado: UiState) {
+fun TopBarSearchAds(vm: AppViewModel, uiState: UiState) {
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -115,16 +109,15 @@ fun BarraSuperiorBusqueda(vm: AppViewModel, estado: UiState) {
             .padding(12.dp)
     ) {
         TextField(
-            // TODO buscar Anuncio
-            value = estado.actividadBuscar,
-            onValueChange = { vm.setActividadBuscar(it) },
+            value = uiState.advertisementSearched,
+            onValueChange = { vm.setAdvertisementSearched(it) },
             singleLine = true,
             label = { Text(text = "Buscar Anuncio") },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Text, imeAction = ImeAction.Default  //tipo de botón
             ),
             trailingIcon = {
-                if (estado.actividadBuscar != "") IconButton(onClick = { vm.setActividadBuscar("") }) {
+                if (uiState.advertisementSearched != "") IconButton(onClick = { vm.setAdvertisementSearched("") }) {
                     Icon(
                         imageVector = Icons.Filled.Clear,
                         contentDescription = "buscar",
@@ -139,26 +132,22 @@ fun BarraSuperiorBusqueda(vm: AppViewModel, estado: UiState) {
 
 
 @Composable
-fun ContenidoBusqueda(
+fun Advertisements(
     innerPadding: PaddingValues,
     navController: NavHostController,
     vm: AppViewModel,
-    estado: UiState,
-    estadoLista: LazyListState
+    listState: LazyListState
 ) {
     Column(
         modifier = Modifier
             .padding(innerPadding)
             .background(BlancoFondo)
-        //.verticalScroll(rememberScrollState())
     ) {
 
-        LazyColumn(state = estadoLista) {
-            if (vm.listaAnuncios().size > 0) {
-                items(vm.listaAnuncios()) { a ->
-                    MiniaturaAnuncioBusqueda(
-                        a, vm, navController, estado
-                    )
+        LazyColumn(state = listState) {
+            if (vm.advertisementsList().size > 0) {
+                items(vm.advertisementsList()) { a ->
+                    Advertisement(a, vm, navController)
                 }
             } else item {
                 Column(
@@ -168,6 +157,7 @@ fun ContenidoBusqueda(
                 ) {
                     Spacer(modifier = Modifier.height(150.dp))
                     Text(text = "Ups, no se ha encontrado lo que buscas")
+                    Spacer(modifier = Modifier.height(600.dp))
                 }
             }
         }
@@ -177,13 +167,10 @@ fun ContenidoBusqueda(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MiniaturaAnuncioBusqueda(
-    advertisement: Advertisement, vm: AppViewModel, navController: NavHostController, estado: UiState
+fun Advertisement(
+    advertisement: Advertisement, vm: AppViewModel, navController: NavHostController
 ) {
-
-
     Card(
-//        shape = RectangleShape, /*cuadrado*/
         modifier = Modifier
             .fillMaxWidth()
             .height(100.dp)
@@ -199,7 +186,7 @@ fun MiniaturaAnuncioBusqueda(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .background(AzulAguaFondo)
                 .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
         ) {
@@ -207,7 +194,7 @@ fun MiniaturaAnuncioBusqueda(
 
                 Text(
                     text = advertisement.title,
-                    maxLines = 2,
+//                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp
@@ -215,16 +202,8 @@ fun MiniaturaAnuncioBusqueda(
                 Text(text = advertisement.userName, fontSize = 16.sp)
             }
 
-            Spacer(modifier = Modifier.width(24.dp))
 
-            Card(shape = CircleShape) {
-                Image(
-                    painter = painterResource(id = R.drawable.noimagen),
-                    contentDescription = advertisement.title,
-                    modifier = Modifier.fillMaxHeight(),
-                    contentScale = ContentScale.Crop
-                )
-            }
+
 
 
         }
@@ -244,19 +223,19 @@ fun MiniaturaAnuncioBusqueda(
 fun MenuBusquedaPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
-    val estado by vm.uiState.collectAsState()
+    val uiState by vm.uiState.collectAsState()
     Scaffold(topBar = {
-        BarraSuperiorBusqueda(
-            vm, estado
+        TopBarSearchAds(
+            vm, uiState
         )
     }, content = { innerPadding ->
-        ContenidoBusqueda(
-            innerPadding, navController, vm, estado, LazyListState()
+        Advertisements(
+            innerPadding, navController, vm, LazyListState()
         )
     },
         //llama a una función de navegación:
-        bottomBar = { PanelNavegacionPro(navController = navController, vm, estado) })
+        bottomBar = { PanelNavegacionPro(navController = navController, vm, uiState) })
 
 //    val a = DatosPrueba.anuncios[0]
-//    MiniaturaAnuncioBusqueda(a, vm, navController, estado)
+//    MiniaturaAnuncioBusqueda(a, vm, navController, uiState)
 }

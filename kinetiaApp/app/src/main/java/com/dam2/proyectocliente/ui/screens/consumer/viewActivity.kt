@@ -1,5 +1,7 @@
-package com.dam2.proyectocliente.ui.screens.consumidor
+package com.dam2.proyectocliente.ui.screens.consumer
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -42,12 +44,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -60,17 +63,22 @@ import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Activity
+import com.dam2.proyectocliente.models.Screens
+import com.dam2.proyectocliente.moker.Moker
+import com.dam2.proyectocliente.utils.Painter
 import com.dam2.proyectocliente.utils.dateToString
+import com.dam2.proyectocliente.utils.showDate
 import com.dam2.proyectocliente.utils.timeToString
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
+import java.time.ZoneId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VistaActividad(
+fun ViewActivity(
     navController: NavHostController,
     activity: Activity,
     vm: AppViewModel,
@@ -79,10 +87,10 @@ fun VistaActividad(
 
     Scaffold(
         topBar = {
-            BarraSuperiorActividad(navController, activity, vm, estado)
+            TopBarActivity(navController, activity, vm, estado)
         },
         content = { innerPadding ->
-            ContenidoActividad(
+            ContentActivity(
                 innerPadding,
                 navController,
                 activity,
@@ -96,19 +104,17 @@ fun VistaActividad(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorActividad(
+fun TopBarActivity(
     navController: NavHostController, activity: Activity, vm: AppViewModel, estado: UiState
 ) {
-    // Define un estado mutable para actuar como un disparador de recomposición
-    val recomposeTrigger = remember { mutableStateOf(0) }
 
-    // Función para refrescar manualmente la componible
-    fun refreshComposable() {
-        recomposeTrigger.value++
+    val triggerFav = remember { mutableIntStateOf(0) }
+    fun refreshFav() {
+        triggerFav.intValue++
     }
-    LaunchedEffect(recomposeTrigger.value) {
-        // Esta parte se ejecutará cada vez que cambie el valor de recomposeTrigger
+    LaunchedEffect(triggerFav.intValue) {
     }
+
     TopAppBar(
         title = {
             //Text(actividad.titulo, overflow = TextOverflow.Ellipsis)
@@ -127,14 +133,14 @@ fun BarraSuperiorActividad(
         },
         actions = {
             IconButton(onClick = {
-                if (estado.esFavorita(activity))
-                    vm.eliminarFavorito(activity)
+                if (estado.isFavorite(activity))
+                    vm.deleteFav(activity)
                 else
-                    vm.addFavorito(activity)
-                refreshComposable()
+                    vm.addFav(activity)
+                refreshFav()
             }) {
                 Icon(
-                    imageVector = if (estado.esFavorita(activity)) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                    imageVector = if (estado.isFavorite(activity)) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                     contentDescription = "Fav",
                     tint = AzulAguaOscuro
                 )
@@ -146,7 +152,7 @@ fun BarraSuperiorActividad(
 
 
 @Composable
-fun ContenidoActividad(
+fun ContentActivity(
     innerPadding: PaddingValues,
     navController: NavHostController,
     activity: Activity,
@@ -162,14 +168,13 @@ fun ContenidoActividad(
     ) {
 
 
-        val recomposeTrigger = remember { mutableStateOf(0) }
-        val refreshComposable: () -> Unit = { recomposeTrigger.value++ }
-        LaunchedEffect(recomposeTrigger.value) {
-            // Esta parte se ejecutará cada vez que cambie el valor de recomposeTrigger
+        val triggerReservation = remember { mutableIntStateOf(0) }
+        val refreshReservation: () -> Unit = { triggerReservation.intValue++ }
+        LaunchedEffect(triggerReservation.intValue) {
         }
 
         Image(
-            painter = painterResource(id = R.drawable.noimagen),
+            painter = painterResource(id = Painter.getActivityPictureInt(activity.picture)),
             contentDescription = activity.title,
             modifier = Modifier
                 .fillMaxWidth()
@@ -177,16 +182,16 @@ fun ContenidoActividad(
             contentScale = ContentScale.Crop
         )
 
-        PanelTitulo(navController, activity, vm)
-        PanelDatos(navController, activity, vm)
-        PanelBotones(navController, activity, vm, estado, refreshComposable)
-        PanelContenido(navController, activity, vm, estado, refreshComposable)
+        TitlePanel(navController, activity, vm)
+        DataPanel(navController, activity, vm)
+        ButtonsPanel(navController, activity, vm, estado, refreshReservation)
+        ContentActivity(navController, activity, vm, estado, refreshReservation)
     }
 }
 
 @Composable
-fun PanelTitulo(navController: NavHostController, activity: Activity, vm: AppViewModel) {
-
+fun TitlePanel(navController: NavHostController, activity: Activity, vm: AppViewModel) {
+    val context = LocalContext.current
     Column(modifier = Modifier.padding(top = 12.dp, end = 12.dp, start = 12.dp, bottom = 1.dp)) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.weight(1f)) {
@@ -207,7 +212,8 @@ fun PanelTitulo(navController: NavHostController, activity: Activity, vm: AppVie
             IconButton(
                 modifier = Modifier.weight(.2f),
                 onClick = {
-                    /*TODO botón compartir*/
+                    /*TODO botón compartir, probarlo en el movil*/
+                    shareActivity(context, activity.toString())
                 }) {
                 Icon(
                     imageVector = Icons.Filled.Share, contentDescription = "compartir",
@@ -217,7 +223,9 @@ fun PanelTitulo(navController: NavHostController, activity: Activity, vm: AppVie
             }
         }
         Text(
-            text = "publicado: " + activity.createdAt.toString(),
+            text = "publicado: " + showDate(
+                activity.createdAt.atZone(ZoneId.systemDefault()).toLocalDateTime()
+            ),
             textAlign = TextAlign.End, color = AzulAguaClaro, fontSize = 14.sp,
             modifier = Modifier.fillMaxWidth()
         )
@@ -226,7 +234,7 @@ fun PanelTitulo(navController: NavHostController, activity: Activity, vm: AppVie
 }
 
 @Composable
-fun PanelDatos(navController: NavHostController, activity: Activity, vm: AppViewModel) {
+fun DataPanel(navController: NavHostController, activity: Activity, vm: AppViewModel) {
     Surface(
         modifier = Modifier
             .background(color = AmarilloPastel)
@@ -286,7 +294,7 @@ fun PanelDatos(navController: NavHostController, activity: Activity, vm: AppView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PanelBotones(
+fun ButtonsPanel(
     navController: NavHostController,
     activity: Activity,
     vm: AppViewModel,
@@ -320,7 +328,12 @@ fun PanelBotones(
             shape = CircleShape,
             colors = CardDefaults.cardColors(containerColor = AzulAguaOscuro),
             modifier = Modifier.size(50.dp),
-            onClick = { /*TODO*/ }
+            onClick = {
+                // TODO
+//                vm.createChatIfNoExist(reservation)
+//                vm.ocultarPanelNavegacion()
+//                navController.navigate(Screens.chat.name)
+            }
         ) {
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -338,8 +351,24 @@ fun PanelBotones(
     }
 }
 
+
+private fun shareActivity(context: Context, activity: String) {
+    // Create an ACTION_SEND implicit intent with order details in the intent extras
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_SUBJECT, "BÚSCALO EN KINETIA")
+        putExtra(Intent.EXTRA_TEXT, activity)
+    }
+    context.startActivity(
+        Intent.createChooser(
+            intent,
+            "Kinetia App"
+        )
+    )
+}
+
 @Composable
-fun PanelContenido(
+fun ContentActivity(
     navController: NavHostController,
     activity: Activity,
     vm: AppViewModel,
@@ -403,7 +432,7 @@ fun PanelContenido(
 fun ActividadPreview() {
     val vm: AppViewModel = viewModel()
     val navController = rememberNavController()
-//    val a = DatosPrueba.actividades[0]
+    val a = Moker.activity
     val estado by vm.uiState.collectAsState()
-//    VistaActividad(navController = navController, activity = a, vm, estado)
+    ViewActivity(navController = navController, activity = a, vm, estado)
 }

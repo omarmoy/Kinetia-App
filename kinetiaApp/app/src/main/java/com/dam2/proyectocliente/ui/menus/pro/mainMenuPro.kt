@@ -62,10 +62,10 @@ import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.PanelNavegacionPro
 import com.dam2.proyectocliente.models.Screens
-import com.dam2.proyectocliente.ui.menus.DesplegableConfiguarion
-import com.dam2.proyectocliente.ui.menus.consumer.Titulo
+import com.dam2.proyectocliente.ui.menus.DropdownConfig
+import com.dam2.proyectocliente.ui.menus.consumer.Title
 import com.dam2.proyectocliente.ui.resources.DialogInfo
-import com.dam2.proyectocliente.utils.Picture
+import com.dam2.proyectocliente.utils.Painter
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
@@ -134,7 +134,6 @@ fun TopBarMenuPro(navController: NavHostController, vm: AppViewModel, uiState: U
                     tint = if (uiState.user!!.tieneMensajesSinLeer()) Rojo else AzulAguaOscuro
                 )
             }
-            //Spacer(modifier = Modifier.width(12.dp))
 
             //Ajustes
             IconButton(onClick = { showSetting = !showSetting }) {
@@ -145,7 +144,7 @@ fun TopBarMenuPro(navController: NavHostController, vm: AppViewModel, uiState: U
                 )
             }
 
-            DesplegableConfiguarion(navController, vm, uiState, showSetting) { showSetting = false }
+            DropdownConfig(navController, vm, uiState, showSetting) { showSetting = false }
 
         }
     )
@@ -191,7 +190,7 @@ fun MainMenuContent(
                 DatosPerfilPro(uiState)
                 LazyColumn(modifier = Modifier.padding(8.dp)) {
 
-                    item { Titulo(texto = "Mis Actividades") }
+                    item { Title(texto = "Mis Actividades") }
 
                     if (uiState.user!!.activitiesOffered.size == 0) {
                         item {
@@ -258,7 +257,7 @@ fun DatosPerfilPro(uiState: UiState) {
                 colors = CardDefaults.cardColors(containerColor = BlancoFondo)
             ) {
                 Image(
-                    painter = painterResource(id = Picture.getProfilePictureInt(uiState.user!!.profilePicture)),
+                    painter = painterResource(id = Painter.getProfilePictureInt(uiState.user!!.profilePicture)),
                     contentDescription = uiState.user.name,
                     modifier = Modifier
                         .fillMaxHeight()
@@ -325,7 +324,7 @@ fun ActivityOffered(
                 navController.navigate(Screens.vistaActividadPro.name)
             }) {
             Image(
-                painter = painterResource(id = Picture. getActivityPictureInt(activity.picture)),
+                painter = painterResource(id = Painter. getActivityPictureInt(activity.picture)),
                 contentDescription = activity.title,
                 modifier = Modifier
                     .width(tam)

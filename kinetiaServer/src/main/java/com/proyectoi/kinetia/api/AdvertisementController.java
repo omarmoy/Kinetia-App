@@ -22,6 +22,11 @@ public class AdvertisementController {
         return advertisementService.getAll();
     }
 
+    @GetMapping(path = "/{userId}")
+    public List<Advertisement> advertisementsForUser(@PathVariable("userId") Long userId) {
+        return advertisementService.getAll(userId);
+    }
+
     @PostMapping
     public Long addAdvertisement(@RequestBody AdvertisementModel advertisement) {
         return advertisementService.createAdvertisement(advertisement);

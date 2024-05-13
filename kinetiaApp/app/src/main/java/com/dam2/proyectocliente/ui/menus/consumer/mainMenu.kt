@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -34,6 +35,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -42,14 +44,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -62,6 +66,7 @@ import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.models.Category
 import com.dam2.proyectocliente.PanelNavegacion
 import com.dam2.proyectocliente.models.Screens
+import com.dam2.proyectocliente.utils.Painter
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAgua
@@ -72,16 +77,17 @@ import com.example.proyectocliente.ui.theme.NegroClaro
 import com.example.proyectocliente.ui.theme.Rojo
 import com.example.proyectocliente.ui.theme.small
 import com.example.proyectocliente.ui.theme.subtitle
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainMenu(navController: NavHostController, vm: AppViewModel, uiState: UiState) {
     Scaffold(
         topBar = {
-            BarraSuperiorMPrincipal(navController, vm, uiState)
+            TopBarMain(navController, vm, uiState)
         },
         content = { innerPadding ->
-            ContenidoInicio(innerPadding, vm, uiState, navController)
+            ContentMain(innerPadding, vm, uiState, navController)
         }
     )
 }
@@ -92,7 +98,10 @@ fun MainMenu(navController: NavHostController, vm: AppViewModel, uiState: UiStat
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorMPrincipal(navController: NavHostController, vm: AppViewModel, uiState: UiState) {
+fun TopBarMain(navController: NavHostController, vm: AppViewModel, uiState: UiState) {
+
+    var showSnackbar by remember { mutableStateOf(false) }
+
     TopAppBar(
         colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = BlancoFondo),
         title = {
@@ -111,7 +120,7 @@ fun BarraSuperiorMPrincipal(navController: NavHostController, vm: AppViewModel, 
                     vm.cambiarBotonNav(2)
                     navController.navigate(Screens.menuMensajes.name)
                 } else {
-                    //TODO dialogo emergente "No tiene mensajes nuevos"
+                    showSnackbar = true
                 }
             }) {
                 Icon(
@@ -136,20 +145,44 @@ fun BarraSuperiorMPrincipal(navController: NavHostController, vm: AppViewModel, 
 
         }
     )
+
+    if (showSnackbar) {
+        Snackbar(
+            containerColor = BlancoFondo,
+            content = {
+                Text(
+                    "No tiene mensajes nuevos",
+                    color = NegroClaro,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        )
+    }
+
+    LaunchedEffect(showSnackbar) {
+        if (showSnackbar) {
+            delay(1000)
+            showSnackbar = false
+        }
+    }
 }
 
 /**
  * CONTENEDOR PRINCIPAL
  */
 @Composable
-fun ContenidoInicio(
-    innerPadding: PaddingValues, vm: AppViewModel, uiState: UiState, navController: NavHostController
+fun ContentMain(
+    innerPadding: PaddingValues,
+    vm: AppViewModel,
+    uiState: UiState,
+    navController: NavHostController
 ) {
     Column(
         modifier = Modifier
             .padding(innerPadding)
             .background(BlancoFondo)
-        //.verticalScroll(rememberScrollState())
+            .fillMaxSize()
     ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
@@ -157,24 +190,19 @@ fun ContenidoInicio(
             horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             item(span = { GridItemSpan(2) }) {
-                Categorias(
+                Categories(
                     navController,
                     vm,
                     uiState
                 )
             }
             item(span = { GridItemSpan(2) }) {
-                DestacadosyRecientes(
+                FeaturedAndRecent(
                     vm,
                     uiState,
                     navController
                 )
             }
-
-            //Descubre: //TODO
-//            items(DatosPrueba.actividades) { a ->
-//                MiniaturaActividad(a, vm, navController)
-//            }
         }
 
 
@@ -182,7 +210,7 @@ fun ContenidoInicio(
 }
 
 @Composable
-fun Categorias(
+fun Categories(
     navController: NavHostController,
     vm: AppViewModel,
     uiState: UiState
@@ -235,13 +263,13 @@ fun Categorias(
 }
 
 @Composable
-fun DestacadosyRecientes(vm: AppViewModel, uiState: UiState, navController: NavHostController) {
+fun FeaturedAndRecent(vm: AppViewModel, uiState: UiState, navController: NavHostController) {
     Column(modifier = Modifier.padding(start = 12.dp)) {
 
-        Titulo(texto = "Destacado")
+        Title(texto = "Destacado")
         LazyRow {
             items(vm.actividadesDestacadas()) { a ->
-                MiniaturaScrollLateral(
+                ActivityScrollLateral(
                     a,
                     vm,
                     navController,
@@ -249,10 +277,10 @@ fun DestacadosyRecientes(vm: AppViewModel, uiState: UiState, navController: NavH
                 )
             }
         }
-        Titulo(texto = "Recientes")
+        Title(texto = "Recientes")
         LazyRow {
             items(vm.actividadesRecientes()) { a ->
-                MiniaturaScrollLateral(
+                ActivityScrollLateral(
                     a,
                     vm,
                     navController,
@@ -260,15 +288,11 @@ fun DestacadosyRecientes(vm: AppViewModel, uiState: UiState, navController: NavH
                 )
             }
         }
-
-
-        Spacer(modifier = Modifier.height(20.dp))
-        Titulo(texto = "Descubre...")
     }
 }
 
 @Composable
-fun Titulo(texto: String) {
+fun Title(texto: String) {
     Text(
         text = texto, fontSize = subtitle,
         fontWeight = FontWeight.Bold, color = AzulAguaOscuro,
@@ -279,33 +303,32 @@ fun Titulo(texto: String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MiniaturaScrollLateral(
+fun ActivityScrollLateral(
     a: Activity,
     vm: AppViewModel,
     navController: NavHostController,
     uiState: UiState,
-    mostrarMenos: Boolean = false
+    showLess: Boolean = false
 ) {
     val tam = 230.dp
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(end = 12.dp)
     ) {
-        // Define un uiState mutable para actuar como un disparador de recomposición
-        val recomposeTrigger = remember { mutableIntStateOf(0) }
 
-        // Función para refrescar manualmente la componible
+        val trigger = remember { mutableIntStateOf(0) }
         fun refreshComposable() {
-            recomposeTrigger.intValue++
+            trigger.intValue++
         }
-        Card(//shape = RectangleShape, /*cuadrado*/
+
+        Card(
             onClick = {
                 vm.selectActivity(a)
                 vm.ocultarPanelNavegacion()
                 navController.navigate(Screens.vistaActividad.name)
             }) {
             Image(
-                painter = painterResource(id = R.drawable.noimagen),
+                painter = painterResource(id = Painter.getActivityPictureInt(a.picture)),
                 contentDescription = a.title,
                 modifier = Modifier
                     .width(tam)
@@ -336,29 +359,28 @@ fun MiniaturaScrollLateral(
                         fontWeight = FontWeight.Bold,
 
                         )
-                    if (!mostrarMenos) {
+                    if (!showLess) {
                         Text(text = a.location, fontSize = small)
                     }
                 }
 
-                if (!mostrarMenos) {
+                if (!showLess) {
                     Column(
                         modifier = Modifier
-                            //.weight(0.1f)
                             .fillMaxHeight()
                             .padding(0.dp),
                         verticalArrangement = Arrangement.Bottom
                     ) {
 
                         IconButton(onClick = {
-                            if (uiState.esFavorita(a))
-                                vm.eliminarFavorito(a)
+                            if (uiState.isFavorite(a))
+                                vm.deleteFav(a)
                             else
-                                vm.addFavorito(a)
+                                vm.addFav(a)
                             refreshComposable()
                         }) {
                             Icon(
-                                imageVector = if (uiState.esFavorita(a)) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                                imageVector = if (uiState.isFavorite(a)) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                                 contentDescription = "Fav",
                                 tint = AzulAguaOscuro
                             )
@@ -367,65 +389,12 @@ fun MiniaturaScrollLateral(
                 }
             }
         }
-        LaunchedEffect(recomposeTrigger.intValue) {
-            // Esta parte se ejecutará cada vez que cambie el valor de recomposeTrigger
-            // Puedes colocar aquí el contenido que quieres refrescar manualmente
-            // por ejemplo, otras composables o lógica que desees ejecutar nuevamente
+        LaunchedEffect(trigger.intValue) {
+            //lanza un efecto vacío que fuerza el refresco de pantalla
         }
 
     }
 
-
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MiniaturaActividad(a: Activity, vm: AppViewModel, navController: NavHostController) {
-    val tam = 150.dp
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-        //modifier = Modifier.padding(start = 12.dp)
-    ) {
-        Card(shape = RectangleShape,
-            onClick = {
-                vm.selectActivity(a)
-                vm.ocultarPanelNavegacion()
-                navController.navigate(Screens.vistaActividad.name)
-            }) {
-            Image(
-                painter = painterResource(id = R.drawable.noimagen),
-                contentDescription = a.title,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(tam),
-                contentScale = ContentScale.Crop
-            )
-        }
-        Card(
-            colors = CardDefaults.cardColors(AzulAguaFondo),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 4.dp, bottom = 8.dp)
-
-        ) {
-            Column(modifier = Modifier.padding(8.dp)) {
-                Text(
-                    text = a.title,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    fontWeight = FontWeight.Bold,
-                )
-                Text(
-                    text = a.location,
-                    fontSize = small,
-                    overflow = TextOverflow.Ellipsis,
-                )
-
-            }
-
-        }
-
-    }
 
 }
 
@@ -436,20 +405,21 @@ fun MiniaturaActividad(a: Activity, vm: AppViewModel, navController: NavHostCont
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun mainMenuProPreview() {
+fun MainMenuProPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
     val uiState by vm.uiState.collectAsState()
     Scaffold(
+        modifier = Modifier.background(BlancoFondo),
         topBar = {
-            BarraSuperiorMPrincipal(
+            TopBarMain(
                 navController,
                 vm,
                 uiState
             )
         },
         content = { innerPadding ->
-            ContenidoInicio(
+            ContentMain(
                 innerPadding,
                 vm,
                 uiState,

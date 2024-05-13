@@ -62,7 +62,7 @@ import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Advertisement
 import com.dam2.proyectocliente.PanelNavegacion
 import com.dam2.proyectocliente.models.Screens
-import com.dam2.proyectocliente.ui.menus.DesplegableConfiguarion
+import com.dam2.proyectocliente.ui.menus.DropdownConfig
 import com.dam2.proyectocliente.ui.resources.DialogInfo
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
@@ -103,7 +103,7 @@ fun MenuUsuario(navController: NavHostController, vm: AppViewModel, estado: UiSt
     if (borrarAdvertisement != null) {
         DialogInfo(
             onDismissRequest = { setBorrarAnuncio(null) },
-            onConfirmation = { vm.borrarAnuncio(borrarAdvertisement!!); setBorrarAnuncio(null) },
+            onConfirmation = { vm.deleteAdvertisement(borrarAdvertisement!!); setBorrarAnuncio(null) },
             dialogTitle = borrarAdvertisement!!.title,
             dialogText = "¿Quieres borrar este anunco?",
             buttonConfirm = "Aceptar",
@@ -148,7 +148,7 @@ fun BarraSuperiorPerfil(navController: NavHostController, vm: AppViewModel, esta
                 )
             }
 
-            DesplegableConfiguarion(navController, vm, estado, mostrarMenu) { mostrarMenu = false }
+            DropdownConfig(navController, vm, estado, mostrarMenu) { mostrarMenu = false }
 
 
         }
@@ -304,7 +304,7 @@ fun PanelPerfil(navController: NavHostController, vm: AppViewModel, estado: UiSt
             .padding(8.dp)
     ) {
 
-        Titulo(texto = "Mis reservas")
+        Title(texto = "Mis reservas")
         OutlinedButton(
             onClick = { navController.navigate(Screens.listaReservas.name) },
             modifier = Modifier
@@ -324,7 +324,7 @@ fun PanelPerfil(navController: NavHostController, vm: AppViewModel, estado: UiSt
     }
     LazyRow {
         items(estado.user!!.activitiesReserved) { a ->
-            MiniaturaScrollLateral(
+            ActivityScrollLateral(
                 a,
                 vm,
                 navController,
@@ -352,7 +352,7 @@ fun PanelPerfil(navController: NavHostController, vm: AppViewModel, estado: UiSt
             .padding(8.dp)
     ) {
 
-        Titulo(texto = "Favoritos")
+        Title(texto = "Favoritos")
         OutlinedButton(
             onClick = { navController.navigate(Screens.listaFavoritos.name) },
             modifier = Modifier
@@ -371,7 +371,7 @@ fun PanelPerfil(navController: NavHostController, vm: AppViewModel, estado: UiSt
     }
     LazyRow {
         items(estado.user!!.activitiesFav) { a ->
-            MiniaturaScrollLateral(
+            ActivityScrollLateral(
                 a,
                 vm,
                 navController,

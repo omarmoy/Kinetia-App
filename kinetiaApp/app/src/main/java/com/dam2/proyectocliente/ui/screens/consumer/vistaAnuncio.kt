@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.screens.pro
+package com.dam2.proyectocliente.ui.screens.consumer
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -36,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -61,16 +63,52 @@ import java.time.ZoneId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VistaAnuncioPro(
+fun VistaAnuncio(
     navController: NavHostController,
     advertisement: Advertisement,
-    vm: AppViewModel
+    vm: AppViewModel,
+    vistaPrevia: Boolean = false
 ) {
 
     Scaffold(
-        topBar = { BarraSuperiorAnuncio(navController, advertisement, vm) },
+        topBar = {
+            if (vistaPrevia)
+                BarraSuperiorAnuncioVP()
+            else
+                BarraSuperiorAnuncio(navController, advertisement, vm)
+        },
         content = { innerPadding -> ContenidoAnuncio(innerPadding, advertisement) },
-        bottomBar = { BotonContactar(navController, advertisement, vm) }
+        bottomBar = {
+            if (advertisement.userId != vm.userCurrent()!!.id)
+                BotonContactar(navController, advertisement, vm)
+            if (vistaPrevia)
+                BarraInferiorAnuncioVP(navController, vm)
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BarraSuperiorAnuncioVP() {
+    TopAppBar(
+        title = {
+            Text(
+                text = "Vista Previa",
+                textAlign = TextAlign.Center,
+                fontStyle = FontStyle.Italic,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 12.dp)
+            )
+        },
+        colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = BlancoFondo),
+        navigationIcon = {
+            Icon(
+                imageVector = Icons.Filled.ArrowBack,
+                contentDescription = "atrás"
+            )
+        }
+
     )
 }
 
@@ -93,7 +131,23 @@ fun BarraSuperiorAnuncio(
                     contentDescription = "atrás"
                 )
             }
+        },
+        actions = {
+            if (advertisement.userId == vm.userCurrent()!!.id) {
+                IconButton(onClick = {
+                    vm.selectModAnuncio(advertisement)
+                    navController.navigate(Screens.modificarAnuncio.name)
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.Edit,
+                        contentDescription = "edit",
+                        tint = AzulAguaOscuro
+                    )
+                }
+            }
         }
+
+
     )
 }
 
@@ -145,7 +199,12 @@ fun ContenidoAnuncio(innerPadding: PaddingValues, advertisement: Advertisement) 
             )
 
             Text(
-                text = "Publicado " + showDate(LocalDateTime.ofInstant(advertisement.creationDate, ZoneId.systemDefault())),
+                text = "Publicado " + showDate(
+                    LocalDateTime.ofInstant(
+                        advertisement.creationDate,
+                        ZoneId.systemDefault()
+                    )
+                ),
                 color = AzulAguaClaro,
                 fontSize = 16.sp
             )
@@ -199,9 +258,7 @@ fun BotonContactar(
                     shape = CircleShape,
                     colors = CardDefaults.cardColors(containerColor = AzulAguaOscuro),
                     modifier = Modifier.size(30.dp),
-                    onClick = {
-                        /*TODO: lanzar char con el usuario*/
-                    }
+                    onClick = { /*TODO*/ }
                 ) {
                     Box(
                         modifier = Modifier.fillMaxSize(),
@@ -252,7 +309,7 @@ fun BarraInferiorAnuncioVP(
                 Text(text = "Cancelar", color = AzulAguaOscuro, fontSize = 16.sp)
             }
             TextButton(onClick = {
-                vm.publicarAnuncio()
+                vm.postAdvertisement()
                 vm.mostrarPanelNavegacion()
                 navController.navigate(Screens.menuUsuario.name)
 
@@ -273,5 +330,5 @@ fun VistaAnuncioPreview() {
     val vm: AppViewModel = viewModel()
     val navController = rememberNavController()
 //    val a = DatosPrueba.anuncios[0]
-//    VistaAnuncioPro(navController, a, vm)
+//    VistaAnuncio(navController, a, vm)
 }

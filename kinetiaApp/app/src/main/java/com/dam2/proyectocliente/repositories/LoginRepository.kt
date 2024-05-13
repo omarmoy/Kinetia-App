@@ -16,17 +16,17 @@ class LoginRepository {
         }
     }
 
-    suspend fun getActivities(): ArrayList<Activity>{
+    suspend fun getActivities(userId: Long): ArrayList<Activity>{
         return try {
-            LoginApi.retrofitService.getActivities()
+            LoginApi.retrofitService.getActivities(userId)
         }catch (e: Exception){
             arrayListOf()
         }
     }
 
-    suspend fun getAdvertisements(): ArrayList<Advertisement>{
+    suspend fun getAdvertisements(userId: Long): ArrayList<Advertisement>{
         return try {
-            LoginApi.retrofitService.getAdvertisements()
+            LoginApi.retrofitService.getAdvertisements(userId)
         }catch (e: Exception){
             arrayListOf()
         }

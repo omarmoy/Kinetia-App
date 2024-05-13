@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.inicio
+package com.dam2.proyectocliente.ui.home
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -42,7 +42,7 @@ import com.example.proyectocliente.ui.theme.NegroClaro
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Inicio(navController: NavHostController) {
+fun Home(navController: NavHostController) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -112,7 +112,7 @@ fun Inicio(navController: NavHostController) {
 
 @Preview(showBackground = true)
 @Composable
-fun InicioPreview() {
+fun HomePreview() {
     val navController = rememberNavController()
-    Inicio(navController)
+    Home(navController)
 }

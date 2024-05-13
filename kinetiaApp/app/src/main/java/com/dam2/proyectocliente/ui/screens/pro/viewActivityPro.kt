@@ -61,7 +61,7 @@ import com.dam2.proyectocliente.utils.dateToString
 import com.dam2.proyectocliente.utils.timeToString
 import com.dam2.proyectocliente.models.Screens
 import com.dam2.proyectocliente.moker.Moker
-import com.dam2.proyectocliente.utils.Picture
+import com.dam2.proyectocliente.utils.Painter
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
@@ -148,7 +148,7 @@ fun ContenidoActividad(
     ) {
 
         Image(
-            painter = painterResource(id = Picture.getActivityPictureInt(activity.picture)),
+            painter = painterResource(id = Painter.getActivityPictureInt(activity.picture)),
             contentDescription = activity.title,
             modifier = Modifier
                 .fillMaxWidth()

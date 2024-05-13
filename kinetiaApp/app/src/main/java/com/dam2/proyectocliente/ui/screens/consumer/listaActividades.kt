@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.screens.consumidor
+package com.dam2.proyectocliente.ui.screens.consumer
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -155,7 +155,7 @@ fun ContenidoListaActividades(
 
             item {
                 TextField(
-                    value = estado.actividadUsuarioBuscar,
+                    value = estado.activityUserSearched,
                     onValueChange = { vm.setActividadUsuarioBuscar(it) },
                     singleLine = true,
                     label = { Text(text = "Buscar") },
@@ -175,7 +175,7 @@ fun ContenidoListaActividades(
                         unfocusedIndicatorColor = Gris2
                     ),
                     trailingIcon = {
-                        if (estado.actividadUsuarioBuscar != "")
+                        if (estado.activityUserSearched != "")
                             IconButton(onClick = { vm.setActividadUsuarioBuscar("") }) {
                                 Icon(
                                     imageVector = Icons.Filled.Clear,

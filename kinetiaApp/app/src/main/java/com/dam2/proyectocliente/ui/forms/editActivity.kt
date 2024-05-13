@@ -61,7 +61,7 @@ import com.dam2.proyectocliente.moker.Moker
 import com.dam2.proyectocliente.ui.resources.DialogInfo
 import com.dam2.proyectocliente.ui.resources.TextFieldWithHeader
 import com.dam2.proyectocliente.ui.resources.TextFieldEnterNumber
-import com.dam2.proyectocliente.utils.Picture
+import com.dam2.proyectocliente.utils.Painter
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
@@ -150,7 +150,7 @@ fun EditActivity(
                 ) {
                     Image(
                         painter = if (uiState.selectedPicture == 0)
-                            painterResource(Picture.getActivityPictureInt(activity.picture))
+                            painterResource(Painter.getActivityPictureInt(activity.picture))
                         else
                             painterResource(id = uiState.selectedPicture),
                         contentDescription = "imagen",

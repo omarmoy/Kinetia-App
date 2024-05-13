@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.screens.consumidor
+package com.dam2.proyectocliente.ui.screens.pro
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,7 +18,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -28,7 +27,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -37,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,7 +47,8 @@ import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.models.Advertisement
 import com.dam2.proyectocliente.utils.showDate
 import com.dam2.proyectocliente.models.Screens
-import com.example.proyectocliente.R
+import com.dam2.proyectocliente.moker.Moker
+import com.dam2.proyectocliente.utils.Painter
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.AzulAguaClaro
 import com.example.proyectocliente.ui.theme.AzulAguaFondo2
@@ -63,60 +61,24 @@ import java.time.ZoneId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VistaAnuncio(
+fun ViewAdvertisementsPro(
     navController: NavHostController,
     advertisement: Advertisement,
-    vm: AppViewModel,
-    vistaPrevia: Boolean = false
+    vm: AppViewModel
 ) {
 
     Scaffold(
-        topBar = {
-            if (vistaPrevia)
-                BarraSuperiorAnuncioVP()
-            else
-                BarraSuperiorAnuncio(navController, advertisement, vm)
-        },
-        content = { innerPadding -> ContenidoAnuncio(innerPadding, advertisement) },
-        bottomBar = {
-            if (advertisement.userId != vm.userCurrent()!!.id)
-                BotonContactar(navController, advertisement, vm)
-            if (vistaPrevia)
-                BarraInferiorAnuncioVP(navController, vm)
-        }
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun BarraSuperiorAnuncioVP() {
-    TopAppBar(
-        title = {
-            Text(
-                text = "Vista Previa",
-                textAlign = TextAlign.Center,
-                fontStyle = FontStyle.Italic,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 12.dp)
-            )
-        },
-        colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = BlancoFondo),
-        navigationIcon = {
-            Icon(
-                imageVector = Icons.Filled.ArrowBack,
-                contentDescription = "atrás"
-            )
-        }
-
+        topBar = { TopBarVAP(navController, vm) },
+        content = { innerPadding -> ContentAdvertisement(innerPadding, advertisement) },
+        bottomBar = { ButtonContact(navController, advertisement, vm) }
     )
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorAnuncio(
-    navController: NavHostController, advertisement: Advertisement, vm: AppViewModel
+fun TopBarVAP(
+    navController: NavHostController, vm: AppViewModel
 ) {
     TopAppBar(
         title = { },
@@ -131,28 +93,12 @@ fun BarraSuperiorAnuncio(
                     contentDescription = "atrás"
                 )
             }
-        },
-        actions = {
-            if (advertisement.userId == vm.userCurrent()!!.id) {
-                IconButton(onClick = {
-                    vm.selectModAnuncio(advertisement)
-                    navController.navigate(Screens.modificarAnuncio.name)
-                }) {
-                    Icon(
-                        imageVector = Icons.Filled.Edit,
-                        contentDescription = "edit",
-                        tint = AzulAguaOscuro
-                    )
-                }
-            }
         }
-
-
     )
 }
 
 @Composable
-fun ContenidoAnuncio(innerPadding: PaddingValues, advertisement: Advertisement) {
+fun ContentAdvertisement(innerPadding: PaddingValues, advertisement: Advertisement) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -169,7 +115,7 @@ fun ContenidoAnuncio(innerPadding: PaddingValues, advertisement: Advertisement) 
 //                .padding(top = 12.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.nofoto),
+                painter = painterResource(id = Painter.getProfilePictureInt(advertisement.userPhoto)),
                 contentDescription = advertisement.title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
@@ -199,12 +145,7 @@ fun ContenidoAnuncio(innerPadding: PaddingValues, advertisement: Advertisement) 
             )
 
             Text(
-                text = "Publicado " + showDate(
-                    LocalDateTime.ofInstant(
-                        advertisement.creationDate,
-                        ZoneId.systemDefault()
-                    )
-                ),
+                text = "Publicado " + showDate(LocalDateTime.ofInstant(advertisement.creationDate, ZoneId.systemDefault())),
                 color = AzulAguaClaro,
                 fontSize = 16.sp
             )
@@ -233,7 +174,7 @@ fun ContenidoAnuncio(innerPadding: PaddingValues, advertisement: Advertisement) 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BotonContactar(
+fun ButtonContact(
     navController: NavHostController,
     advertisement: Advertisement,
     vm: AppViewModel
@@ -258,7 +199,11 @@ fun BotonContactar(
                     shape = CircleShape,
                     colors = CardDefaults.cardColors(containerColor = AzulAguaOscuro),
                     modifier = Modifier.size(30.dp),
-                    onClick = { /*TODO*/ }
+                    onClick = {
+                        vm.createChatIfNoExist(advertisement)
+                        vm.ocultarPanelNavegacion()
+                        navController.navigate(Screens.chat.name)
+                    }
                 ) {
                     Box(
                         modifier = Modifier.fillMaxSize(),
@@ -279,56 +224,14 @@ fun BotonContactar(
     }
 }
 
-@Composable
-fun BarraInferiorAnuncioVP(
-    navController: NavHostController,
-    vm: AppViewModel
-) {
-    Box(
-        modifier = Modifier
-            .background(Gris2)
-            .padding(top = 1.dp)
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(BlancoFondo)
-        ) {
-            TextButton(onClick = {
-                navController.navigateUp()
-            }) {
-                Text(text = "Editar", color = AzulAguaOscuro, fontSize = 16.sp)
-            }
-
-            TextButton(onClick = {
-                vm.resetNuevoAnuncio()
-                vm.mostrarPanelNavegacion()
-                navController.navigate(Screens.menuUsuario.name)
-            }) {
-                Text(text = "Cancelar", color = AzulAguaOscuro, fontSize = 16.sp)
-            }
-            TextButton(onClick = {
-                vm.publicarAnuncio()
-                vm.mostrarPanelNavegacion()
-                navController.navigate(Screens.menuUsuario.name)
-
-            }) {
-                Text(text = "Publicar", color = AzulAguaOscuro, fontSize = 16.sp)
-            }
-        }
-    }
-
-}
-
 /**
  * VISTA PREVIA
  */
 @Preview(showBackground = true)
 @Composable
-fun VistaAnuncioPreview() {
+fun AdPreview() {
     val vm: AppViewModel = viewModel()
     val navController = rememberNavController()
-//    val a = DatosPrueba.anuncios[0]
-//    VistaAnuncio(navController, a, vm)
+    val a = Moker.advertisement
+    ViewAdvertisementsPro(navController, a, vm)
 }

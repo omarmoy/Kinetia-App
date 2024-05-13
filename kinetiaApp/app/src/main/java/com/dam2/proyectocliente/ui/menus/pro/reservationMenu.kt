@@ -52,9 +52,9 @@ import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.PanelNavegacionPro
 import com.dam2.proyectocliente.models.Screens
-import com.dam2.proyectocliente.ui.menus.DesplegableConfiguarion
-import com.dam2.proyectocliente.ui.menus.consumer.Titulo
-import com.dam2.proyectocliente.utils.Picture
+import com.dam2.proyectocliente.ui.menus.DropdownConfig
+import com.dam2.proyectocliente.ui.menus.consumer.Title
+import com.dam2.proyectocliente.utils.Painter
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
@@ -87,7 +87,7 @@ fun TopBarReservations(navController: NavHostController, vm: AppViewModel, estad
             .padding(bottom = 1.dp)
     ) {
         TopAppBar(colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = BlancoFondo),
-            title = { Titulo(texto = "Mis Reservas") },
+            title = { Title(texto = "Mis Reservas") },
             actions = {
                 IconButton(onClick = {
                     if (estado.user!!.tieneMensajesSinLeer()) {
@@ -115,7 +115,7 @@ fun TopBarReservations(navController: NavHostController, vm: AppViewModel, estad
                     )
                 }
 
-                DesplegableConfiguarion(navController, vm, estado, showSettings) {
+                DropdownConfig(navController, vm, estado, showSettings) {
                     showSettings = false
                 }
 
@@ -216,7 +216,7 @@ fun Reservation(
                     }, 100)
                 }) {
                 Image(
-                    painter = painterResource(id = Picture.getActivityPictureInt(activity.picture)),
+                    painter = painterResource(id = Painter.getActivityPictureInt(activity.picture)),
                     contentDescription = activity.title,
                     modifier = Modifier
                         .width(tam)

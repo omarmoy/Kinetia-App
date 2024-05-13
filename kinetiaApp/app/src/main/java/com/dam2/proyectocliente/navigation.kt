@@ -36,24 +36,24 @@ import com.dam2.proyectocliente.models.Category
 import com.dam2.proyectocliente.models.Screens
 import com.dam2.proyectocliente.models.Role
 import com.dam2.proyectocliente.ui.UiState
-import com.dam2.proyectocliente.ui.screens.consumidor.ListaActividades
+import com.dam2.proyectocliente.ui.screens.consumer.ListaActividades
 import com.dam2.proyectocliente.ui.menus.consumer.MenuBusqueda
 import com.dam2.proyectocliente.ui.menus.ChatsMenu
 import com.dam2.proyectocliente.ui.menus.consumer.MainMenu
 import com.dam2.proyectocliente.ui.menus.consumer.MenuUsuario
-import com.dam2.proyectocliente.ui.screens.consumidor.VistaActividad
-import com.dam2.proyectocliente.ui.screens.consumidor.VistaAnuncio
+import com.dam2.proyectocliente.ui.screens.consumer.ViewActivity
+import com.dam2.proyectocliente.ui.screens.consumer.VistaAnuncio
 import com.dam2.proyectocliente.ui.screens.Chat
 import com.dam2.proyectocliente.ui.forms.FormActivity
 import com.dam2.proyectocliente.ui.forms.FormularioAnuncio
 import com.dam2.proyectocliente.ui.forms.EditActivity
 import com.dam2.proyectocliente.ui.forms.ModificarAnuncio
 import com.dam2.proyectocliente.ui.forms.SelectPicture
-import com.dam2.proyectocliente.ui.inicio.ErrorScreen
-import com.dam2.proyectocliente.ui.inicio.Inicio
-import com.dam2.proyectocliente.ui.inicio.LoadingScreen
-import com.dam2.proyectocliente.ui.inicio.Login
-import com.dam2.proyectocliente.ui.menus.pro.MenuBusquedaAnuncio
+import com.dam2.proyectocliente.ui.home.ErrorScreen
+import com.dam2.proyectocliente.ui.home.Home
+import com.dam2.proyectocliente.ui.home.LoadingScreen
+import com.dam2.proyectocliente.ui.home.Login
+import com.dam2.proyectocliente.ui.menus.pro.SearchAdsMenu
 import com.dam2.proyectocliente.ui.menus.pro.ReservationMenu
 import com.dam2.proyectocliente.ui.menus.pro.MainMenuPro
 import com.dam2.proyectocliente.ui.registro.AddImagen
@@ -64,9 +64,9 @@ import com.dam2.proyectocliente.ui.registro.NuevaEmpresaDatos
 import com.dam2.proyectocliente.ui.registro.NuevoUsuarioDatos
 import com.dam2.proyectocliente.ui.registro.NuevoUsuario
 import com.dam2.proyectocliente.ui.screens.pro.ViewActivityPro
-import com.dam2.proyectocliente.ui.screens.pro.VistaAnuncioPro
+import com.dam2.proyectocliente.ui.screens.pro.ViewAdvertisementsPro
 import com.dam2.proyectocliente.ui.screens.pro.ActivityReserves
-import com.dam2.proyectocliente.utils.Picture
+import com.dam2.proyectocliente.utils.Painter
 import com.example.proyectocliente.ui.theme.AmarilloPastel
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
@@ -74,7 +74,7 @@ import com.example.proyectocliente.ui.theme.NegroClaro
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Navegation(
+fun Navigation(
     navController: NavHostController = rememberNavController(),
     vm: AppViewModel = viewModel()
 ) {
@@ -160,7 +160,7 @@ fun Contenido(
             )
         }
         composable(route = Screens.vistaActividad.name) {
-            VistaActividad(navController, uiState.selectedActivity!!, vm, uiState)
+            ViewActivity(navController, uiState.selectedActivity!!, vm, uiState)
         }
         composable(route = Screens.chat.name) {
             Chat(navController, uiState.chatSeleccionado, vm, uiState)
@@ -171,7 +171,7 @@ fun Contenido(
 
         //Login
         composable(route = Screens.inicio.name) {
-            Inicio(navController = navController)
+            Home(navController = navController)
         }
         composable(route = Screens.login.name) {
             Login(navController = navController, vm, uiState)
@@ -231,10 +231,10 @@ fun Contenido(
             MainMenuPro(navController, vm, uiState)
         }
         composable(route = Screens.menuBusquedaAnuncios.name) {
-            MenuBusquedaAnuncio(navController, vm, uiState)
+            SearchAdsMenu(navController, vm, uiState)
         }
         composable(route = Screens.vistaAnuncioPro.name) {
-            VistaAnuncioPro(navController, uiState.advertisementSeleccionado, vm)
+            ViewAdvertisementsPro(navController, uiState.advertisementSeleccionado, vm)
         }
         composable(route = Screens.menuReservas.name) {
             ReservationMenu(navController, vm, uiState)
@@ -245,10 +245,10 @@ fun Contenido(
 
         //Selectors Pictures
         composable(route = Screens.selectActivityPicture.name) {
-            SelectPicture(navController, vm, Picture.activityPictures)
+            SelectPicture(navController, vm, Painter.activityPictures)
         }
         composable(route = Screens.selectProfilePicture.name) {
-            SelectPicture(navController, vm, Picture.profilePictures)
+            SelectPicture(navController, vm, Painter.profilePictures)
         }
 
     }

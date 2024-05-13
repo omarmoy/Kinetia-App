@@ -11,6 +11,7 @@ import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 //private const val BASE_URL = "http://127.0.0.1:8080"
 //private const val BASE_URL = "http://localhost:8080"
@@ -24,11 +25,11 @@ interface LoginApiService {
     @POST("/auth/login")
     suspend fun login(@Body login: Login): User
 
-    @GET("/activities")
-    suspend fun getActivities(): ArrayList<Activity>
+    @GET("/activities/{userId}")
+    suspend fun getActivities(@Path("userId") userId: Long): ArrayList<Activity>
 
-    @GET("/advertisements")
-    suspend fun getAdvertisements(): ArrayList<Advertisement>
+    @GET("/advertisements/{userId}")
+    suspend fun getAdvertisements(@Path("userId") userId: Long): ArrayList<Advertisement>
 
 }
 

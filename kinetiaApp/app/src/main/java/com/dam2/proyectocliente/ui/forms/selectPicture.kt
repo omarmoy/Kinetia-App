@@ -32,7 +32,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
-import com.dam2.proyectocliente.utils.Picture
+import com.dam2.proyectocliente.utils.Painter
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 
@@ -132,7 +132,7 @@ fun SelectPicturePreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
 //    val estado by vm.uiState.collectAsState()
-val images = Picture.profilePictures
+val images = Painter.profilePictures
 //val images = Images.activityPicture
     SelectPicture(navController, vm, images)
 }

@@ -2,7 +2,9 @@ package com.proyectoi.kinetia.services;
 
 import com.proyectoi.kinetia.domain.Advertisement;
 import com.proyectoi.kinetia.models.AdvertisementModel;
+import com.proyectoi.kinetia.models.UserModel;
 import com.proyectoi.kinetia.repositories.IAdvertisementRepository;
+import com.proyectoi.kinetia.repositories.IUserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,6 +15,13 @@ import java.util.Optional;
 public class AdvertisementService {
 
     private final IAdvertisementRepository advertisementRepository;
+    private final IUserRepository userRepository;
+
+    public AdvertisementService(IAdvertisementRepository advertisementRepository, IUserRepository userRepository) {
+        this.advertisementRepository = advertisementRepository;
+        this.userRepository = userRepository;
+    }
+
 
     public List<Advertisement> getAll() {
         List<AdvertisementModel> advertisementModels = advertisementRepository.findAll();
@@ -34,26 +43,31 @@ public class AdvertisementService {
         return advertisements;
     }
 
-    public AdvertisementService(IAdvertisementRepository advertisementRepository) {
-        this.advertisementRepository = advertisementRepository;
-    }
-
-    public Long createAdvertisement(AdvertisementModel advertisement) {
+    public Long createAdvertisement(Advertisement advertisement) {
+        AdvertisementModel ad = new AdvertisementModel(advertisement);
+        UserModel user = userRepository.findById(advertisement.getUserId()).orElseThrow();
+        ad.setUser(user);
         try {
-            advertisementRepository.save(advertisement);
+            advertisementRepository.save(ad);
             return advertisement.getId();
         } catch (Exception e) {
             return -1L;
         }
     }
 
-    public Boolean updateAdvertisement(AdvertisementModel advertisement) {
-        Optional<AdvertisementModel> optional = advertisementRepository.findById(advertisement.getId());
-        if (optional.isPresent()) {
-            advertisementRepository.save(advertisement);
+    public Boolean updateAdvertisement(Advertisement advertisement) {
+        try {
+            AdvertisementModel ad = advertisementRepository.findById(advertisement.getId()).orElseThrow();
+            ad.setTitle(advertisement.getTitle());
+            ad.setDescription(advertisement.getDescription());
+            ad.setLocation(advertisement.getLocation());
+            advertisementRepository.save(ad);
             return true;
+        } catch (Exception e) {
+            return false;
         }
-        return false;
+
+
     }
 
     public Boolean deleteAdvertisement(Long id) {

@@ -60,9 +60,9 @@ import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Activity
-import com.dam2.proyectocliente.PanelNavegacion
+import com.dam2.proyectocliente.NavigationPanel
 import com.dam2.proyectocliente.models.Screens
-import com.example.proyectocliente.R
+import com.dam2.proyectocliente.utils.Painter
 import com.example.proyectocliente.ui.theme.AzulAguaFondo
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
@@ -71,22 +71,22 @@ import com.example.proyectocliente.ui.theme.small
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuBusqueda(
+fun SearchMenu(
     navController: NavHostController,
     vm: AppViewModel,
-    estado: UiState,
-    focoBusqueda: Boolean = false
+    uiState: UiState,
+    searchFocus: Boolean = false
 ) {
-    var volverArriba by remember { mutableStateOf(false) }
-    val estadoLista = rememberLazyListState()
+    var backToUp by remember { mutableStateOf(false) }
+    val listState = rememberLazyListState()
     val focusRequester = remember { FocusRequester() }
 
     Scaffold(
         topBar = {
-            BarraSuperiorBusqueda(vm, estado, focusRequester)
+            TopBarSearch(vm, uiState, focusRequester)
         },
         content = { innerPadding ->
-            ContenidoBusqueda(innerPadding, navController, vm, estado, estadoLista)
+            ContentSearch(innerPadding, navController, vm, uiState, listState)
         },
         floatingActionButton = {
             Surface(
@@ -95,7 +95,7 @@ fun MenuBusqueda(
                 color = BlancoFondo.copy(alpha = 0.5f) //establece el color con transparencia
             ) {
             IconButton(onClick = {
-                volverArriba = true
+                backToUp = true
             }) {
                 Icon(
                     imageVector = Icons.Filled.KeyboardArrowUp,
@@ -105,13 +105,13 @@ fun MenuBusqueda(
             }
         }}
     )
-    LaunchedEffect(volverArriba) {
-        if (volverArriba) {
-            estadoLista.animateScrollToItem(index = 0)
-            volverArriba = false
+    LaunchedEffect(backToUp) {
+        if (backToUp) {
+            listState.animateScrollToItem(index = 0)
+            backToUp = false
         }
     }
-    if (focoBusqueda) {
+    if (searchFocus) {
         LaunchedEffect(Unit) {
             focusRequester.requestFocus()
         }
@@ -121,19 +121,17 @@ fun MenuBusqueda(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorBusqueda(vm: AppViewModel, estado: UiState, obtenerFoco: FocusRequester) {
+fun TopBarSearch(vm: AppViewModel, uiState: UiState, focus: FocusRequester) {
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        //horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
-            //.height(150.dp)
             .background(BlancoFondo)
             .padding(12.dp)
     ) {
         TextField(
-            value = estado.activitySearched,
+            value = uiState.activitySearched,
             onValueChange = { vm.setActividadBuscar(it) },
             singleLine = true,
             label = { Text(text = "Buscar") },
@@ -142,7 +140,7 @@ fun BarraSuperiorBusqueda(vm: AppViewModel, estado: UiState, obtenerFoco: FocusR
                 imeAction = ImeAction.Default  //tipo de botón
             ),
             trailingIcon = {
-                if (estado.activitySearched != "")
+                if (uiState.activitySearched != "")
                     IconButton(onClick = { vm.setActividadBuscar("")}) {
                         Icon(
                             imageVector = Icons.Filled.Clear,
@@ -153,36 +151,35 @@ fun BarraSuperiorBusqueda(vm: AppViewModel, estado: UiState, obtenerFoco: FocusR
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .focusRequester(obtenerFoco)
+                .focusRequester(focus)
         )
     }
 }
 
 
 @Composable
-fun ContenidoBusqueda(
+fun ContentSearch(
     innerPadding: PaddingValues,
     navController: NavHostController,
     vm: AppViewModel,
-    estado: UiState,
-    estadoLista: LazyListState
+    uiState: UiState,
+    listState: LazyListState
 ) {
     Column(
         modifier = Modifier
             .padding(innerPadding)
             .background(BlancoFondo)
-        //.verticalScroll(rememberScrollState())
     ) {
 
-        LazyColumn(state = estadoLista) {
-            item { Categories(navController, vm, estado) } //función definida en menuPrincipal
+        LazyColumn(state = listState) {
+            item { Categories(navController, vm, uiState) } //función definida en menuPrincipal
             if (vm.listaActividades().size > 0) {
                 items(vm.listaActividades()) { a ->
-                    MiniaturaActividadBusqueda(
+                    ActivitySearch(
                         a,
                         vm,
                         navController,
-                        estado
+                        uiState
                     )
                 }
             } else
@@ -194,6 +191,7 @@ fun ContenidoBusqueda(
                     ) {
                         Spacer(modifier = Modifier.height(150.dp))
                         Text(text = "Ups, no se ha encontrado lo que buscas")
+                        Spacer(modifier = Modifier.height(550.dp))
                     }
                 }
         }
@@ -203,7 +201,7 @@ fun ContenidoBusqueda(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MiniaturaActividadBusqueda(
+fun ActivitySearch(
     a: Activity,
     vm: AppViewModel,
     navController: NavHostController,
@@ -212,13 +210,12 @@ fun MiniaturaActividadBusqueda(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Define un estado mutable para actuar como un disparador de recomposición
-        val recomposeTrigger = remember { mutableIntStateOf(0) }
 
-        // Función para refrescar manualmente la componible cuando se la da a "meegusta"
+        val triggerFav = remember { mutableIntStateOf(0) }
         fun refreshComposable() {
-            recomposeTrigger.intValue++
+            triggerFav.intValue++
         }
+
         Card(shape = RectangleShape, /*cuadrado*/
             onClick = {
                 vm.selectActivity(a)
@@ -226,7 +223,7 @@ fun MiniaturaActividadBusqueda(
                 navController.navigate(Screens.vistaActividad.name)
             }) {
             Image(
-                painter = painterResource(R.drawable.noimagen),
+                painter = painterResource(Painter.getActivityPictureInt(a.picture)),
                 contentDescription = a.title,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -283,7 +280,7 @@ fun MiniaturaActividadBusqueda(
                 }
             }
         }
-        LaunchedEffect(recomposeTrigger.intValue) {
+        LaunchedEffect(triggerFav.intValue) {
             // Esta parte se ejecutará cada vez que cambie el valor de recomposeTrigger
             // Puedes colocar aquí el contenido que quieres refrescar manualmente
             // por ejemplo, otras composables o lógica que desees ejecutar nuevamente
@@ -300,20 +297,20 @@ fun MiniaturaActividadBusqueda(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun MenuBusquedaPreview() {
+fun SearchPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
     val estado by vm.uiState.collectAsState()
     Scaffold(
         topBar = {
-            BarraSuperiorBusqueda(
+            TopBarSearch(
                 vm,
                 estado,
                 FocusRequester()
             )
         },
         content = { innerPadding ->
-            ContenidoBusqueda(
+            ContentSearch(
                 innerPadding,
                 navController,
                 vm,
@@ -322,6 +319,6 @@ fun MenuBusquedaPreview() {
             )
         },
         //llama a una función de navegación:
-        bottomBar = { PanelNavegacion(navController = navController, vm, estado) }
+        bottomBar = { NavigationPanel(navController = navController, vm, estado) }
     )
 }

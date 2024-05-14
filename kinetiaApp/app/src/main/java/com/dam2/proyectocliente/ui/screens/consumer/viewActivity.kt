@@ -182,15 +182,15 @@ fun ContentActivity(
             contentScale = ContentScale.Crop
         )
 
-        TitlePanel(navController, activity, vm)
-        DataPanel(navController, activity, vm)
+        TitlePanel(activity)
+        DataPanel(activity)
         ButtonsPanel(navController, activity, vm, estado, refreshReservation)
-        ContentActivity(navController, activity, vm, estado, refreshReservation)
+        ContentActivity(activity, vm, estado, refreshReservation)
     }
 }
 
 @Composable
-fun TitlePanel(navController: NavHostController, activity: Activity, vm: AppViewModel) {
+fun TitlePanel(activity: Activity) {
     val context = LocalContext.current
     Column(modifier = Modifier.padding(top = 12.dp, end = 12.dp, start = 12.dp, bottom = 1.dp)) {
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -234,7 +234,7 @@ fun TitlePanel(navController: NavHostController, activity: Activity, vm: AppView
 }
 
 @Composable
-fun DataPanel(navController: NavHostController, activity: Activity, vm: AppViewModel) {
+fun DataPanel(activity: Activity) {
     Surface(
         modifier = Modifier
             .background(color = AmarilloPastel)
@@ -329,10 +329,9 @@ fun ButtonsPanel(
             colors = CardDefaults.cardColors(containerColor = AzulAguaOscuro),
             modifier = Modifier.size(50.dp),
             onClick = {
-                // TODO
-//                vm.createChatIfNoExist(reservation)
-//                vm.ocultarPanelNavegacion()
-//                navController.navigate(Screens.chat.name)
+                vm.createChatIfNoExist(activity)
+                vm.ocultarPanelNavegacion()
+                navController.navigate(Screens.chat.name)
             }
         ) {
             Box(
@@ -369,7 +368,6 @@ private fun shareActivity(context: Context, activity: String) {
 
 @Composable
 fun ContentActivity(
-    navController: NavHostController,
     activity: Activity,
     vm: AppViewModel,
     estado: UiState,
@@ -429,7 +427,7 @@ fun ContentActivity(
  */
 @Preview(showBackground = true)
 @Composable
-fun ActividadPreview() {
+fun ActivityPreview() {
     val vm: AppViewModel = viewModel()
     val navController = rememberNavController()
     val a = Moker.activity

@@ -11,6 +11,8 @@ enum class Screens {
     addImagen,
     confirmarRegistro,
 
+    afterLogging,
+
     formularioActividad,
     formularioAnuncio,
     previewNuevaActividad,

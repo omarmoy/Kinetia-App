@@ -26,7 +26,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -39,7 +38,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
-import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.utils.texfieldVacio
 import com.dam2.proyectocliente.models.Screens
 import com.dam2.proyectocliente.ui.resources.DialogInfo
@@ -50,22 +48,22 @@ import com.example.proyectocliente.ui.theme.Gris2
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FormularioAnuncio(
+fun FormAdvertisement(
     navController: NavHostController,
-    vm: AppViewModel, estado: UiState
+    vm: AppViewModel
 ) {
 
-    var titulo by rememberSaveable { mutableStateOf("") }
-    var ubicacion by rememberSaveable { mutableStateOf("") }
-    var contenido by rememberSaveable { mutableStateOf("") }
+    var title by rememberSaveable { mutableStateOf("") }
+    var location by rememberSaveable { mutableStateOf("") }
+    var content by rememberSaveable { mutableStateOf("") }
 
     var error by rememberSaveable { mutableStateOf(false) }
     val setError: (Boolean) -> Unit = { e -> error = e }
 
     Scaffold(
-        topBar = { BarraSuperiorFAN(navController, vm) },
+        topBar = { TopBarFormAd(navController, vm) },
         bottomBar = {
-            BarraInferiorFAN(vm, navController, titulo, ubicacion, contenido, setError)
+            BottomBarFormAd(vm, navController, title, location, content, setError)
         }
 
     ) { innerPadding ->
@@ -83,20 +81,20 @@ fun FormularioAnuncio(
 
                 TextFieldWithHeader(
                     cabecera = "Título",
-                    value = titulo,
-                    onValueChange = { titulo = it }
+                    value = title,
+                    onValueChange = { title = it }
                 )
                 TextFieldWithHeader(
                     cabecera = "Ubicación",
-                    value = ubicacion,
-                    onValueChange = { ubicacion = it }
+                    value = location,
+                    onValueChange = { location = it }
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
 
                 OutlinedTextField(
-                    value = contenido,
-                    onValueChange = { contenido = it },
+                    value = content,
+                    onValueChange = { content = it },
                     label = { Text("Descripción") },
                     colors = TextFieldDefaults.outlinedTextFieldColors(unfocusedBorderColor = AzulAguaOscuro),
                     modifier = Modifier
@@ -129,7 +127,7 @@ fun FormularioAnuncio(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorFAN(navController: NavHostController, vm: AppViewModel) {
+fun TopBarFormAd(navController: NavHostController, vm: AppViewModel) {
     TopAppBar(
         title = {
             Text(
@@ -151,16 +149,16 @@ fun BarraSuperiorFAN(navController: NavHostController, vm: AppViewModel) {
 }
 
 @Composable
-fun BarraInferiorFAN(
+fun BottomBarFormAd(
     vm: AppViewModel,
     navController: NavHostController,
-    titulo: String,
-    ubicacion: String,
-    contenido: String,
+    title: String,
+    location: String,
+    content: String,
     setError: (Boolean) -> Unit,
 ) {
 
-    val campos = arrayListOf<String>(titulo, ubicacion, contenido)
+    val campos = arrayListOf(title, location, content)
 
     Box(
         modifier = Modifier
@@ -177,7 +175,7 @@ fun BarraInferiorFAN(
                 if (texfieldVacio(campos))
                     setError(true)
                 else {
-                    vm.nuevoAnuncio(titulo, ubicacion, contenido)
+                    vm.newAdvertisement(title, location, content)
                     navController.navigate(Screens.previewNuevoAnuncio.name)
                 }
 
@@ -188,12 +186,11 @@ fun BarraInferiorFAN(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Preview(showBackground = true)
 @Composable
-fun FormularioAnuncioPreview() {
+fun FormAdPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
-    val estado by vm.uiState.collectAsState()
-    FormularioAnuncio(navController, vm, estado)
+    FormAdvertisement(navController, vm)
 }

@@ -52,7 +52,7 @@ import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Chat
-import com.dam2.proyectocliente.PanelNavegacion
+import com.dam2.proyectocliente.NavigationPanel
 import com.dam2.proyectocliente.models.Screens
 import com.dam2.proyectocliente.utils.Painter
 import com.example.proyectocliente.ui.theme.AmarilloPastel
@@ -224,7 +224,7 @@ fun ChatsPreview() {
         topBar = { TopBarChats(vm, uiState) },
         content = { innerPadding -> Chats(innerPadding, navController, vm, uiState) },
         //llama a una función de navegación:
-        bottomBar = { PanelNavegacion(navController = navController, vm, uiState) }
+        bottomBar = { NavigationPanel(navController = navController, vm, uiState) }
     )
 
 

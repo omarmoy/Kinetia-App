@@ -25,6 +25,8 @@ public class Advertisement {
     @JsonProperty("creationDate")
     private Instant creationDate;
 
+    public Advertisement() {}
+
     public Advertisement(AdvertisementModel advertisementModel) {
         this.id = advertisementModel.getId();
         this.userId = advertisementModel.getUser().getId();
@@ -36,6 +38,38 @@ public class Advertisement {
         this.creationDate = advertisementModel.getCreationDate();
     }
 
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getUserPhoto() {
+        return userPhoto;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public Instant getCreationDate() {
+        return creationDate;
+    }
 
     @Override
     public String toString() {

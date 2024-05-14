@@ -97,7 +97,10 @@ fun TopBarChat(
     TopAppBar(
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Card(shape = CircleShape) {
+                Card(
+                    shape = CircleShape,
+                    colors = CardDefaults.cardColors(containerColor = BlancoFondo)
+                ) {
                     Image(
                         painter = painterResource(id = Painter.getProfilePictureInt(chat.contactPicture)),
                         contentDescription = chat.contactName,
@@ -160,13 +163,13 @@ fun ContentChat(innerPadding: PaddingValues, chat: Chat) {
 
     ) {
         items(chat.messages.sortedByDescending { it.sentAt }) { m ->
-            VistaMensaje(mensaje = m, chat.contactId)
+            Message(mensaje = m, chat.contactId)
         }
     }
 }
 
 @Composable
-fun VistaMensaje(mensaje: Message, idContacto: Long) {
+fun Message(mensaje: Message, idContacto: Long) {
 
     Row(
         modifier = Modifier

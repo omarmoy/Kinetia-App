@@ -50,7 +50,7 @@ import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Activity
-import com.dam2.proyectocliente.PanelNavegacionPro
+import com.dam2.proyectocliente.NavigationPanelPro
 import com.dam2.proyectocliente.models.Screens
 import com.dam2.proyectocliente.ui.menus.DropdownConfig
 import com.dam2.proyectocliente.ui.menus.consumer.Title
@@ -263,5 +263,5 @@ fun GRProPreview() {
         )
     },
         //llama a una función de navegación:
-        bottomBar = { PanelNavegacionPro(navController = navController, vm, uiState) })
+        bottomBar = { NavigationPanelPro(navController = navController, vm, uiState) })
 }

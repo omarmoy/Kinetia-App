@@ -1,5 +1,6 @@
 package com.dam2.proyectocliente.ui.screens.pro
 
+import android.graphics.Paint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -131,8 +132,9 @@ fun ContentAdvertisement(innerPadding: PaddingValues, advertisement: Advertiseme
         )
 
         Spacer(modifier = Modifier.height(16.dp))
-        Row(
-            horizontalArrangement = Arrangement.SpaceAround,
+        Column(
+//            horizontalArrangement = Arrangement.SpaceAround,
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp)
@@ -144,10 +146,14 @@ fun ContentAdvertisement(innerPadding: PaddingValues, advertisement: Advertiseme
                 fontSize = 16.sp
             )
 
+            Spacer(modifier = Modifier.height(12.dp))
+
             Text(
                 text = "Publicado " + showDate(LocalDateTime.ofInstant(advertisement.creationDate, ZoneId.systemDefault())),
                 color = AzulAguaClaro,
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.End
             )
         }
 

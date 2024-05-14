@@ -64,7 +64,7 @@ fun DropdownConfig(
             },
             onClick = {
                 /*TODO borrar datos usuario*/
-                vm.changeMode()
+                vm.resetMode()
                 vm.ocultarPanelNavegacion()
                 vm.cambiarBotonNav(0)
                 navController.navigate(Screens.inicio.name)

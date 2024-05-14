@@ -33,11 +33,9 @@ public class ActivityModel {
     }
 
     public ActivityModel(Activity activity) {
-//        this.id = id;
         this.title = activity.getTitle();
         this.description = activity.getDescription();
         this.picture = activity.getPicture();
-//        this.user = user;
         this.date = activity.getDate();
         this.createdAt = activity.getCreatedAt();
         this.price = activity.getPrice();
@@ -45,8 +43,6 @@ public class ActivityModel {
         this.category = activity.getCategory();
         this.featured = activity.getFeatured() != null ? activity.getFeatured() : false;
         this.vacancies = activity.getVacancies();
-//        this.usersWhoFav = usersWhoFav;
-//        this.reservations = reservations;
     }
 
     @Id

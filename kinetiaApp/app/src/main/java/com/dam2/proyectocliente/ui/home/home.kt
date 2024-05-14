@@ -58,7 +58,6 @@ fun Home(navController: NavHostController) {
                     .padding(40.dp)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
-                //,verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Spacer(modifier = Modifier.height(50.dp))
 

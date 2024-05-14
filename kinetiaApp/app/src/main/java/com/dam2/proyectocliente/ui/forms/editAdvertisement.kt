@@ -34,11 +34,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
-import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.utils.texfieldVacio
 import com.dam2.proyectocliente.models.Advertisement
+import com.dam2.proyectocliente.moker.Moker
 import com.dam2.proyectocliente.ui.resources.DialogInfo
 import com.dam2.proyectocliente.ui.resources.TextFieldWithHeader
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
@@ -47,24 +49,24 @@ import com.example.proyectocliente.ui.theme.Gris2
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ModificarAnuncio(
+fun EditAdvertisement(
     navController: NavHostController,
-    vm: AppViewModel, estado: UiState,
+    vm: AppViewModel,
     advertisement: Advertisement
 ) {
 
-    var titulo by rememberSaveable { mutableStateOf(advertisement.title) }
-    var ubicacion by rememberSaveable { mutableStateOf(advertisement.location) }
-    var contenido by rememberSaveable { mutableStateOf(advertisement.description) }
+    var title by rememberSaveable { mutableStateOf(advertisement.title) }
+    var location by rememberSaveable { mutableStateOf(advertisement.location) }
+    var content by rememberSaveable { mutableStateOf(advertisement.description) }
 
     var error by rememberSaveable { mutableStateOf(false) }
     val setError: (Boolean) -> Unit = { e -> error = e }
 
     Scaffold(
-        topBar = { BarraSuperiorModAnuncio(navController, vm) },
+        topBar = { TopBarEditAD(navController, vm) },
         bottomBar = {
-            BarraInferiorModAnuncio(
-                vm, navController, titulo, ubicacion, contenido, setError, advertisement
+            BottomBarEditAd(
+                vm, navController, title, location, content, setError, advertisement
             )
         }
 
@@ -83,20 +85,20 @@ fun ModificarAnuncio(
 
                 TextFieldWithHeader(
                     cabecera = "Título",
-                    value = titulo,
-                    onValueChange = { titulo = it }
+                    value = title,
+                    onValueChange = { title = it }
                 )
                 TextFieldWithHeader(
                     cabecera = "Ubicación",
-                    value = ubicacion,
-                    onValueChange = { ubicacion = it }
+                    value = location,
+                    onValueChange = { location = it }
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
 
                 OutlinedTextField(
-                    value = contenido,
-                    onValueChange = { contenido = it },
+                    value = content,
+                    onValueChange = { content = it },
                     label = { Text("Descripción") },
                     colors = TextFieldDefaults.outlinedTextFieldColors(unfocusedBorderColor = AzulAguaOscuro),
                     modifier = Modifier
@@ -129,7 +131,7 @@ fun ModificarAnuncio(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorModAnuncio(navController: NavHostController, vm: AppViewModel) {
+fun TopBarEditAD(navController: NavHostController, vm: AppViewModel) {
     TopAppBar(
         title = {
             Text(
@@ -151,17 +153,17 @@ fun BarraSuperiorModAnuncio(navController: NavHostController, vm: AppViewModel) 
 }
 
 @Composable
-fun BarraInferiorModAnuncio(
+fun BottomBarEditAd(
     vm: AppViewModel,
     navController: NavHostController,
-    titulo: String,
-    ubicacion: String,
-    contenido: String,
+    title: String,
+    location: String,
+    content: String,
     setError: (Boolean) -> Unit,
     advertisement: Advertisement,
 ) {
 
-    val campos = arrayListOf<String>(titulo, ubicacion, contenido)
+    val campos = arrayListOf(title, location, content)
 
     Box(
         modifier = Modifier
@@ -178,7 +180,7 @@ fun BarraInferiorModAnuncio(
                 if (texfieldVacio(campos))
                     setError(true)
                 else {
-                    vm.modAnuncio(titulo, ubicacion, contenido, advertisement)
+                    vm.editAdvertisement(title, location, content, advertisement)
                     navController.navigateUp()
                 }
 
@@ -189,13 +191,12 @@ fun BarraInferiorModAnuncio(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Preview(showBackground = true)
 @Composable
-fun ModificarAnuncioPreview() {
-//    val navController = rememberNavController()
-//    val vm: AppViewModel = viewModel()
-//    val estado by vm.uiState.collectAsState()
-//    val anuncio = DatosPrueba.anuncios[0]
-//    ModificarAnuncio(navController, vm, estado, anuncio)
+fun EditAdPreview() {
+    val navController = rememberNavController()
+    val vm: AppViewModel = viewModel()
+    val ad = Moker.advertisement
+    EditAdvertisement(navController, vm, ad)
 }

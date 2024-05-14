@@ -208,7 +208,7 @@ fun NuevoUsuario(navController: NavHostController, vm: AppViewModel, estado: UiS
                     else if (!emailValido(mail))
                         DialogInfo(
                             onConfirmation = { error = false },
-                            dialogText = "Introduzca un email válido"
+                            dialogText = "El email introducido no es válido"
                         )
                     else if (!passwdIguales(password, repetirPassword))
                         DialogInfo(

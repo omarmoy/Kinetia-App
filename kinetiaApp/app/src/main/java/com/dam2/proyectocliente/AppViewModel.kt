@@ -16,6 +16,7 @@ import com.dam2.proyectocliente.models.Role
 import com.dam2.proyectocliente.models.User
 import com.dam2.proyectocliente.network.request.Login
 import com.dam2.proyectocliente.repositories.ActivityRepository
+import com.dam2.proyectocliente.repositories.AdvertisementRepository
 import com.dam2.proyectocliente.repositories.MessageRepository
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.utils.Painter
@@ -45,6 +46,7 @@ class AppViewModel : ViewModel() {
 
     private val activityRepository = ActivityRepository()
     private val messageRepository = MessageRepository()
+    private val adRepository = AdvertisementRepository()
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
@@ -57,7 +59,7 @@ class AppViewModel : ViewModel() {
                     if (user.company != null || user.company != "")
                         setIsCompany(true)
                 } else
-                    changeMode()
+                    consumerMode()
                 setActivities(loginRepository.getActivities(user!!.id))
                 setUser(user)
                 mostrarPanelNavegacion()
@@ -458,6 +460,11 @@ class AppViewModel : ViewModel() {
         return mode
     }
 
+    fun consumerMode() {
+        val mode = !uiState.value.modoPro
+        _uiState.update { e -> e.copy(modoPro = false) }
+    }
+
     fun resetMode() {
         _uiState.update { e -> e.copy(modoPro = true) }
     }
@@ -470,32 +477,23 @@ class AppViewModel : ViewModel() {
         _uiState.update { e -> e.copy(advertisementSeleccionado = a) }
     }
 
-    fun nuevoAnuncio(titulo: String, localidad: String, contenido: String) {
+    fun newAdvertisement(title: String, location: String, description: String) {
         val advertisement =
             Advertisement(
                 id = 100, //TODO API ID
                 userPhoto = _uiState.value.user!!.profilePicture,
-                title = titulo,
-                description = contenido,
+                title = title,
+                description = description,
                 userId = _uiState.value.user!!.id,
                 userName = _uiState.value.user!!.fullName(),
-                location = localidad
+                location = location
             )
-        _uiState.update { e -> e.copy(nuevoAdvertisement = advertisement) }
+        _uiState.update { e -> e.copy(newAdvertisement = advertisement) }
     }
 
-    fun modAnuncio(
-        titulo: String,
-        localidad: String,
-        contenido: String,
-        advertisement: Advertisement
-    ) {
-        advertisement.title = titulo
-        advertisement.location = localidad
-        advertisement.description = contenido
-    }
 
-    fun selectModAnuncio(advertisement: Advertisement) {
+
+    fun selectModAdvertisement(advertisement: Advertisement) {
         _uiState.update { e -> e.copy(modAdvertisement = advertisement) }
     }
 
@@ -505,18 +503,38 @@ class AppViewModel : ViewModel() {
     }
 
     fun postAdvertisement() {
-        val anuncio = _uiState.value.nuevoAdvertisement
-        _uiState.value.user!!.addAnuncio(anuncio!!)
+        val advertisement = _uiState.value.newAdvertisement
+        _uiState.value.user!!.addAnuncio(advertisement!!)
+        viewModelScope.launch {
+            advertisement.id == adRepository.post(advertisement)
+
+        }
         resetNuevoAnuncio()
+    }
+
+    fun editAdvertisement(
+        titulo: String,
+        localidad: String,
+        contenido: String,
+        advertisement: Advertisement
+    ) {
+        advertisement.title = titulo
+        advertisement.location = localidad
+        advertisement.description = contenido
+        viewModelScope.launch {
+            adRepository.edit(advertisement)
+        }
     }
 
     fun deleteAdvertisement(advertisement: Advertisement) {
         _uiState.value.user!!.eliminarAnuncio(advertisement)
+        viewModelScope.launch {
+            adRepository.delete(advertisement.id!!)
+        }
     }
 
 
     fun advertisementsList(): ArrayList<Advertisement> {
-
         return if (uiState.value.advertisementSearched != "") {
             resultSearchAdvertisements()
         } else {
@@ -574,12 +592,7 @@ class AppViewModel : ViewModel() {
             contactName = reservation.contactName,
             contactPicture = reservation.contactPicture
         )
-
-        if (!_uiState.value.user!!.chats.contains(chat)) {
-            _uiState.value.user!!.addChat(chat)
-        }
-        selectContacto(chat)
-
+        createChatIfNoExist(chat)
     }
 
     fun createChatIfNoExist(advertisement: Advertisement) {
@@ -588,12 +601,26 @@ class AppViewModel : ViewModel() {
             contactName = advertisement.userName,
             contactPicture = advertisement.userPhoto
         )
+        createChatIfNoExist(chat)
+    }
 
+    fun createChatIfNoExist(activity: Activity) {
+        val chat = Chat(
+            contactId = activity.userId,
+            contactName = activity.userName,
+            contactPicture = ""
+        )
+        createChatIfNoExist(chat)
+    }
+
+    private fun createChatIfNoExist(chat: Chat) {
         if (!_uiState.value.user!!.chats.contains(chat)) {
             _uiState.value.user!!.addChat(chat)
+            selectContacto(chat)
+        } else {
+            val idx = _uiState.value.user!!.chats.indexOf(chat)
+            selectContacto(_uiState.value.user!!.chats[idx])
         }
-        selectContacto(chat)
-
     }
 
 

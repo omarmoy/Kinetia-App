@@ -28,12 +28,12 @@ public class AdvertisementController {
     }
 
     @PostMapping
-    public Long addAdvertisement(@RequestBody AdvertisementModel advertisement) {
+    public Long addAdvertisement(@RequestBody Advertisement advertisement) {
         return advertisementService.createAdvertisement(advertisement);
     }
 
     @PutMapping
-    public Boolean updateAdvertisement(@RequestBody AdvertisementModel advertisement) {
+    public Boolean updateAdvertisement(@RequestBody Advertisement advertisement) {
         return advertisementService.updateAdvertisement(advertisement);
     }
 

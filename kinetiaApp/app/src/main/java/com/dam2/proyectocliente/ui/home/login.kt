@@ -25,7 +25,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -35,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,7 +42,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
-import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Screens
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.AzulAguaFondo
@@ -52,7 +51,7 @@ import com.example.proyectocliente.ui.theme.NegroClaro
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Login(navController: NavHostController, vm: AppViewModel, estado: UiState) {
+fun Login(navController: NavHostController, vm: AppViewModel) {
 
     var email by rememberSaveable { mutableStateOf("juan@correo.es") }
     var password by rememberSaveable { mutableStateOf("juan") }
@@ -110,6 +109,7 @@ fun Login(navController: NavHostController, vm: AppViewModel, estado: UiState) {
                 TextField(
                     value = password,
                     onValueChange = { password = it },
+                    visualTransformation = PasswordVisualTransformation(),
                     singleLine = true,
                     label = { Text(text = "introduce la contraseña") },
                     keyboardOptions = KeyboardOptions.Default.copy(
@@ -119,25 +119,14 @@ fun Login(navController: NavHostController, vm: AppViewModel, estado: UiState) {
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.textFieldColors(containerColor = AzulAguaFondo)
                 )
-                /*OutlinedTextField(
-                    value = "",
-                    onValueChange = { it },
-                    singleLine = true,
-                    label = { Text(text = "introduce la contraseña") },
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Next  //tipo de botón
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                )
-*/
+
                 Spacer(modifier = Modifier.height(180.dp))
 
                 Button(
                     onClick = {
                         //TODO
                         vm.login(email, password)
-                        navController.navigate(Screens.menuPrincipal.name)
+                        navController.navigate(Screens.afterLogging.name)
                     },
                     colors = ButtonDefaults.buttonColors(AzulAguaOscuro),
                     modifier = Modifier.width(150.dp)
@@ -157,6 +146,5 @@ fun Login(navController: NavHostController, vm: AppViewModel, estado: UiState) {
 fun LoginPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
-    val estado by vm.uiState.collectAsState()
-    Login(navController, vm, estado)
+    Login(navController, vm)
 }

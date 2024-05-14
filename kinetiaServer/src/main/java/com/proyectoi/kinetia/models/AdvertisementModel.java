@@ -1,5 +1,6 @@
 package com.proyectoi.kinetia.models;
 
+import com.proyectoi.kinetia.domain.Advertisement;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -28,6 +29,14 @@ public class AdvertisementModel {
     @CreatedDate
     private Instant creationDate = Instant.now();
 
+    public AdvertisementModel() {}
+
+    public AdvertisementModel(Advertisement ad) {
+        this.title = ad.getTitle();
+        this.description = ad.getDescription();
+        this.location = ad.getLocation();
+        this.creationDate = ad.getCreationDate();
+    }
 
     // GETTER AND SETTER
 

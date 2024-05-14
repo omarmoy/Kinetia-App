@@ -64,7 +64,7 @@ import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.models.Category
-import com.dam2.proyectocliente.PanelNavegacion
+import com.dam2.proyectocliente.NavigationPanel
 import com.dam2.proyectocliente.models.Screens
 import com.dam2.proyectocliente.utils.Painter
 import com.example.proyectocliente.R
@@ -427,6 +427,6 @@ fun MainMenuProPreview() {
             )
         },
         //llama a una función de AppPrincipal:
-        bottomBar = { PanelNavegacion(navController = navController, vm, uiState) }
+        bottomBar = { NavigationPanel(navController = navController, vm, uiState) }
     )
 }

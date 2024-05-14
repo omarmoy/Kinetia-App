@@ -30,19 +30,9 @@ data class UiState(
     ),
     val isCompany: Boolean = false,
 
-    //Formulario publicar
-    var nuevoAdvertisement: Advertisement? = null,
+    //Formularios
+    var newAdvertisement: Advertisement? = null,
     var newActivity: Activity? = null,
-//    var formularioActividad: MutableMap<String, String> = mutableMapOf(
-//        "titulo" to "",
-//        "fecha" to "",
-//        //"duracion" to "", TODO quitar de los demás sitios, poner hora en su lugar
-//        "precio" to "",
-//        "ubicacion" to "",
-//        "categoria" to "",
-//        "destacado" to "",
-//        "contenido" to ""
-//    ),
     var modAdvertisement: Advertisement? = null,
     var modActivity: Activity? = null,
 

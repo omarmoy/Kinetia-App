@@ -36,18 +36,18 @@ import com.dam2.proyectocliente.models.Category
 import com.dam2.proyectocliente.models.Screens
 import com.dam2.proyectocliente.models.Role
 import com.dam2.proyectocliente.ui.UiState
-import com.dam2.proyectocliente.ui.screens.consumer.ListaActividades
-import com.dam2.proyectocliente.ui.menus.consumer.MenuBusqueda
+import com.dam2.proyectocliente.ui.screens.consumer.ListActivities
+import com.dam2.proyectocliente.ui.menus.consumer.SearchMenu
 import com.dam2.proyectocliente.ui.menus.ChatsMenu
 import com.dam2.proyectocliente.ui.menus.consumer.MainMenu
-import com.dam2.proyectocliente.ui.menus.consumer.MenuUsuario
+import com.dam2.proyectocliente.ui.menus.consumer.UserMenu
 import com.dam2.proyectocliente.ui.screens.consumer.ViewActivity
 import com.dam2.proyectocliente.ui.screens.consumer.VistaAnuncio
 import com.dam2.proyectocliente.ui.screens.Chat
 import com.dam2.proyectocliente.ui.forms.FormActivity
-import com.dam2.proyectocliente.ui.forms.FormularioAnuncio
+import com.dam2.proyectocliente.ui.forms.FormAdvertisement
 import com.dam2.proyectocliente.ui.forms.EditActivity
-import com.dam2.proyectocliente.ui.forms.ModificarAnuncio
+import com.dam2.proyectocliente.ui.forms.EditAdvertisement
 import com.dam2.proyectocliente.ui.forms.SelectPicture
 import com.dam2.proyectocliente.ui.home.ErrorScreen
 import com.dam2.proyectocliente.ui.home.Home
@@ -81,19 +81,22 @@ fun Navigation(
     val uiState by vm.uiState.collectAsState()
     Scaffold(
         topBar = {},
-        content = { innerPadding -> Contenido(innerPadding, navController, vm, uiState) },
+        content = { innerPadding -> Host(innerPadding, navController, vm, uiState) },
         bottomBar = {
             if (uiState.modoPro)
-                PanelNavegacionPro(navController, vm, uiState)
+                NavigationPanelPro(navController, vm, uiState)
             else
-                PanelNavegacion(navController, vm, uiState)
+                NavigationPanel(navController, vm, uiState)
         }
     )
 }
 
 @Composable
-fun Contenido(
-    innerPadding: PaddingValues, navController: NavHostController, vm: AppViewModel, uiState: UiState
+fun Host(
+    innerPadding: PaddingValues,
+    navController: NavHostController,
+    vm: AppViewModel,
+    uiState: UiState
 ) {
     NavHost(
 
@@ -101,34 +104,35 @@ fun Contenido(
         navController = navController,
         startDestination = Screens.inicio.name
     ) {
+        
         //Pantallas principales
-        composable(route = Screens.menuPrincipal.name) {
-        if(uiState.user != null) {
-            when (vm.userUiState) {
-                is UserUiState.Loading -> LoadingScreen(modifier = Modifier.fillMaxSize())
-                is UserUiState.Success -> {
-//                    vm.mostrarPanelNavegacion()
-                    if (uiState.user.role == Role.PROVIDER && uiState.modoPro)
-                        MainMenuPro(navController, vm, uiState)
-                    else{
-                        MainMenu(navController, vm, uiState)
+        composable(route = Screens.afterLogging.name) {
+            if (uiState.user != null) {
+                when (vm.userUiState) {
+                    is UserUiState.Loading -> LoadingScreen(modifier = Modifier.fillMaxSize())
+                    is UserUiState.Success -> {
+                        if (uiState.user.role == Role.PROVIDER && uiState.modoPro)
+                            MainMenuPro(navController, vm, uiState)
+                        else {
+                            MainMenu(navController, vm, uiState)
+                        }
                     }
+                    is UserUiState.Error -> ErrorScreen(navController)
                 }
+            } else
+                ErrorScreen(navController)
+        }
 
-                is UserUiState.Error -> ErrorScreen(navController)
-            }
-        }else
-            ErrorScreen(navController)
-
+        composable(route = Screens.menuPrincipal.name) {
+            MainMenu(navController, vm, uiState)
         }
 
         composable(route = Screens.menuBuscar.name) {
-            MenuBusqueda(navController, vm, uiState)
+            SearchMenu(navController, vm, uiState)
         }
 
         composable(route = Screens.menuBusquedaDirecta.name) {
-            MenuBusqueda(navController, vm, uiState, true)
-
+            SearchMenu(navController, vm, uiState, true)
         }
 
         composable(route = Screens.menuMensajes.name) {
@@ -136,13 +140,13 @@ fun Contenido(
         }
 
         composable(route = Screens.menuUsuario.name) {
-            MenuUsuario(navController = navController, vm, uiState)
+            UserMenu(navController = navController, vm, uiState)
         }
 
         //SubPantallas
         composable(route = Screens.listaReservas.name) {
             //TODO: falta funcionalidad reservas
-            ListaActividades(
+            ListActivities(
                 "Mis reservas",
                 uiState.user!!.activitiesReserved,
                 navController,
@@ -151,7 +155,7 @@ fun Contenido(
             )
         }
         composable(route = Screens.listaFavoritos.name) {
-            ListaActividades(
+            ListActivities(
                 "Favoritos",
                 uiState.user!!.activitiesFav,
                 navController,
@@ -174,7 +178,7 @@ fun Contenido(
             Home(navController = navController)
         }
         composable(route = Screens.login.name) {
-            Login(navController = navController, vm, uiState)
+            Login(navController = navController, vm)
         }
 
         //Registro
@@ -202,13 +206,13 @@ fun Contenido(
 
         //formularios y previstas Anuncio
         composable(route = Screens.formularioAnuncio.name) {
-            FormularioAnuncio(navController = navController, vm, uiState)
+            FormAdvertisement(navController = navController, vm)
         }
         composable(route = Screens.previewNuevoAnuncio.name) {
-            VistaAnuncio(navController, uiState.nuevoAdvertisement!!, vm, true)
+            VistaAnuncio(navController, uiState.newAdvertisement!!, vm, true)
         }
         composable(route = Screens.modificarAnuncio.name) {
-            ModificarAnuncio(navController, vm, uiState, uiState.modAdvertisement!!)
+            EditAdvertisement(navController, vm, uiState.modAdvertisement!!)
         }
 
         //formularios y previstas ACTIVIDAD
@@ -255,8 +259,8 @@ fun Contenido(
 }
 
 @Composable
-fun PanelNavegacion(navController: NavHostController, vm: AppViewModel, estado: UiState) {
-    if (estado.mostrarPanelNavegacion) {
+fun NavigationPanel(navController: NavHostController, vm: AppViewModel, uiState: UiState) {
+    if (uiState.mostrarPanelNavegacion) {
         Box(
             modifier = Modifier
                 .background(Gris2)
@@ -279,7 +283,7 @@ fun PanelNavegacion(navController: NavHostController, vm: AppViewModel, estado: 
                     Icon(
                         imageVector = Icons.Filled.Home,
                         contentDescription = "Inicio",
-                        tint = if (estado.botoneraNav[0]) AmarilloPastel else NegroClaro
+                        tint = if (uiState.botoneraNav[0]) AmarilloPastel else NegroClaro
                     )
                 }
                 IconButton(onClick = {
@@ -290,7 +294,7 @@ fun PanelNavegacion(navController: NavHostController, vm: AppViewModel, estado: 
                     Icon(
                         imageVector = Icons.Filled.Search,
                         contentDescription = "Buscar",
-                        tint = if (estado.botoneraNav[1]) AmarilloPastel else NegroClaro
+                        tint = if (uiState.botoneraNav[1]) AmarilloPastel else NegroClaro
                     )
                 }
 
@@ -301,7 +305,7 @@ fun PanelNavegacion(navController: NavHostController, vm: AppViewModel, estado: 
                     Icon(
                         imageVector = Icons.Filled.MailOutline,
                         contentDescription = "Mensajes",
-                        tint = if (estado.botoneraNav[2]) AmarilloPastel else NegroClaro
+                        tint = if (uiState.botoneraNav[2]) AmarilloPastel else NegroClaro
                     )
                 }
                 IconButton(onClick = {
@@ -311,7 +315,7 @@ fun PanelNavegacion(navController: NavHostController, vm: AppViewModel, estado: 
                     Icon(
                         imageVector = Icons.Filled.AccountCircle,
                         contentDescription = "Mi Cuenta",
-                        tint = if (estado.botoneraNav[3]) AmarilloPastel else NegroClaro
+                        tint = if (uiState.botoneraNav[3]) AmarilloPastel else NegroClaro
                     )
                 }
             }
@@ -320,9 +324,8 @@ fun PanelNavegacion(navController: NavHostController, vm: AppViewModel, estado: 
 }
 
 @Composable
-fun PanelNavegacionPro(navController: NavHostController, vm: AppViewModel, estado: UiState) {
-//    if (true) {
-    if (estado.mostrarPanelNavegacion) {
+fun NavigationPanelPro(navController: NavHostController, vm: AppViewModel, uiState: UiState) {
+    if (uiState.mostrarPanelNavegacion) {
         Box(
             modifier = Modifier
                 .background(Gris2)
@@ -344,7 +347,7 @@ fun PanelNavegacionPro(navController: NavHostController, vm: AppViewModel, estad
                     Icon(
                         imageVector = Icons.Filled.Menu,
                         contentDescription = "Menú principal Pro",
-                        tint = if (estado.botoneraNav[0]) AmarilloPastel else NegroClaro
+                        tint = if (uiState.botoneraNav[0]) AmarilloPastel else NegroClaro
                     )
                 }
                 IconButton(onClick = {
@@ -354,7 +357,7 @@ fun PanelNavegacionPro(navController: NavHostController, vm: AppViewModel, estad
                     Icon(
                         imageVector = Icons.Filled.DateRange,
                         contentDescription = "Reservas",
-                        tint = if (estado.botoneraNav[1]) AmarilloPastel else NegroClaro
+                        tint = if (uiState.botoneraNav[1]) AmarilloPastel else NegroClaro
                     )
                 }
 
@@ -365,7 +368,7 @@ fun PanelNavegacionPro(navController: NavHostController, vm: AppViewModel, estad
                     Icon(
                         imageVector = Icons.Filled.MailOutline,
                         contentDescription = "Mensajes",
-                        tint = if (estado.botoneraNav[2]) AmarilloPastel else NegroClaro
+                        tint = if (uiState.botoneraNav[2]) AmarilloPastel else NegroClaro
                     )
                 }
                 IconButton(onClick = {
@@ -375,7 +378,7 @@ fun PanelNavegacionPro(navController: NavHostController, vm: AppViewModel, estad
                     Icon(
                         imageVector = Icons.Filled.Search,
                         contentDescription = "buscar",
-                        tint = if (estado.botoneraNav[3]) AmarilloPastel else NegroClaro
+                        tint = if (uiState.botoneraNav[3]) AmarilloPastel else NegroClaro
                     )
                 }
             }
@@ -388,6 +391,6 @@ fun PanelNavegacionPro(navController: NavHostController, vm: AppViewModel, estad
 fun BarraPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
-    val estado by vm.uiState.collectAsState()
-    PanelNavegacionPro(navController, vm, estado)
+    val uiState by vm.uiState.collectAsState()
+    NavigationPanelPro(navController, vm, uiState)
 }

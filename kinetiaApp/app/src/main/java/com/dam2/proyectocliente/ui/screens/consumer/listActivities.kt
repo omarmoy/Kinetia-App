@@ -57,7 +57,7 @@ import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.models.Screens
-import com.example.proyectocliente.R
+import com.dam2.proyectocliente.utils.Painter
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.Gris2
 import com.example.proyectocliente.ui.theme.NegroClaro
@@ -65,26 +65,26 @@ import com.example.proyectocliente.ui.theme.small
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListaActividades(
-    titulo: String,
-    lista: ArrayList<Activity>,
+fun ListActivities(
+    title: String,
+    listActivities: ArrayList<Activity>,
     navController: NavHostController,
     vm: AppViewModel,
-    estado: UiState
+    uiState: UiState
 ) {
-    var volverArriba by remember { mutableStateOf(false) }
-    val estadoLista = rememberLazyListState()
+    var backToUp by remember { mutableStateOf(false) }
+    val listState = rememberLazyListState()
 
     Scaffold(
-        topBar = { BarraSuperiorListaA(titulo, navController, vm) },
+        topBar = { TopBarList(title, navController, vm) },
         content = { innerPadding ->
-            ContenidoListaActividades(
+            List(
                 innerPadding,
                 navController,
                 vm,
-                estado,
-                lista,
-                estadoLista
+                uiState,
+                listActivities,
+                listState
             )
         },
         floatingActionButton = {
@@ -93,7 +93,7 @@ fun ListaActividades(
                 color = BlancoFondo.copy(alpha = 0.5f) //establece el color con transparencia
             ) {
                 IconButton(onClick = {
-                    volverArriba = true
+                    backToUp = true
                 }) {
                     Icon(
                         imageVector = Icons.Filled.KeyboardArrowUp,
@@ -104,10 +104,10 @@ fun ListaActividades(
             }
         }
     )
-    LaunchedEffect(volverArriba) {
-        if (volverArriba) {
-            estadoLista.animateScrollToItem(index = 0)
-            volverArriba = false
+    LaunchedEffect(backToUp) {
+        if (backToUp) {
+            listState.animateScrollToItem(index = 0)
+            backToUp = false
         }
     }
 
@@ -115,7 +115,7 @@ fun ListaActividades(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraSuperiorListaA(titulo: String, navController: NavHostController, vm: AppViewModel) {
+fun TopBarList(titulo: String, navController: NavHostController, vm: AppViewModel) {
     TopAppBar(
         title = { Text(text = titulo) },
         colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = BlancoFondo),
@@ -137,13 +137,13 @@ fun BarraSuperiorListaA(titulo: String, navController: NavHostController, vm: Ap
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContenidoListaActividades(
+fun List(
     innerPadding: PaddingValues,
     navController: NavHostController,
     vm: AppViewModel,
-    estado: UiState,
-    lista: ArrayList<Activity>,
-    estadoLista: LazyListState
+    uiState: UiState,
+    list: ArrayList<Activity>,
+    listState: LazyListState
 ) {
     Column(
         modifier = Modifier
@@ -151,11 +151,11 @@ fun ContenidoListaActividades(
             .background(Color.White)
     ) {
 
-        LazyColumn(state = estadoLista) {
+        LazyColumn(state = listState) {
 
             item {
                 TextField(
-                    value = estado.activityUserSearched,
+                    value = uiState.activityUserSearched,
                     onValueChange = { vm.setActividadUsuarioBuscar(it) },
                     singleLine = true,
                     label = { Text(text = "Buscar") },
@@ -175,7 +175,7 @@ fun ContenidoListaActividades(
                         unfocusedIndicatorColor = Gris2
                     ),
                     trailingIcon = {
-                        if (estado.activityUserSearched != "")
+                        if (uiState.activityUserSearched != "")
                             IconButton(onClick = { vm.setActividadUsuarioBuscar("") }) {
                                 Icon(
                                     imageVector = Icons.Filled.Clear,
@@ -189,8 +189,8 @@ fun ContenidoListaActividades(
                 Spacer(modifier = Modifier.height(20.dp))
             }
 
-            items(vm.cargarActividadesUsuario(lista)) { a ->
-                MiniaturaActividadUnaLinea(a, vm, navController, estado)
+            items(vm.cargarActividadesUsuario(list)) { a ->
+                ActivityOneLine(a, vm, navController)
             }
         }
     }
@@ -198,11 +198,10 @@ fun ContenidoListaActividades(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MiniaturaActividadUnaLinea(
+fun ActivityOneLine(
     a: Activity,
     vm: AppViewModel,
-    navController: NavHostController,
-    estado: UiState
+    navController: NavHostController
 ) {
     Row (modifier = Modifier.fillMaxWidth().padding(12.dp)){
         val tam = 150.dp
@@ -213,7 +212,7 @@ fun MiniaturaActividadUnaLinea(
                 navController.navigate(Screens.vistaActividad.name)
             }) {
             Image(
-                painter = painterResource(id = R.drawable.noimagen),
+                painter = painterResource(Painter.getActivityPictureInt(a.picture)),
                 contentDescription = a.title,
                 modifier = Modifier
                     .width(tam)
@@ -240,15 +239,15 @@ fun MiniaturaActividadUnaLinea(
 
 @Preview(showBackground = true)
 @Composable
-fun ListaAPreview() {
+fun ListPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
-    val estado by vm.uiState.collectAsState()
-    ListaActividades(
-        titulo = "Mis reservas",
-        lista = vm.listaActividades(),
+    val uiState by vm.uiState.collectAsState()
+    ListActivities(
+        title = "Mis reservas",
+        listActivities = vm.listaActividades(),
         navController = navController,
         vm = vm,
-        estado = estado
+        uiState = uiState
     )
 }

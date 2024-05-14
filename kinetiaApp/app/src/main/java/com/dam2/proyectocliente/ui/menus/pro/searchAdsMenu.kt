@@ -50,7 +50,7 @@ import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Advertisement
-import com.dam2.proyectocliente.PanelNavegacionPro
+import com.dam2.proyectocliente.NavigationPanelPro
 import com.dam2.proyectocliente.models.Screens
 import com.example.proyectocliente.ui.theme.AzulAguaFondo
 import com.example.proyectocliente.ui.theme.BlancoFondo
@@ -234,7 +234,7 @@ fun MenuBusquedaPreview() {
         )
     },
         //llama a una función de navegación:
-        bottomBar = { PanelNavegacionPro(navController = navController, vm, uiState) })
+        bottomBar = { NavigationPanelPro(navController = navController, vm, uiState) })
 
 //    val a = DatosPrueba.anuncios[0]
 //    MiniaturaAnuncioBusqueda(a, vm, navController, uiState)

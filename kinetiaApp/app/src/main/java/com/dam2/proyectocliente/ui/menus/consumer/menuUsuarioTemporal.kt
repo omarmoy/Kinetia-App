@@ -60,7 +60,7 @@ import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Advertisement
-import com.dam2.proyectocliente.PanelNavegacion
+import com.dam2.proyectocliente.NavigationPanel
 import com.dam2.proyectocliente.models.Screens
 import com.dam2.proyectocliente.ui.menus.DropdownConfig
 import com.dam2.proyectocliente.ui.resources.DialogInfo
@@ -507,6 +507,6 @@ fun ProfilePasdfreview() {
             )
         },
         //llama a una función de navegación:
-        bottomBar = { PanelNavegacion(navController = navController, vm, estado) }
+        bottomBar = { NavigationPanel(navController = navController, vm, estado) }
     )
 }

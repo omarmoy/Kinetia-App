@@ -146,7 +146,7 @@ object Moker {
         title = "Venta de coche",
         description = "Se vende coche en excelente estado",
         creationDate = Instant.parse("2024-05-11T16:40:00Z"),
-        location = "Ciudad"
+        location = "Ciudad, o por los alrededores"
     )
 
     val chat = Chat(

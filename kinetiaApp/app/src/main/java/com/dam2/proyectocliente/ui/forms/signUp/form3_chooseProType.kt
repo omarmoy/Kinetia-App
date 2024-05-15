@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.registro
+package com.dam2.proyectocliente.ui.forms.signUp
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -22,8 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,7 +33,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
-import com.dam2.proyectocliente.models.Role
 import com.dam2.proyectocliente.models.Screens
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
@@ -46,7 +43,7 @@ import com.example.proyectocliente.ui.theme.NegroClaro
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ElegirRol(navController: NavHostController, vm: AppViewModel) {
+fun ChooseTypePro(navController: NavHostController, vm: AppViewModel) {
 
     Scaffold(
         topBar = {
@@ -84,7 +81,7 @@ fun ElegirRol(navController: NavHostController, vm: AppViewModel) {
                 Spacer(modifier = Modifier.height(90.dp))
 
                 Text(
-                    text = "Cuéntamos, ¿cómo vas a utilizar la aplicación?",
+                    text = "Cuéntamos más",
                     textAlign = TextAlign.Center,
                     color = NegroClaro
                 )
@@ -93,7 +90,6 @@ fun ElegirRol(navController: NavHostController, vm: AppViewModel) {
                 OutlinedButton(
                     onClick = {
                         vm.setIsCompany(false)
-                        vm.addCampoFormularioRegistro("rol", Role.CONSUMER.toString())
                         navController.navigate(Screens.nuevoUsuario.name)
                     },
                     border = BorderStroke(
@@ -102,14 +98,14 @@ fun ElegirRol(navController: NavHostController, vm: AppViewModel) {
                     ),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Quiero encontrar actividades", color = AzulAguaOscuro)
+                    Text(text = "Soy una persona física", color = AzulAguaOscuro)
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
                 OutlinedButton(
                     onClick = {
-                        vm.addCampoFormularioRegistro("rol", Role.PROVIDER.toString())
-                        navController.navigate(Screens.elegirTipoPro.name)
+                        vm.setIsCompany(true)
+                        navController.navigate(Screens.nuevoUsuario.name)
                     },
                     border = BorderStroke(
                         ButtonDefaults.outlinedButtonBorder.width,
@@ -117,7 +113,7 @@ fun ElegirRol(navController: NavHostController, vm: AppViewModel) {
                     ),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Soy ofertante de actividades", color = AzulAguaOscuro)
+                    Text(text = "Soy una empresa", color = AzulAguaOscuro)
                 }
 
             }
@@ -128,10 +124,9 @@ fun ElegirRol(navController: NavHostController, vm: AppViewModel) {
 
 @Preview(showBackground = true)
 @Composable
-fun ElegirRolPreview() {
+fun ElegirTipoProPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
-    val estado by vm.uiState.collectAsState()
-    ElegirRol(navController, vm)
+    ChooseTypePro(navController, vm)
 }
 

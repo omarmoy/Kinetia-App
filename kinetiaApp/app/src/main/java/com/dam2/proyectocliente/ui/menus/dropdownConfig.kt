@@ -34,7 +34,7 @@ fun DropdownConfig(
         if (estado.user!!.role == Role.PROVIDER || estado.user.role == Role.ADMIN) {
             DropdownMenuItem(
                 text = {
-                    if (estado.modoPro)
+                    if (estado.proMode)
                         Text(text = "Modo Consumidor")
                     else
                         Text(text = "Modo Ofertante")

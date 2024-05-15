@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.registro
+package com.dam2.proyectocliente.ui.forms.signUp
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,7 +22,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -39,18 +38,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
-import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Screens
 import com.dam2.proyectocliente.ui.resources.DialogInfo
 import com.dam2.proyectocliente.ui.resources.TextFieldWithHeader
-import com.dam2.proyectocliente.utils.texfieldVacio
+import com.dam2.proyectocliente.utils.textFieldEmpty
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NuevaEmpresaDatos(navController: NavHostController, vm: AppViewModel, estado: UiState) {
+fun CompanyData(navController: NavHostController, vm: AppViewModel) {
 
     var nombreEmpresa by rememberSaveable { mutableStateOf("") }
     var direccion by rememberSaveable { mutableStateOf("") }
@@ -84,17 +82,17 @@ fun NuevaEmpresaDatos(navController: NavHostController, vm: AppViewModel, estado
                     .background(BlancoFondo)
             ) {
                 TextButton(onClick = {
-                    if (texfieldVacio(
+                    if (textFieldEmpty(
                             arrayListOf(nombre, apellido1, nombreEmpresa, direccion, cif))
                     ) {
                         error = true
                     } else {
-                        vm.addCampoFormularioRegistro("nombre", nombre)
-                        vm.addCampoFormularioRegistro("apellido1", apellido1)
-                        vm.addCampoFormularioRegistro("apellido2", apellido2)
-                        vm.addCampoFormularioRegistro("nombreEmpresa", nombreEmpresa)
-                        vm.addCampoFormularioRegistro("direccion", direccion)
-                        vm.addCampoFormularioRegistro("cif", cif)
+                        vm.addFieldFormSignUp("nombre", nombre)
+                        vm.addFieldFormSignUp("apellido1", apellido1)
+                        vm.addFieldFormSignUp("apellido2", apellido2)
+                        vm.addFieldFormSignUp("nombreEmpresa", nombreEmpresa)
+                        vm.addFieldFormSignUp("direccion", direccion)
+                        vm.addFieldFormSignUp("cif", cif)
                         navController.navigate(Screens.addImagen.name)
                     }
 
@@ -128,15 +126,15 @@ fun NuevaEmpresaDatos(navController: NavHostController, vm: AppViewModel, estado
                     .padding(40.dp)
             ) {
                 TextFieldWithHeader(
-                    cabecera = "Denominación",
+                    header = "Denominación",
                     value = nombreEmpresa,
                     onValueChange = { nombreEmpresa = it })
                 TextFieldWithHeader(
-                    cabecera = "Dirección",
+                    header = "Dirección",
                     value = direccion,
                     onValueChange = { direccion = it })
                 TextFieldWithHeader(
-                    cabecera = "CIF", value = cif, onValueChange = { cif = it }
+                    header = "CIF", value = cif, onValueChange = { cif = it }
                 )
 
                 Text(text = "Persona de contacto",
@@ -146,15 +144,15 @@ fun NuevaEmpresaDatos(navController: NavHostController, vm: AppViewModel, estado
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextFieldWithHeader(
-                    cabecera = "Nombre",
+                    header = "Nombre",
                     value = nombre,
                     onValueChange = { nombre = it })
                 TextFieldWithHeader(
-                    cabecera = "Primer apellido",
+                    header = "Primer apellido",
                     value = apellido1,
                     onValueChange = { apellido1 = it })
                 TextFieldWithHeader(
-                    cabecera = "Segundo apellido",
+                    header = "Segundo apellido",
                     value = apellido2,
                     onValueChange = { apellido2 = it },
                     imeAction = ImeAction.Done)
@@ -179,7 +177,6 @@ fun NuevaEmpresaDatos(navController: NavHostController, vm: AppViewModel, estado
 fun ERegistroPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
-    val estado by vm.uiState.collectAsState()
-    NuevaEmpresaDatos(navController, vm, estado)
+    CompanyData(navController, vm)
 }
 

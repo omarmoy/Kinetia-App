@@ -227,10 +227,10 @@ fun Categories(
 
         LazyRow(state = uiStateLista) {
             items(Category.values()) { categoria ->
-                if (!(categoria == Category.TODO && uiState.botoneraNav[0])) {
+                if (!(categoria == Category.TODO && uiState.buttonsNav[0])) {
                     val colorBoton: Color
                     val colorTexto: Color
-                    if (categoria == uiState.categorySelecciononada && !uiState.botoneraNav[0]) {
+                    if (categoria == uiState.selectedCategory && !uiState.buttonsNav[0]) {
                         colorBoton = AmarilloPastel
                         colorTexto = NegroClaro
                     } else {
@@ -241,7 +241,7 @@ fun Categories(
                     Button(
                         onClick = {
                             vm.selectCategoria(categoria)
-                            if (uiState.botoneraNav[0]) {
+                            if (uiState.buttonsNav[0]) {
                                 vm.cambiarBotonNav(1)
                                 vm.setIndiceCategoria(categoria)
                                 navController.navigate(Screens.menuBuscar.name)

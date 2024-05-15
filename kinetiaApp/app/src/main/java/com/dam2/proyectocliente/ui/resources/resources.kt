@@ -1,8 +1,11 @@
 package com.dam2.proyectocliente.ui.resources
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
@@ -15,12 +18,15 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaFondo
 import com.example.proyectocliente.ui.theme.BlancoFondOscuro
 import com.example.proyectocliente.ui.theme.NegroClaro
@@ -33,7 +39,7 @@ fun DialogInfo(
     onDismissRequest: () -> Unit = {},
     onConfirmation: () -> Unit,
     dialogTitle: String = "Atención",
-    dialogText: String,
+    dialogText: String= "",
     icon: ImageVector = Icons.Default.Info,
     buttonConfirm: String = "Aceptar",
     buttonDismiss: String = ""
@@ -59,6 +65,22 @@ fun DialogInfo(
 }
 
 
+@Composable
+fun LoandigDialogo(){
+    AlertDialog(
+        onDismissRequest = { },
+        confirmButton = { },
+        containerColor = Color.Transparent,
+        text = {
+            Image(
+                modifier = Modifier.size(200.dp),
+                painter = painterResource(R.drawable.loading_img),
+                contentDescription = "cargando"
+            )
+        }
+    )
+}
+
 /**
 TEXFIELD
  */
@@ -67,13 +89,13 @@ TEXFIELD
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TextFieldWithHeader(
-    cabecera: String,
+    header: String,
     value: String,
     onValueChange: (String) -> Unit,
     imeAction: ImeAction = ImeAction.Next
 ) {
     Text(
-        text = cabecera,
+        text = header,
         color = NegroClaro,
         fontSize = 16.sp
     )

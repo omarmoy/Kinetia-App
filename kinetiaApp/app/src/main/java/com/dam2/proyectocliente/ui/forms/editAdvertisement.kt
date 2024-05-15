@@ -38,7 +38,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
-import com.dam2.proyectocliente.utils.texfieldVacio
+import com.dam2.proyectocliente.utils.textFieldEmpty
 import com.dam2.proyectocliente.models.Advertisement
 import com.dam2.proyectocliente.moker.Moker
 import com.dam2.proyectocliente.ui.resources.DialogInfo
@@ -84,12 +84,12 @@ fun EditAdvertisement(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 TextFieldWithHeader(
-                    cabecera = "Título",
+                    header = "Título",
                     value = title,
                     onValueChange = { title = it }
                 )
                 TextFieldWithHeader(
-                    cabecera = "Ubicación",
+                    header = "Ubicación",
                     value = location,
                     onValueChange = { location = it }
                 )
@@ -177,7 +177,7 @@ fun BottomBarEditAd(
                 .background(BlancoFondo)
         ) {
             TextButton(onClick = {
-                if (texfieldVacio(campos))
+                if (textFieldEmpty(campos))
                     setError(true)
                 else {
                     vm.editAdvertisement(title, location, content, advertisement)

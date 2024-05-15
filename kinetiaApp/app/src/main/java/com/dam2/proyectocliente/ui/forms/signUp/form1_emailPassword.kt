@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.registro
+package com.dam2.proyectocliente.ui.forms.signUp
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,6 +27,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,9 +52,10 @@ import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Role
 import com.dam2.proyectocliente.models.Screens
 import com.dam2.proyectocliente.ui.resources.DialogInfo
-import com.dam2.proyectocliente.utils.emailValido
-import com.dam2.proyectocliente.utils.passwdIguales
-import com.dam2.proyectocliente.utils.texfieldVacio
+import com.dam2.proyectocliente.ui.resources.LoandigDialogo
+import com.dam2.proyectocliente.utils.isEmailValid
+import com.dam2.proyectocliente.utils.arePasswordsSame
+import com.dam2.proyectocliente.utils.textFieldEmpty
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.AzulAguaFondo
@@ -63,12 +65,16 @@ import com.example.proyectocliente.ui.theme.NegroClaro
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NuevoUsuario(navController: NavHostController, vm: AppViewModel, estado: UiState) {
+fun FormMailPassword(navController: NavHostController, vm: AppViewModel, uiState: UiState) {
 
     var mail by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
-    var repetirPassword by rememberSaveable { mutableStateOf("") }
+    var repeatPassword by rememberSaveable { mutableStateOf("") }
     var error by rememberSaveable { mutableStateOf(false) }
+    var emailAlreadyExists by rememberSaveable { mutableStateOf(false) }
+    var loandig by rememberSaveable { mutableStateOf(false) }
+    var verify by rememberSaveable { mutableStateOf(false) }
+
 
     Scaffold(
         topBar = {
@@ -94,18 +100,14 @@ fun NuevoUsuario(navController: NavHostController, vm: AppViewModel, estado: UiS
                     .background(BlancoFondo)
             ) {
                 TextButton(onClick = {
-                    if (texfieldVacio(arrayListOf(mail, password, repetirPassword))
-                        || !emailValido(mail)
-                        || !passwdIguales(password, repetirPassword)
+                    if (textFieldEmpty(arrayListOf(mail, password, repeatPassword))
+                        || !isEmailValid(mail)
+                        || !arePasswordsSame(password, repeatPassword)
                     ) {
                         error = true
                     } else {
-                        vm.addCampoFormularioRegistro("mail", mail)
-                        vm.addCampoFormularioRegistro("password", password)
-                        if (estado.isCompany && estado.formularioRegistro["rol"] == Role.PROVIDER.toString())
-                            navController.navigate(Screens.nuevaEmpresaDatos.name)
-                        else
-                            navController.navigate(Screens.nuevoUsuarioDatos.name)
+                        loandig = true
+                        verify = true
                     }
                 }) {
                     Text(text = "Siguiente", color = AzulAguaOscuro, fontSize = 16.sp)
@@ -184,8 +186,8 @@ fun NuevoUsuario(navController: NavHostController, vm: AppViewModel, estado: UiS
                 )
 
                 TextField(
-                    value = repetirPassword,
-                    onValueChange = { repetirPassword = it },
+                    value = repeatPassword,
+                    onValueChange = { repeatPassword = it },
                     visualTransformation = PasswordVisualTransformation(),
                     singleLine = true,
                     label = { Text(text = "Repite la contraseña") },
@@ -200,17 +202,17 @@ fun NuevoUsuario(navController: NavHostController, vm: AppViewModel, estado: UiS
 
             when {
                 error -> {
-                    if (texfieldVacio(arrayListOf(mail, password, repetirPassword)))
+                    if (textFieldEmpty(arrayListOf(mail, password, repeatPassword)))
                         DialogInfo(
                             onConfirmation = { error = false },
                             dialogText = "Todos los campos son obligatorios"
                         )
-                    else if (!emailValido(mail))
+                    else if (!isEmailValid(mail))
                         DialogInfo(
                             onConfirmation = { error = false },
                             dialogText = "El email introducido no es válido"
                         )
-                    else if (!passwdIguales(password, repetirPassword))
+                    else if (!arePasswordsSame(password, repeatPassword))
                         DialogInfo(
                             onConfirmation = { error = false },
                             dialogText = "Las contraseñas introducidas no son iguales"
@@ -218,6 +220,40 @@ fun NuevoUsuario(navController: NavHostController, vm: AppViewModel, estado: UiS
 
                 }
             }
+
+            if(loandig){
+                LoandigDialogo()
+            }
+
+            if(emailAlreadyExists){
+                DialogInfo(
+                    onConfirmation = { emailAlreadyExists = false },
+                    dialogTitle = "Email ya registrado",
+                    dialogText = "Inicie sesión o pruebe con otro"
+                )
+            }
+
+            if(verify){
+                LaunchedEffect(Unit) {
+                    val exist = vm.verifyField(mail)
+                    if (!exist) {
+                        vm.addFieldFormSignUp("mail", mail)
+                        vm.addFieldFormSignUp("password", password)
+                        loandig = false
+                        verify = false
+                        if (uiState.isCompany && uiState.formSignUp["rol"] == Role.PROVIDER.toString())
+                            navController.navigate(Screens.nuevaEmpresaDatos.name)
+                        else
+                            navController.navigate(Screens.nuevoUsuarioDatos.name)
+                    } else {
+                        verify = false
+                        loandig = false
+                        emailAlreadyExists = true
+                    }
+                }
+            }
+            
+
         }
     }
 }
@@ -225,10 +261,10 @@ fun NuevoUsuario(navController: NavHostController, vm: AppViewModel, estado: UiS
 
 @Preview(showBackground = true)
 @Composable
-fun UsuarioyPassWordlPreview() {
+fun EmailPasswordPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
-    val estado by vm.uiState.collectAsState()
-    NuevoUsuario(navController, vm, estado)
+    val uiState by vm.uiState.collectAsState()
+    FormMailPassword(navController, vm, uiState)
 }
 

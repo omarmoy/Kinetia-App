@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.registro
+package com.dam2.proyectocliente.ui.forms.signUp
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,6 +27,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,6 +49,7 @@ import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.models.Screens
 import com.dam2.proyectocliente.ui.resources.DialogInfo
+import com.dam2.proyectocliente.ui.resources.LoandigDialogo
 import com.example.proyectocliente.R
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
@@ -55,16 +57,12 @@ import com.example.proyectocliente.ui.theme.BlancoFondo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddImagen(navController: NavHostController, vm: AppViewModel, estado: UiState) {
+fun ChooiceAvatar(navController: NavHostController, vm: AppViewModel, uiState: UiState) {
 
-    var imagenSubida by rememberSaveable { mutableStateOf(false) }
-    var error by rememberSaveable { mutableStateOf(false) }
-
-    val titulo = if (estado.isCompany) "Añade el logo de tu empresa" else "Sube una foto de perfil"
-    val dialogText = if (estado.isCompany) "No has añadido el logo de tu empresa" else "No has subido una foto para tu perfil"
-    val buttonConfirm = if (estado.isCompany) "Continuar sin logo" else "Continuar sin foto"
-    val buttonDismiss = if (estado.isCompany) "Aladir logo" else "Elegir una foto"
-    val imagePorDefecto = if(estado.isCompany) R.drawable.noimagen else R.drawable.nofoto
+    var noAvatar by rememberSaveable { mutableStateOf(false) }
+    var networkError by rememberSaveable { mutableStateOf(false) }
+    var loandig by rememberSaveable { mutableStateOf(false) }
+    var verify by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -90,13 +88,12 @@ fun AddImagen(navController: NavHostController, vm: AppViewModel, estado: UiStat
                     .background(BlancoFondo)
             ) {
                 TextButton(onClick = {
-                    if (!imagenSubida) {
-                        error = true
-                    } else {
-                        //TODO: añadir imagen
-                        navController.navigate(Screens.confirmarRegistro.name)
+                    if (uiState.selectedPicture == 0)
+                        noAvatar = true
+                    else{
+                        loandig = true
+                        verify = true
                     }
-
                 }) {
                     Text(text = "Siguiente", color = AzulAguaOscuro, fontSize = 16.sp)
                 }
@@ -112,9 +109,8 @@ fun AddImagen(navController: NavHostController, vm: AppViewModel, estado: UiStat
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-
             Text(
-                text = titulo,
+                text = "Elige un avatar",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = AzulAguaOscuro
@@ -124,8 +120,11 @@ fun AddImagen(navController: NavHostController, vm: AppViewModel, estado: UiStat
 
             Card(shape = CircleShape, modifier = Modifier.size(300.dp)) {
                 Image(
-                    painter = painterResource(id = imagePorDefecto),
-                    contentDescription = estado.user!!.name,
+                    painter = painterResource(
+                        id = if (uiState.selectedPicture == 0)
+                            R.drawable.nofoto else uiState.selectedPicture
+                    ),
+                    contentDescription = uiState.user!!.name,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
@@ -135,10 +134,12 @@ fun AddImagen(navController: NavHostController, vm: AppViewModel, estado: UiStat
             Spacer(modifier = Modifier.height(24.dp))
 
             IconButton(onClick = {
-            /*TODO*/
+                navController.navigate(Screens.selectProfilePicture.name)
             }) {
-                Icon(imageVector = Icons.Filled.AddCircle, contentDescription = "addFoto",
-                    tint = AzulAguaOscuro, modifier = Modifier.size(50.dp))
+                Icon(
+                    imageVector = Icons.Filled.AddCircle, contentDescription = "addFoto",
+                    tint = AzulAguaOscuro, modifier = Modifier.size(50.dp)
+                )
             }
 
             Column(
@@ -152,19 +153,47 @@ fun AddImagen(navController: NavHostController, vm: AppViewModel, estado: UiStat
             }
 
             when {
-                error -> {
+                noAvatar -> {
                     DialogInfo(
-                        onDismissRequest = { error = false },
+                        onDismissRequest = { noAvatar = false },
                         onConfirmation = {
-                            navController.navigate(Screens.confirmarRegistro.name)
+                            loandig = true
+                            verify = true
                         },
-                        dialogText = dialogText,
-                        buttonConfirm = buttonConfirm,
-                        buttonDismiss = buttonDismiss
+                        dialogText = "No has elegido avatar",
+                        buttonConfirm = "Continuar sin avatar",
+                        buttonDismiss = "Elegir avatar"
                     )
                 }
             }
         }
+
+        if(loandig){
+            LoandigDialogo()
+        }
+
+        if(networkError){
+            DialogInfo(
+                onConfirmation = { networkError = false },
+                dialogTitle = "Error de conexión",
+                dialogText = "Inténtelo de nuevo más tarde"
+            )
+        }
+        if(verify){
+            LaunchedEffect(Unit) {
+                val sigUpOk = vm.signUp()
+                if (sigUpOk) {
+                    loandig = false
+                    verify = false
+                    navController.navigate(Screens.confirmarRegistro.name)
+                } else {
+                    verify = false
+                    loandig = false
+                    networkError = true
+                }
+            }
+        }
+
     }
 }
 
@@ -174,7 +203,7 @@ fun AddImagen(navController: NavHostController, vm: AppViewModel, estado: UiStat
 fun EERegistroPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
-    val estado by vm.uiState.collectAsState()
-    AddImagen(navController, vm, estado)
+    val uiState by vm.uiState.collectAsState()
+    ChooiceAvatar(navController, vm, uiState)
 }
 

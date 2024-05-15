@@ -34,7 +34,7 @@ public class UserModel {
     private String profilePicture;
     @Column
     private String company;
-    @Column(unique = true)
+    @Column
     private String cif;
     @Column
     private String address;

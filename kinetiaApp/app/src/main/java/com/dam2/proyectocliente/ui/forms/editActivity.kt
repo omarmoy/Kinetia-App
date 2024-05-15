@@ -52,8 +52,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
 import com.dam2.proyectocliente.ui.UiState
-import com.dam2.proyectocliente.utils.texfieldVacio
-import com.dam2.proyectocliente.utils.validarFechaActividad
+import com.dam2.proyectocliente.utils.textFieldEmpty
+import com.dam2.proyectocliente.utils.isDateActivityValid
 import com.dam2.proyectocliente.models.Activity
 import com.dam2.proyectocliente.models.Category
 import com.dam2.proyectocliente.models.Screens
@@ -181,12 +181,12 @@ fun EditActivity(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 TextFieldWithHeader(
-                    cabecera = "Título",
+                    header = "Título",
                     value = titulo,
                     onValueChange = { titulo = it }
                 )
                 TextFieldWithHeader(
-                    cabecera = "Ubicación",
+                    header = "Ubicación",
                     value = ubicacion,
                     onValueChange = { ubicacion = it }
                 )
@@ -438,9 +438,9 @@ fun BarraInferiorModActividad(
                 .background(BlancoFondo)
         ) {
             TextButton(onClick = {
-                if (texfieldVacio(campos))
+                if (textFieldEmpty(campos))
                     setError("campoVacio")
-                else if (!validarFechaActividad(dia, mes, anio))
+                else if (!isDateActivityValid(dia, mes, anio))
                     setError("fecha")
                 else if (precioT.toDoubleOrNull() == null)
                     setError("precioNoInt")

@@ -50,11 +50,9 @@ public class UserService {
         return Optional.empty();
     }
 
-    public User createUser(SignUpRequest signUpRequest) {
-
-        RoleModel role = rolRepository.findByRoleType(signUpRequest.getRole());
-        User user;
+    public Boolean createUser(SignUpRequest signUpRequest) {
         try {
+            RoleModel role = rolRepository.findByRoleType(signUpRequest.getRole());
             UserModel userModel = new UserModel(
                     signUpRequest.getEmail(),
                     role,
@@ -68,12 +66,12 @@ public class UserService {
                     signUpRequest.getCif(),
                     signUpRequest.getAddress()
             );
-            user = new User(userRepository.save(userModel));
+            userRepository.save(userModel);
+            return true;
         } catch (Exception e) {
-            user = null;
+            System.out.println(e.getMessage());
+            return false;
         }
-
-        return user;
     }
 
     public Boolean verify(String word) {

@@ -18,13 +18,13 @@ public class AuthController {
 
     private final UserService userService;
 
+    public AuthController(UserService userService) {
+        this.userService = userService;
+    }
+
     @GetMapping(path = "/users")
     public List<SimpleUser> getAllUser() {
         return userService.getAll();
-    }
-
-    public AuthController(UserService userService) {
-        this.userService = userService;
     }
 
     @PostMapping(path = "/login")
@@ -36,7 +36,7 @@ public class AuthController {
     }
 
     @PostMapping(path = "/signUp")
-    public User signUp(@RequestBody SignUpRequest user) {
+    public Boolean signUp(@RequestBody SignUpRequest user) {
         return userService.createUser(user);
     }
 

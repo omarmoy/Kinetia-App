@@ -14,7 +14,7 @@ data class UiState(
 //    val user: User? = null,
 
     //Formulario inscripción
-    val formularioRegistro: MutableMap<String, String> = mutableMapOf(
+    val formSignUp: MutableMap<String, String> = mutableMapOf(
         "mail" to "",
         "password" to "",
         "rol" to "",
@@ -58,20 +58,6 @@ data class UiState(
 
     //Variables de Estado IU
     val selectedActivity: Activity? = null
-//        Activity(
-//        id = -1,
-//        title = "titulo",
-//        description = "",
-//        picture = "",
-//        userId = 0L,
-//        userName = "anunciante",
-//        date = LocalDateTime.now(),
-//        createdAt = Instant.now(),
-//        price = 0.0,
-//        location = "ubicación",
-//        category = Category.TODO,
-//        vacancies = 0
-//    )
     ,
     val advertisementSeleccionado: Advertisement = Advertisement(
         id = 0,
@@ -83,13 +69,13 @@ data class UiState(
         description = "",
         location = ""
     ),
-    val chatSeleccionado: Chat = Chat(0, "nombre", "R.drawable.nofoto", ArrayList()),
-    val categorySelecciononada: Category = Category.TODO,
+    val selectedChat: Chat = Chat(0, "nombre", "R.drawable.nofoto", ArrayList()),
+    val selectedCategory: Category = Category.TODO,
     val selectedPicture: Int = 0,
 
-    val mostrarPanelNavegacion: Boolean = false, //TODO gestionar
-    val botoneraNav: ArrayList<Boolean> = arrayListOf(true, false, false, false),
-    val modoPro: Boolean = true, //TODO gestionar
+    val showNavigationPanel: Boolean = false,
+    val buttonsNav: ArrayList<Boolean> = arrayListOf(true, false, false, false),
+    val proMode: Boolean = true,
 
     //Entradas de texto
     val messageSend: String = "",
@@ -106,7 +92,7 @@ data class UiState(
     fun isFavorite(activity: Activity): Boolean {
         if (user!!.activitiesFav.size == 0)
             return false
-        return user!!.activitiesFav.contains(activity)
+        return user.activitiesFav.contains(activity)
     }
 
 }

@@ -24,8 +24,8 @@ data class Activity(
     var category: Category,
     var featured: Boolean = false,
     var vacancies: Int,
-    var availableVacancies: Int = -1,
-    val reservations: ArrayList<Reservation> = ArrayList()
+    val reservations: ArrayList<Reservation> = ArrayList(),
+    var availableVacancies: Int = vacancies - reservations.size
 ){
 
 

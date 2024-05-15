@@ -16,12 +16,12 @@ data class User(
     val role: Role,
     val name: String,
     val surname: String,
-    val secondSurname: String = "",
+    val secondSurname: String? = "",
     @Serializable(with = LocalDateSerializer::class)
-    val birthDate: LocalDate,
+    val birthDate: LocalDate?,
     val profilePicture: String,
     val company: String = "",
-    val cif: String = "",
+    val cif: String? = "",
     val address: String = "",
 
     val advertisements: ArrayList<Advertisement> = ArrayList(),

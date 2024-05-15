@@ -9,7 +9,7 @@ public class SignUpRequest {
 
     @JsonProperty("email")
     private String email;
-    @JsonProperty("rol")
+    @JsonProperty("role")
     private RoleModel.RoleType role;
     @JsonProperty("password")
     private String password;
@@ -73,4 +73,23 @@ public class SignUpRequest {
     public String getPassword() {
         return password;
     }
+
+
+    @Override
+    public String toString() {
+        return "SignUpRequest{" +
+                "email='" + email + '\'' +
+                ", role=" + role +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", secondSurname='" + secondSurname + '\'' +
+                ", birthDate=" + birthDate +
+                ", profilePicture='" + profilePicture + '\'' +
+                ", company='" + company + '\'' +
+                ", cif='" + cif + '\'' +
+                ", address='" + address + '\'' +
+                '}';
+    }
 }
+

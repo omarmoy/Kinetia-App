@@ -1,4 +1,4 @@
-package com.dam2.proyectocliente.ui.registro
+package com.dam2.proyectocliente.ui.forms.signUp
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -43,8 +43,8 @@ import com.dam2.proyectocliente.models.Screens
 import com.dam2.proyectocliente.ui.resources.DialogInfo
 import com.dam2.proyectocliente.ui.resources.TextFieldWithHeader
 import com.dam2.proyectocliente.ui.resources.TextFieldEnterNumber
-import com.dam2.proyectocliente.utils.fechaNacimientoOK
-import com.dam2.proyectocliente.utils.texfieldVacio
+import com.dam2.proyectocliente.utils.isDateValid
+import com.dam2.proyectocliente.utils.textFieldEmpty
 import com.example.proyectocliente.ui.theme.AzulAguaOscuro
 import com.example.proyectocliente.ui.theme.BlancoFondo
 import com.example.proyectocliente.ui.theme.NegroClaro
@@ -54,17 +54,17 @@ import com.example.proyectocliente.ui.theme.NegroClaro
 @Composable
 fun NuevoUsuarioDatos(navController: NavHostController, vm: AppViewModel, estado: UiState) {
 
-    var nombre by rememberSaveable { mutableStateOf("") }
-    var apellido1 by rememberSaveable { mutableStateOf("") }
-    var apellido2 by rememberSaveable { mutableStateOf("") }
-    var diaT by rememberSaveable { mutableStateOf("") }
-    var mesT by rememberSaveable { mutableStateOf("") }
-    var anioT by rememberSaveable { mutableStateOf("") }
+    var name by rememberSaveable { mutableStateOf("") }
+    var surname by rememberSaveable { mutableStateOf("") }
+    var secondSurname by rememberSaveable { mutableStateOf("") }
+    var dayString by rememberSaveable { mutableStateOf("") }
+    var monthString by rememberSaveable { mutableStateOf("") }
+    var yearString by rememberSaveable { mutableStateOf("") }
     var error by rememberSaveable { mutableStateOf(false) }
 
-    var dia = diaT.toIntOrNull() ?: 0
-    var mes = mesT.toIntOrNull() ?: 0
-    var anio = anioT.toIntOrNull() ?: 0
+    var day = dayString.toIntOrNull() ?: 0
+    var month = monthString.toIntOrNull() ?: 0
+    var year = yearString.toIntOrNull() ?: 0
 
     Scaffold(
         topBar = {
@@ -90,17 +90,17 @@ fun NuevoUsuarioDatos(navController: NavHostController, vm: AppViewModel, estado
                     .background(BlancoFondo)
             ) {
                 TextButton(onClick = {
-                    if (texfieldVacio(arrayListOf(nombre, apellido1, diaT, mesT, anioT))
-                        || !fechaNacimientoOK(dia, mes, anio)
+                    if (textFieldEmpty(arrayListOf(name, surname, dayString, monthString, yearString))
+                        || !isDateValid(day, month, year)
                     ) {
                         error = true
                     } else {
-                        vm.addCampoFormularioRegistro("nombre", nombre)
-                        vm.addCampoFormularioRegistro("apellido1", apellido1)
-                        vm.addCampoFormularioRegistro("apellido2", apellido2)
-                        vm.addCampoFormularioRegistro("diaNac", diaT)
-                        vm.addCampoFormularioRegistro("mesNac", mesT)
-                        vm.addCampoFormularioRegistro("anioNac", anioT)
+                        vm.addFieldFormSignUp("nombre", name)
+                        vm.addFieldFormSignUp("apellido1", surname)
+                        vm.addFieldFormSignUp("apellido2", secondSurname)
+                        vm.addFieldFormSignUp("diaNac", dayString)
+                        vm.addFieldFormSignUp("mesNac", monthString)
+                        vm.addFieldFormSignUp("anioNac", yearString)
                         navController.navigate(Screens.addImagen.name)
                     }
 
@@ -135,17 +135,17 @@ fun NuevoUsuarioDatos(navController: NavHostController, vm: AppViewModel, estado
             ) {
 
                 TextFieldWithHeader(
-                    cabecera = "Nombre",
-                    value = nombre,
-                    onValueChange = { nombre = it })
+                    header = "Nombre",
+                    value = name,
+                    onValueChange = { name = it })
                 TextFieldWithHeader(
-                    cabecera = "Primer apellido",
-                    value = apellido1,
-                    onValueChange = { apellido1 = it })
+                    header = "Primer apellido",
+                    value = surname,
+                    onValueChange = { surname = it })
                 TextFieldWithHeader(
-                    cabecera = "Segundo apellido",
-                    value = apellido2,
-                    onValueChange = { apellido2 = it })
+                    header = "Segundo apellido",
+                    value = secondSurname,
+                    onValueChange = { secondSurname = it })
                 Text(
                     text = "Fecha de nacimiento",
                     color = NegroClaro,
@@ -157,40 +157,39 @@ fun NuevoUsuarioDatos(navController: NavHostController, vm: AppViewModel, estado
                 ) {
                     TextFieldEnterNumber(
                         label = "día",
-                        value = diaT,
-                        onValueChange = { diaT = it },
+                        value = dayString,
+                        onValueChange = { dayString = it },
                         modifier = Modifier
                             .width(60.dp)
                             .padding(end = 2.dp)
                     )
                     TextFieldEnterNumber(
                         label = "mes",
-                        value = mesT,
-                        onValueChange = { mesT = it },
+                        value = monthString,
+                        onValueChange = { monthString = it },
                         modifier = Modifier
                             .width(60.dp)
                             .padding(end = 2.dp)
                     )
                     TextFieldEnterNumber(
                         label = "año",
-                        value = anioT,
-                        onValueChange = { anioT = it },
+                        value = yearString,
+                        onValueChange = { yearString = it },
                         modifier = Modifier.width(80.dp), ImeAction.Done
                     )
                 }
 
-                Text(text = estado.formularioRegistro.toString(), color = Color.Red)
 
             }
 
             when {
                 error -> {
-                    if (texfieldVacio(arrayListOf(nombre, apellido1, diaT, mesT, anioT)))
+                    if (textFieldEmpty(arrayListOf(name, surname, dayString, monthString, yearString)))
                         DialogInfo(
                             onConfirmation = { error = false },
                             dialogText = "Todos los campos son obligatorios"
                         )
-                    else if (!fechaNacimientoOK(dia, mes, anio))
+                    else if (!isDateValid(day, month, year))
                         DialogInfo(
                             onConfirmation = { error = false },
                             dialogText = "Introduzca una fecha de nacimiento válida"

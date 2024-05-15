@@ -15,8 +15,10 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -56,13 +58,13 @@ import com.dam2.proyectocliente.ui.home.Login
 import com.dam2.proyectocliente.ui.menus.pro.SearchAdsMenu
 import com.dam2.proyectocliente.ui.menus.pro.ReservationMenu
 import com.dam2.proyectocliente.ui.menus.pro.MainMenuPro
-import com.dam2.proyectocliente.ui.registro.AddImagen
-import com.dam2.proyectocliente.ui.registro.ConfirmarRegistro
-import com.dam2.proyectocliente.ui.registro.ElegirRol
-import com.dam2.proyectocliente.ui.registro.ElegirTipoPro
-import com.dam2.proyectocliente.ui.registro.NuevaEmpresaDatos
-import com.dam2.proyectocliente.ui.registro.NuevoUsuarioDatos
-import com.dam2.proyectocliente.ui.registro.NuevoUsuario
+import com.dam2.proyectocliente.ui.forms.signUp.ChooiceAvatar
+import com.dam2.proyectocliente.ui.forms.signUp.ConfirmarRegistro
+import com.dam2.proyectocliente.ui.forms.signUp.ChooseRole
+import com.dam2.proyectocliente.ui.forms.signUp.ChooseTypePro
+import com.dam2.proyectocliente.ui.forms.signUp.CompanyData
+import com.dam2.proyectocliente.ui.forms.signUp.NuevoUsuarioDatos
+import com.dam2.proyectocliente.ui.forms.signUp.FormMailPassword
 import com.dam2.proyectocliente.ui.screens.pro.ViewActivityPro
 import com.dam2.proyectocliente.ui.screens.pro.ViewAdvertisementsPro
 import com.dam2.proyectocliente.ui.screens.pro.ActivityReserves
@@ -83,11 +85,26 @@ fun Navigation(
         topBar = {},
         content = { innerPadding -> Host(innerPadding, navController, vm, uiState) },
         bottomBar = {
-            if (uiState.modoPro)
+            if (uiState.proMode)
                 NavigationPanelPro(navController, vm, uiState)
             else
                 NavigationPanel(navController, vm, uiState)
+        },
+        floatingActionButtonPosition = FabPosition.Center,
+        floatingActionButton = {
+
+            if (vm.login) {
+                IconButton(onClick = { /*TODO*/ }) {
+                    Icon(
+                        imageVector = Icons.Filled.Refresh,
+                        contentDescription = "refresh",
+                        tint = if (uiState.buttonsNav[3]) AmarilloPastel else NegroClaro
+                    )
+
+                }
+            }
         }
+
     )
 }
 
@@ -104,19 +121,20 @@ fun Host(
         navController = navController,
         startDestination = Screens.inicio.name
     ) {
-        
+
         //Pantallas principales
         composable(route = Screens.afterLogging.name) {
             if (uiState.user != null) {
                 when (vm.userUiState) {
                     is UserUiState.Loading -> LoadingScreen(modifier = Modifier.fillMaxSize())
                     is UserUiState.Success -> {
-                        if (uiState.user.role == Role.PROVIDER && uiState.modoPro)
+                        if (uiState.user.role == Role.PROVIDER && uiState.proMode)
                             MainMenuPro(navController, vm, uiState)
                         else {
                             MainMenu(navController, vm, uiState)
                         }
                     }
+
                     is UserUiState.Error -> ErrorScreen(navController)
                 }
             } else
@@ -167,7 +185,7 @@ fun Host(
             ViewActivity(navController, uiState.selectedActivity!!, vm, uiState)
         }
         composable(route = Screens.chat.name) {
-            Chat(navController, uiState.chatSeleccionado, vm, uiState)
+            Chat(navController, uiState.selectedChat, vm, uiState)
         }
         composable(route = Screens.vistaAnuncio.name) {
             VistaAnuncio(navController, uiState.advertisementSeleccionado, vm)
@@ -183,25 +201,25 @@ fun Host(
 
         //Registro
         composable(route = Screens.elegirRol.name) {
-            ElegirRol(navController = navController, vm)
+            ChooseRole(navController = navController, vm)
         }
         composable(route = Screens.elegirTipoPro.name) {
-            ElegirTipoPro(navController = navController, vm)
+            ChooseTypePro(navController = navController, vm)
         }
         composable(route = Screens.nuevoUsuario.name) {
-            NuevoUsuario(navController = navController, vm, uiState)
+            FormMailPassword(navController = navController, vm, uiState)
         }
         composable(route = Screens.nuevoUsuarioDatos.name) {
             NuevoUsuarioDatos(navController = navController, vm, uiState)
         }
         composable(route = Screens.nuevaEmpresaDatos.name) {
-            NuevaEmpresaDatos(navController = navController, vm, uiState)
+            CompanyData(navController = navController, vm)
         }
         composable(route = Screens.addImagen.name) {
-            AddImagen(navController = navController, vm, uiState)
+            ChooiceAvatar(navController = navController, vm, uiState)
         }
         composable(route = Screens.confirmarRegistro.name) {
-            ConfirmarRegistro(navController = navController, vm, uiState)
+            ConfirmarRegistro(navController = navController)
         }
 
         //formularios y previstas Anuncio
@@ -260,7 +278,7 @@ fun Host(
 
 @Composable
 fun NavigationPanel(navController: NavHostController, vm: AppViewModel, uiState: UiState) {
-    if (uiState.mostrarPanelNavegacion) {
+    if (uiState.showNavigationPanel) {
         Box(
             modifier = Modifier
                 .background(Gris2)
@@ -283,7 +301,7 @@ fun NavigationPanel(navController: NavHostController, vm: AppViewModel, uiState:
                     Icon(
                         imageVector = Icons.Filled.Home,
                         contentDescription = "Inicio",
-                        tint = if (uiState.botoneraNav[0]) AmarilloPastel else NegroClaro
+                        tint = if (uiState.buttonsNav[0]) AmarilloPastel else NegroClaro
                     )
                 }
                 IconButton(onClick = {
@@ -294,7 +312,7 @@ fun NavigationPanel(navController: NavHostController, vm: AppViewModel, uiState:
                     Icon(
                         imageVector = Icons.Filled.Search,
                         contentDescription = "Buscar",
-                        tint = if (uiState.botoneraNav[1]) AmarilloPastel else NegroClaro
+                        tint = if (uiState.buttonsNav[1]) AmarilloPastel else NegroClaro
                     )
                 }
 
@@ -305,7 +323,7 @@ fun NavigationPanel(navController: NavHostController, vm: AppViewModel, uiState:
                     Icon(
                         imageVector = Icons.Filled.MailOutline,
                         contentDescription = "Mensajes",
-                        tint = if (uiState.botoneraNav[2]) AmarilloPastel else NegroClaro
+                        tint = if (uiState.buttonsNav[2]) AmarilloPastel else NegroClaro
                     )
                 }
                 IconButton(onClick = {
@@ -315,7 +333,7 @@ fun NavigationPanel(navController: NavHostController, vm: AppViewModel, uiState:
                     Icon(
                         imageVector = Icons.Filled.AccountCircle,
                         contentDescription = "Mi Cuenta",
-                        tint = if (uiState.botoneraNav[3]) AmarilloPastel else NegroClaro
+                        tint = if (uiState.buttonsNav[3]) AmarilloPastel else NegroClaro
                     )
                 }
             }
@@ -325,7 +343,7 @@ fun NavigationPanel(navController: NavHostController, vm: AppViewModel, uiState:
 
 @Composable
 fun NavigationPanelPro(navController: NavHostController, vm: AppViewModel, uiState: UiState) {
-    if (uiState.mostrarPanelNavegacion) {
+    if (uiState.showNavigationPanel) {
         Box(
             modifier = Modifier
                 .background(Gris2)
@@ -347,7 +365,7 @@ fun NavigationPanelPro(navController: NavHostController, vm: AppViewModel, uiSta
                     Icon(
                         imageVector = Icons.Filled.Menu,
                         contentDescription = "Menú principal Pro",
-                        tint = if (uiState.botoneraNav[0]) AmarilloPastel else NegroClaro
+                        tint = if (uiState.buttonsNav[0]) AmarilloPastel else NegroClaro
                     )
                 }
                 IconButton(onClick = {
@@ -357,7 +375,7 @@ fun NavigationPanelPro(navController: NavHostController, vm: AppViewModel, uiSta
                     Icon(
                         imageVector = Icons.Filled.DateRange,
                         contentDescription = "Reservas",
-                        tint = if (uiState.botoneraNav[1]) AmarilloPastel else NegroClaro
+                        tint = if (uiState.buttonsNav[1]) AmarilloPastel else NegroClaro
                     )
                 }
 
@@ -368,7 +386,7 @@ fun NavigationPanelPro(navController: NavHostController, vm: AppViewModel, uiSta
                     Icon(
                         imageVector = Icons.Filled.MailOutline,
                         contentDescription = "Mensajes",
-                        tint = if (uiState.botoneraNav[2]) AmarilloPastel else NegroClaro
+                        tint = if (uiState.buttonsNav[2]) AmarilloPastel else NegroClaro
                     )
                 }
                 IconButton(onClick = {
@@ -378,7 +396,7 @@ fun NavigationPanelPro(navController: NavHostController, vm: AppViewModel, uiSta
                     Icon(
                         imageVector = Icons.Filled.Search,
                         contentDescription = "buscar",
-                        tint = if (uiState.botoneraNav[3]) AmarilloPastel else NegroClaro
+                        tint = if (uiState.buttonsNav[3]) AmarilloPastel else NegroClaro
                     )
                 }
             }

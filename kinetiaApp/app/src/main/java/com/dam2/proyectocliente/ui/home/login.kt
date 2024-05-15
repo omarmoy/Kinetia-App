@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -78,7 +80,8 @@ fun Login(navController: NavHostController, vm: AppViewModel) {
                 modifier = Modifier
                     .fillMaxSize()
                     .background(BlancoFondo)
-                    .padding(40.dp),
+                    .padding(40.dp)
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -96,7 +99,6 @@ fun Login(navController: NavHostController, vm: AppViewModel) {
                     onValueChange = { email = it },
                     singleLine = true,
                     label = { Text(text = "introduce tu correo electrónico") },
-                    //leadingIcon = { Icon(painter = painterResource(id = R.drawable.money), contentDescription = null) },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next  //tipo de botón
@@ -124,7 +126,6 @@ fun Login(navController: NavHostController, vm: AppViewModel) {
 
                 Button(
                     onClick = {
-                        //TODO
                         vm.login(email, password)
                         navController.navigate(Screens.afterLogging.name)
                     },

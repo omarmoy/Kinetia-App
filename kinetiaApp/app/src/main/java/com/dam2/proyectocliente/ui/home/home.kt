@@ -83,7 +83,7 @@ fun Home(navController: NavHostController) {
                 )
 
 
-                Spacer(modifier = Modifier.height(180.dp))
+                Spacer(modifier = Modifier.height(160.dp))
 
                 OutlinedButton(
                     onClick = { navController.navigate(Screens.elegirRol.name) },

@@ -51,8 +51,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dam2.proyectocliente.AppViewModel
-import com.dam2.proyectocliente.utils.texfieldVacio
-import com.dam2.proyectocliente.utils.validarFechaActividad
+import com.dam2.proyectocliente.utils.textFieldEmpty
+import com.dam2.proyectocliente.utils.isDateActivityValid
 import com.dam2.proyectocliente.models.Category
 import com.dam2.proyectocliente.models.Screens
 import com.dam2.proyectocliente.ui.UiState
@@ -177,12 +177,12 @@ fun FormActivity(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 TextFieldWithHeader(
-                    cabecera = "Título",
+                    header = "Título",
                     value = titulo,
                     onValueChange = { titulo = it }
                 )
                 TextFieldWithHeader(
-                    cabecera = "Ubicación",
+                    header = "Ubicación",
                     value = ubicacion,
                     onValueChange = { ubicacion = it }
                 )
@@ -433,9 +433,9 @@ fun BottomBarCA(
                 .background(BlancoFondo)
         ) {
             TextButton(onClick = {
-                if (texfieldVacio(fields))
+                if (textFieldEmpty(fields))
                     setError("campoVacio")
-                else if (!validarFechaActividad(day, month, year))
+                else if (!isDateActivityValid(day, month, year))
                     setError("fecha")
                 else if (precioT.toDoubleOrNull() == null)
                     setError("precioNoInt")

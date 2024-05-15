@@ -18,6 +18,7 @@ import com.dam2.proyectocliente.network.request.Login
 import com.dam2.proyectocliente.repositories.ActivityRepository
 import com.dam2.proyectocliente.repositories.AdvertisementRepository
 import com.dam2.proyectocliente.repositories.MessageRepository
+import com.dam2.proyectocliente.repositories.SignUpRepository
 import com.dam2.proyectocliente.ui.UiState
 import com.dam2.proyectocliente.utils.Painter
 import com.dam2.proyectocliente.utils.buscarActividad
@@ -44,6 +45,11 @@ class AppViewModel : ViewModel() {
     var userUiState: UserUiState by mutableStateOf(UserUiState.Loading)
         private set
 
+    var userPass: String by mutableStateOf("")
+        private set
+
+    var login: Boolean by mutableStateOf(false)
+
     private val activityRepository = ActivityRepository()
     private val messageRepository = MessageRepository()
     private val adRepository = AdvertisementRepository()
@@ -62,12 +68,28 @@ class AppViewModel : ViewModel() {
                     consumerMode()
                 setActivities(loginRepository.getActivities(user!!.id))
                 setUser(user)
+                userPass=password
+                login = true
                 mostrarPanelNavegacion()
                 UserUiState.Success(user)
             } catch (e: Exception) {
                 UserUiState.Error
             }
         }
+    }
+
+    suspend fun refresh(){
+            try {
+                val loginRepository = LoginRepository()
+                val user = loginRepository.login(Login(_uiState.value.user!!.email, userPass))
+                if (user != null && user.role == Role.PROVIDER) {
+                    setAdvertisement(loginRepository.getAdvertisements(user.id))
+                }
+                setActivities(loginRepository.getActivities(user!!.id))
+                setUser(user)
+            } catch (e: Exception) {
+
+            }
     }
 
     private fun setUser(user: User?) {
@@ -93,12 +115,7 @@ class AppViewModel : ViewModel() {
     /**
      * FORMULARIO REGISTRO
      */
-//    fun nuevoUsuario(campo: String, valor: String){
-//        var usuario = _uiState.value.usuarioResitro
-//        usuario[campo] = valor
-//        _uiState.update { e -> e.copy(usuarioResitro = usuario) }
-//
-//    }
+
 
     fun setIsCompany(isCompany: Boolean) {
         _uiState.update { e ->
@@ -106,8 +123,25 @@ class AppViewModel : ViewModel() {
         }
     }
 
-    fun addCampoFormularioRegistro(campo: String, valor: String) {
-        _uiState.value.formularioRegistro[campo] = valor
+    fun addFieldFormSignUp(field: String, value: String) {
+        _uiState.value.formSignUp[field] = value
+    }
+
+    suspend fun verifyField(value: String): Boolean {
+        val signUpRepository = SignUpRepository()
+        return signUpRepository.existField(value)
+    }
+
+    suspend fun signUp(): Boolean {
+        val signUpRepository = SignUpRepository()
+        val result = signUpRepository.signUp(
+            _uiState.value.formSignUp, _uiState.value.selectedPicture
+        )
+
+        if(result)
+            setPicture(0)
+
+        return result
     }
 
 
@@ -137,7 +171,7 @@ class AppViewModel : ViewModel() {
     }
 
     fun selectCategoria(c: Category) {
-        _uiState.update { e -> e.copy(categorySelecciononada = c) }
+        _uiState.update { e -> e.copy(selectedCategory = c) }
     }
 
     fun setIndiceCategoria(c: Category? = null) {
@@ -158,11 +192,11 @@ class AppViewModel : ViewModel() {
             uiState.value.activities
         }
 
-        return if (uiState.value.categorySelecciononada == Category.TODO)
+        return if (uiState.value.selectedCategory == Category.TODO)
             listaActividades
         else
             ArrayList(listaActividades.filter {
-                it.category == uiState.value.categorySelecciononada
+                it.category == uiState.value.selectedCategory
             })
     }
 
@@ -325,16 +359,16 @@ class AppViewModel : ViewModel() {
     MENSAJES
      */
     fun selectContacto(c: Chat) {
-        _uiState.update { e -> e.copy(chatSeleccionado = c) }
+        _uiState.update { e -> e.copy(selectedChat = c) }
         if (c.newMessage) {
             messageRead()
         }
     }
 
     private fun messageRead() {
-        _uiState.value.user!!.messageRead(_uiState.value.chatSeleccionado)
+        _uiState.value.user!!.messageRead(_uiState.value.selectedChat)
         viewModelScope.launch {
-            val chat = _uiState.value.chatSeleccionado
+            val chat = _uiState.value.selectedChat
             for (message in chat.messages) {
                 if (message.sender != _uiState.value.user!!.id && !message.isRead)
                     messageRepository.messageRead(message.id!!)
@@ -353,7 +387,7 @@ class AppViewModel : ViewModel() {
             recipient = recipientId,
             content = _uiState.value.messageSend
         )
-        _uiState.value.user!!.addMensaje(_uiState.value.chatSeleccionado, newMessage)
+        _uiState.value.user!!.addMensaje(_uiState.value.selectedChat, newMessage)
         _uiState.update { e -> e.copy(messageSend = "") }
 
         viewModelScope.launch {
@@ -412,22 +446,22 @@ class AppViewModel : ViewModel() {
      */
 
     fun mostrarPanelNavegacion() {
-        _uiState.update { e -> e.copy(mostrarPanelNavegacion = true) }
+        _uiState.update { e -> e.copy(showNavigationPanel = true) }
     }
 
     fun ocultarPanelNavegacion() {
-        _uiState.update { e -> e.copy(mostrarPanelNavegacion = false) }
+        _uiState.update { e -> e.copy(showNavigationPanel = false) }
     }
 
     fun cambiarBotonNav(botonPulsado: Int) {
         val nuevoEstadoBotones = arrayListOf<Boolean>()
-        for (i in 0 until _uiState.value.botoneraNav.size) {
+        for (i in 0 until _uiState.value.buttonsNav.size) {
             if (i == botonPulsado)
                 nuevoEstadoBotones.add(true)
             else
                 nuevoEstadoBotones.add(false)
         }
-        _uiState.update { e -> e.copy(botoneraNav = nuevoEstadoBotones) }
+        _uiState.update { e -> e.copy(buttonsNav = nuevoEstadoBotones) }
     }
 
     /**
@@ -455,18 +489,18 @@ class AppViewModel : ViewModel() {
     FUNCIONALIDADES
      */
     fun changeMode(): Boolean {
-        val mode = !uiState.value.modoPro
-        _uiState.update { e -> e.copy(modoPro = mode) }
+        val mode = !uiState.value.proMode
+        _uiState.update { e -> e.copy(proMode = mode) }
         return mode
     }
 
     fun consumerMode() {
-        val mode = !uiState.value.modoPro
-        _uiState.update { e -> e.copy(modoPro = false) }
+        val mode = !uiState.value.proMode
+        _uiState.update { e -> e.copy(proMode = false) }
     }
 
     fun resetMode() {
-        _uiState.update { e -> e.copy(modoPro = true) }
+        _uiState.update { e -> e.copy(proMode = true) }
     }
 
     /**
@@ -490,7 +524,6 @@ class AppViewModel : ViewModel() {
             )
         _uiState.update { e -> e.copy(newAdvertisement = advertisement) }
     }
-
 
 
     fun selectModAdvertisement(advertisement: Advertisement) {

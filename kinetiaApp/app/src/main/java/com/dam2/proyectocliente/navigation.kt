@@ -23,8 +23,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -65,6 +69,8 @@ import com.dam2.proyectocliente.ui.forms.signUp.ChooseTypePro
 import com.dam2.proyectocliente.ui.forms.signUp.CompanyData
 import com.dam2.proyectocliente.ui.forms.signUp.NuevoUsuarioDatos
 import com.dam2.proyectocliente.ui.forms.signUp.FormMailPassword
+import com.dam2.proyectocliente.ui.menus.DeleteUser
+import com.dam2.proyectocliente.ui.resources.LoandigDialogo
 import com.dam2.proyectocliente.ui.screens.pro.ViewActivityPro
 import com.dam2.proyectocliente.ui.screens.pro.ViewAdvertisementsPro
 import com.dam2.proyectocliente.ui.screens.pro.ActivityReserves
@@ -81,6 +87,9 @@ fun Navigation(
     vm: AppViewModel = viewModel()
 ) {
     val uiState by vm.uiState.collectAsState()
+    var loandig by rememberSaveable { mutableStateOf(false) }
+    var refresh by rememberSaveable { mutableStateOf(false) }
+
     Scaffold(
         topBar = {},
         content = { innerPadding -> Host(innerPadding, navController, vm, uiState) },
@@ -93,12 +102,15 @@ fun Navigation(
         floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
 
-            if (vm.login) {
-                IconButton(onClick = { /*TODO*/ }) {
+            if (vm.login && uiState.showNavigationPanel) {
+                IconButton(onClick = {
+                    loandig = true
+                    refresh = true
+                }) {
                     Icon(
                         imageVector = Icons.Filled.Refresh,
                         contentDescription = "refresh",
-                        tint = if (uiState.buttonsNav[3]) AmarilloPastel else NegroClaro
+                        tint = NegroClaro
                     )
 
                 }
@@ -106,6 +118,21 @@ fun Navigation(
         }
 
     )
+
+    if(loandig){
+        LoandigDialogo()
+    }
+
+    if(refresh){
+        LaunchedEffect(Unit) {
+            loandig = vm.refresh()
+            refresh=false
+            // Navega de nuevo a la pantalla actual para forzar un refresco
+            navController.currentBackStackEntry?.destination?.route?.let {
+                navController.navigate(it)
+            }
+        }
+    }
 }
 
 @Composable
@@ -128,7 +155,8 @@ fun Host(
                 when (vm.userUiState) {
                     is UserUiState.Loading -> LoadingScreen(modifier = Modifier.fillMaxSize())
                     is UserUiState.Success -> {
-                        if (uiState.user.role == Role.PROVIDER && uiState.proMode)
+                        vm.cambiarBotonNav(0)
+                        if (uiState.user!!.role == Role.PROVIDER)
                             MainMenuPro(navController, vm, uiState)
                         else {
                             MainMenu(navController, vm, uiState)
@@ -163,7 +191,6 @@ fun Host(
 
         //SubPantallas
         composable(route = Screens.listaReservas.name) {
-            //TODO: falta funcionalidad reservas
             ListActivities(
                 "Mis reservas",
                 uiState.user!!.activitiesReserved,
@@ -272,6 +299,9 @@ fun Host(
         composable(route = Screens.selectProfilePicture.name) {
             SelectPicture(navController, vm, Painter.profilePictures)
         }
+        composable(route = Screens.deleteuser.name) {
+            DeleteUser(navController, vm)
+        }
 
     }
 }
@@ -295,7 +325,7 @@ fun NavigationPanel(navController: NavHostController, vm: AppViewModel, uiState:
             ) {
                 IconButton(onClick = {
                     vm.cambiarBotonNav(0)
-                    vm.setIndiceCategoria()
+                    vm.setCategoryIndex()
                     navController.navigate(Screens.menuPrincipal.name)
                 }) {
                     Icon(
@@ -306,7 +336,7 @@ fun NavigationPanel(navController: NavHostController, vm: AppViewModel, uiState:
                 }
                 IconButton(onClick = {
                     vm.cambiarBotonNav(1)
-                    vm.selectCategoria(Category.TODO)
+                    vm.selectCategory(Category.TODO)
                     navController.navigate(Screens.menuBuscar.name)
                 }) {
                     Icon(
@@ -406,9 +436,10 @@ fun NavigationPanelPro(navController: NavHostController, vm: AppViewModel, uiSta
 
 @Preview(showBackground = true)
 @Composable
-fun BarraPreview() {
+fun NavigationPanelPreview() {
     val navController = rememberNavController()
     val vm: AppViewModel = viewModel()
     val uiState by vm.uiState.collectAsState()
-    NavigationPanelPro(navController, vm, uiState)
+//    NavigationPanelPro(navController, vm, uiState)
+    NavigationPanel(navController, vm, uiState)
 }

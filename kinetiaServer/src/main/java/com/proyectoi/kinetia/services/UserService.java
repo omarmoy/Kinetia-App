@@ -1,10 +1,12 @@
 package com.proyectoi.kinetia.services;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
 import com.proyectoi.kinetia.api.request.SignUpRequest;
+import com.proyectoi.kinetia.domain.Reservation;
 import com.proyectoi.kinetia.domain.SimpleUser;
 import com.proyectoi.kinetia.domain.User;
 import com.proyectoi.kinetia.models.*;
@@ -17,15 +19,18 @@ public class UserService {
     private final IUserRepository userRepository;
     private final IRolRepository rolRepository;
     private final IActivityRepository activityRepository;
+    private final IMessageRepository messageRepository;
 
     public UserService(
             IUserRepository userRepository,
             IRolRepository rolRepository,
-            IActivityRepository activityRepository
+            IActivityRepository activityRepository,
+            IMessageRepository messageRepository
     ) {
         this.userRepository = userRepository;
         this.rolRepository = rolRepository;
         this.activityRepository = activityRepository;
+        this.messageRepository = messageRepository;
     }
 
     public List<SimpleUser> getAll() {
@@ -81,7 +86,6 @@ public class UserService {
     }
 
     public Boolean updateUser(UserModel user) {
-        //TODO: falta fronted, y creo que así borra todo los datos de las listas?¿?
         Optional<UserModel> optional = userRepository.findById(user.getId());
         if (optional.isPresent()) {
             userRepository.save(user);
@@ -90,14 +94,47 @@ public class UserService {
         return false;
     }
 
+    //TODO: EN ELLO
     public Boolean deleteUser(Long id) {
         try {
-            Optional<UserModel> userOptional = userRepository.findById(id);
-            if (userOptional.isPresent()) {
-                userRepository.delete(userOptional.get());
-                return true;
+            UserModel user = userRepository.findById(id).orElseThrow();
+
+            //delete messages
+            for (MessageModel m : user.getReceivedMessages()) {
+                messageRepository.deleteById(m.getId());
             }
-        } catch (Exception ignored) {
+            for (MessageModel m : user.getSentMessages()) {
+                messageRepository.deleteById(m.getId());
+            }
+
+            //cancel activities reserved
+            for (ActivityModel activityReserved : user.getActivitiesReserved()) {
+                for (UserModel u : activityReserved.getReservations()) {
+                    activityReserved.cancelReservation(u);
+                }
+                activityRepository.save(activityReserved);
+            }
+
+            //delete reservations and fav of activities offered
+            for (ActivityModel activityOffered : user.getActivitiesOffered()) {
+                for (UserModel u : activityOffered.getReservations()) {
+                    activityOffered.cancelReservation(u);
+                }
+
+                for (UserModel uFav : activityOffered.getUsersWhoFav()) {
+                    deleteFav(uFav.getId(), activityOffered.getId());
+                }
+                activityRepository.save(activityOffered);
+            }
+
+            //delete activities fav
+            user.getActivitiesFav().clear();
+
+            userRepository.delete(user);
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return false;

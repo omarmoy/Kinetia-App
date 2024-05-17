@@ -14,6 +14,7 @@ import com.dam2.proyectocliente.models.Message
 import com.dam2.proyectocliente.models.Reservation
 import com.dam2.proyectocliente.models.Role
 import com.dam2.proyectocliente.models.User
+import com.dam2.proyectocliente.moker.Moker
 import com.dam2.proyectocliente.network.request.Login
 import com.dam2.proyectocliente.repositories.ActivityRepository
 import com.dam2.proyectocliente.repositories.AdvertisementRepository
@@ -53,15 +54,16 @@ class AppViewModel : ViewModel() {
     private val activityRepository = ActivityRepository()
     private val messageRepository = MessageRepository()
     private val adRepository = AdvertisementRepository()
+    private val loginRepository = LoginRepository()
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
             userUiState = UserUiState.Loading
             userUiState = try {
-                val loginRepository = LoginRepository()
+//                val loginRepository = LoginRepository()
                 val user = loginRepository.login(Login(email, password))
                 if (user != null && user.role == Role.PROVIDER) {
-                    setAdvertisement(loginRepository.getAdvertisements(user.id))
+                    setAdvertisements(loginRepository.getAdvertisements(user.id))
                     if (user.company != null || user.company != "")
                         setIsCompany(true)
                 } else
@@ -75,32 +77,45 @@ class AppViewModel : ViewModel() {
             } catch (e: Exception) {
                 UserUiState.Error
             }
+
         }
     }
 
-    suspend fun refresh(){
-            try {
-                val loginRepository = LoginRepository()
-                val user = loginRepository.login(Login(_uiState.value.user!!.email, userPass))
-                if (user != null && user.role == Role.PROVIDER) {
-                    setAdvertisement(loginRepository.getAdvertisements(user.id))
-                }
-                setActivities(loginRepository.getActivities(user!!.id))
-                setUser(user)
-            } catch (e: Exception) {
-
+    suspend fun refresh(): Boolean{
+        return try {
+//            val loginRepository = LoginRepository()
+            val user = loginRepository.login(Login(_uiState.value.user!!.email, userPass))
+            if (user != null && user.role == Role.PROVIDER) {
+                setAdvertisements(loginRepository.getAdvertisements(user.id))
             }
+            setActivities(loginRepository.getActivities(user!!.id))
+            setUser(Moker.user)
+            setUser(user)
+            false
+        } catch (e: Exception) {
+            false
+        }
     }
+
+    fun deleteUser(){
+        viewModelScope.launch {
+            loginRepository.deleteUser(_uiState.value.user!!.id)
+            setUser(Moker.user)
+        }
+    }
+
+
 
     private fun setUser(user: User?) {
         _uiState.value = _uiState.value.copy(user = user)
+//        _uiState.value.user = user
     }
 
     private fun setActivities(activities: ArrayList<Activity>) {
         _uiState.value = _uiState.value.copy(activities = activities)
     }
 
-    private fun setAdvertisement(advertisements: ArrayList<Advertisement>) {
+    private fun setAdvertisements(advertisements: ArrayList<Advertisement>) {
         _uiState.value = _uiState.value.copy(advertisements = advertisements)
     }
 
@@ -167,24 +182,25 @@ class AppViewModel : ViewModel() {
     fun selectActivity(a: Activity) {
         _uiState.update { e -> e.copy(selectedActivity = a) }
 //            _uiState.value = _uiState.value.copy(selectedActivity = a)
+//        _uiState.value.selectedActivity = a
 
     }
 
-    fun selectCategoria(c: Category) {
+    fun selectCategory(c: Category) {
         _uiState.update { e -> e.copy(selectedCategory = c) }
     }
 
-    fun setIndiceCategoria(c: Category? = null) {
-        val indice =
+    fun setCategoryIndex(c: Category? = null) {
+        val index =
             if (c != null) {
                 uiState.value.categories.indexOf(c)
             } else {
                 0
             }
-        _uiState.update { e -> e.copy(indiceCategoria = indice) }
+        _uiState.update { e -> e.copy(indiceCategoria = index) }
     }
 
-    fun listaActividades(): ArrayList<Activity> {
+    fun activitiesList(): ArrayList<Activity> {
 
         val listaActividades = if (uiState.value.activitySearched != "") {
             resultadoBusquedaActividad()
@@ -256,7 +272,7 @@ class AppViewModel : ViewModel() {
             availableVacancies = activity.availableVacancies,
             reservations = activity.reservations.clone() as ArrayList<Reservation>
         )
-        println(editedActivity)
+
         viewModelScope.launch {
             val result = activityRepository.edit(editedActivity)
             if (result)
@@ -333,7 +349,8 @@ class AppViewModel : ViewModel() {
             userName = _uiState.value.user!!.fullName(),
             picture = Painter.getActivityPictureName(_uiState.value.selectedPicture)
         )
-        _uiState.update { e -> e.copy(newActivity = activity) }
+//        _uiState.update { e -> e.copy(newActivity = activity) }
+        _uiState.value.newActivity = activity
     }
 
     fun postActivity() {
@@ -589,6 +606,7 @@ class AppViewModel : ViewModel() {
      */
     fun reserveActivity(activity: Activity) {
         _uiState.value.user!!.reserveActivity(activity)
+        activity.consumerAddReservation()
         viewModelScope.launch {
             activityRepository.reserve(_uiState.value.user!!.id, activity.id!!)
         }
@@ -596,6 +614,7 @@ class AppViewModel : ViewModel() {
 
     fun cancelReservation(activity: Activity) {
         _uiState.value.user!!.cancelReservation(activity)
+        activity.consumerCancelReservation()
         viewModelScope.launch {
             activityRepository.cancelReserve(_uiState.value.user!!.id, activity.id!!)
         }

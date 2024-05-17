@@ -113,7 +113,7 @@ data class User(
     RESERVAS MODO PRO
      */
     fun cancelReservation(activity: Activity, reservation: Reservation){
-        activity.removeReservation(reservation)
+        activity.proRemoveReservation(reservation)
         this.activitiesOffered.remove(activity)
         this.activitiesOffered.add(activity)
     }

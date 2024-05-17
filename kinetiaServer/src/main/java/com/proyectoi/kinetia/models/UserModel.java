@@ -39,7 +39,7 @@ public class UserModel {
     @Column
     private String address;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<ActivityModel> activitiesOffered = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -56,10 +56,10 @@ public class UserModel {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<AdvertisementModel> advertisements = new ArrayList<>();
 
-    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "sender")
     private List<MessageModel> sentMessages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "receiver")
     private List<MessageModel> receivedMessages = new ArrayList<>();
 
     public UserModel() {}

@@ -43,6 +43,7 @@ fun DropdownConfig(
                     Icon(imageVector = Icons.Filled.Refresh, contentDescription = "modo")
                 },
                 onClick = {
+                    vm.cambiarBotonNav(0)
                     if (vm.changeMode())
                         navController.navigate(Screens.menuPrincipalPro.name)
                     else
@@ -50,12 +51,13 @@ fun DropdownConfig(
                 })
         }
         DropdownMenuItem(
-            text = { Text(text = "Editar perfil") },
+            text = { Text(text = "Borrar cuenta") },
             trailingIcon = {
                 Icon(imageVector = Icons.Filled.AccountBox, contentDescription = "edit")
             },
             onClick = {
-                /*TODO: editar perfil*/
+                vm.ocultarPanelNavegacion()
+                navController.navigate(Screens.deleteuser.name)
             })
         DropdownMenuItem(
             text = { Text(text = "Cerrar sesión") },

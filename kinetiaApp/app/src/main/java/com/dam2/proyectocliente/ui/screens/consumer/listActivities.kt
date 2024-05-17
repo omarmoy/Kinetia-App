@@ -245,7 +245,7 @@ fun ListPreview() {
     val uiState by vm.uiState.collectAsState()
     ListActivities(
         title = "Mis reservas",
-        listActivities = vm.listaActividades(),
+        listActivities = vm.activitiesList(),
         navController = navController,
         vm = vm,
         uiState = uiState

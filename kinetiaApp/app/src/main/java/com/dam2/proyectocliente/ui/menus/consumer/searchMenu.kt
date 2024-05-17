@@ -173,8 +173,8 @@ fun ContentSearch(
 
         LazyColumn(state = listState) {
             item { Categories(navController, vm, uiState) } //función definida en menuPrincipal
-            if (vm.listaActividades().size > 0) {
-                items(vm.listaActividades()) { a ->
+            if (vm.activitiesList().size > 0) {
+                items(vm.activitiesList()) { a ->
                     ActivitySearch(
                         a,
                         vm,

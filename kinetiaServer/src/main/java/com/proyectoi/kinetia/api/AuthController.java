@@ -45,8 +45,6 @@ public class AuthController {
         return userService.verify(verifyRequest.getValue());
     }
 
-    //TODO: moficiar usuario, cuando se pueda desde el front
-
     @DeleteMapping(path = "/{userId}")
     public Boolean deleteUser(@PathVariable Long userId) {
         return userService.deleteUser(userId);
@@ -68,13 +66,11 @@ public class AuthController {
 
     @PostMapping(path = "/reservation")
     public Boolean reserveActivity(@RequestBody UserActivityRequest reservationRequest) {
-        //TODO: avisar al otro usuario
         return userService.addReservation(reservationRequest.getUserId(), reservationRequest.getActivityId());
     }
 
     @DeleteMapping(path = "/reservation")
     public Boolean cancelReservation(@RequestBody UserActivityRequest reservationRequest) {
-        //TODO: avisar al otro usuario, dependiéndo de quién cancele, ofertante o consumidor
         return userService.cancelReservation(reservationRequest.getUserId(), reservationRequest.getActivityId());
     }
 

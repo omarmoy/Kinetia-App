@@ -57,7 +57,7 @@ data class UiState(
     val indiceCategoria: Int = 0,
 
     //Variables de Estado IU
-    val selectedActivity: Activity? = null
+    var selectedActivity: Activity? = null
     ,
     val advertisementSeleccionado: Advertisement = Advertisement(
         id = 0,

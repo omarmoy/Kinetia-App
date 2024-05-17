@@ -83,7 +83,7 @@ public class ActivityModel {
     @Column(nullable = false)
     private int vacancies;
 
-    @ManyToMany(mappedBy = "activitiesFav", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "activitiesFav", fetch = FetchType.LAZY)
     private Set<UserModel> usersWhoFav = new HashSet<>();
 
 

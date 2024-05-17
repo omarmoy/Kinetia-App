@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -14,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.proyectocliente.R
@@ -39,11 +41,14 @@ fun ErrorScreen(navController: NavHostController, modifier: Modifier = Modifier)
         Image(
             painter = painterResource(id = R.drawable.ic_connection_error), contentDescription = ""
         )
-        Text(text = "", modifier = Modifier.padding(16.dp))
+        Text(
+            text = "Ha ocurrido un error. Compruebe sus credenciales y/o su conexión",
+            modifier = Modifier.padding(16.dp).fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
 
         Button(
             onClick = {
-
                 navController.navigateUp()
             },
             colors = ButtonDefaults.buttonColors(AzulAguaOscuro),

@@ -132,8 +132,8 @@ fun TopBarMain(navController: NavHostController, vm: AppViewModel, uiState: UiSt
             //Spacer(modifier = Modifier.width(12.dp))
             IconButton(onClick = {
                 vm.cambiarBotonNav(1)
-                vm.setIndiceCategoria()
-                vm.selectCategoria(Category.TODO)
+                vm.setCategoryIndex()
+                vm.selectCategory(Category.TODO)
                 navController.navigate(Screens.menuBusquedaDirecta.name)
             }) {
                 Icon(
@@ -240,10 +240,10 @@ fun Categories(
                     Spacer(modifier = Modifier.width(12.dp))
                     Button(
                         onClick = {
-                            vm.selectCategoria(categoria)
+                            vm.selectCategory(categoria)
                             if (uiState.buttonsNav[0]) {
                                 vm.cambiarBotonNav(1)
-                                vm.setIndiceCategoria(categoria)
+                                vm.setCategoryIndex(categoria)
                                 navController.navigate(Screens.menuBuscar.name)
                             }
                         },

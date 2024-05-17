@@ -22,7 +22,6 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                     Navigation()
-//                    FormularioActividad()
                 }
             }
         }

@@ -55,8 +55,8 @@ import com.example.proyectocliente.ui.theme.NegroClaro
 @Composable
 fun Login(navController: NavHostController, vm: AppViewModel) {
 
-    var email by rememberSaveable { mutableStateOf("juan@correo.es") }
-    var password by rememberSaveable { mutableStateOf("juan") }
+    var email by rememberSaveable { mutableStateOf("pablo@correo.es") }
+    var password by rememberSaveable { mutableStateOf("pablo") }
 
     Scaffold(
         topBar = {

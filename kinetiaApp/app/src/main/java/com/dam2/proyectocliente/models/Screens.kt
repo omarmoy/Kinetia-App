@@ -39,5 +39,9 @@ enum class Screens {
     vistaAnuncio,
     chat,
     listaReservas,
-    listaFavoritos
+    listaFavoritos,
+
+    deleteuser
+
+
 }

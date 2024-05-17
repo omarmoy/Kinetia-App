@@ -16,6 +16,10 @@ class LoginRepository {
         }
     }
 
+    suspend fun deleteUser(userId: Long) {
+        LoginApi.retrofitService.deleteUser(userId)
+    }
+
     suspend fun getActivities(userId: Long): ArrayList<Activity>{
         return try {
             LoginApi.retrofitService.getActivities(userId)

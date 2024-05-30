@@ -156,7 +156,7 @@ fun Host(
                     is UserUiState.Loading -> LoadingScreen(modifier = Modifier.fillMaxSize())
                     is UserUiState.Success -> {
                         vm.cambiarBotonNav(0)
-                        if (uiState.user!!.role == Role.PROVIDER)
+                        if (uiState.user.role == Role.PROVIDER)
                             MainMenuPro(navController, vm, uiState)
                         else {
                             MainMenu(navController, vm, uiState)

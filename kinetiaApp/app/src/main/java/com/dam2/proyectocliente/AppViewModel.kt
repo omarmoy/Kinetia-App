@@ -375,7 +375,7 @@ class AppViewModel : ViewModel() {
     /**
     MENSAJES
      */
-    fun selectContacto(c: Chat) {
+    fun selectContact(c: Chat) {
         _uiState.update { e -> e.copy(selectedChat = c) }
         if (c.newMessage) {
             messageRead()
@@ -393,7 +393,7 @@ class AppViewModel : ViewModel() {
         }
     }
 
-    fun setMensaje(mensaje: String) {
+    fun setMessage(mensaje: String) {
         _uiState.update { e -> e.copy(messageSend = mensaje) }
     }
 
@@ -511,8 +511,7 @@ class AppViewModel : ViewModel() {
         return mode
     }
 
-    fun consumerMode() {
-        val mode = !uiState.value.proMode
+    private fun consumerMode() {
         _uiState.update { e -> e.copy(proMode = false) }
     }
 
@@ -668,10 +667,10 @@ class AppViewModel : ViewModel() {
     private fun createChatIfNoExist(chat: Chat) {
         if (!_uiState.value.user!!.chats.contains(chat)) {
             _uiState.value.user!!.addChat(chat)
-            selectContacto(chat)
+            selectContact(chat)
         } else {
             val idx = _uiState.value.user!!.chats.indexOf(chat)
-            selectContacto(_uiState.value.user!!.chats[idx])
+            selectContact(_uiState.value.user!!.chats[idx])
         }
     }
 

@@ -1,13 +1,2 @@
-front:
-
--formularios: actividad-plazas ¿ya? 
--dar de baja usuario
-
-funcionalidad:
-*inicio
-*registro
-*actividad: reservas, plazas y demás. 
-*Contactar
-
 
 Modo admin

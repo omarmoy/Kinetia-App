@@ -75,7 +75,7 @@ data class UiState(
 
     val showNavigationPanel: Boolean = false,
     val buttonsNav: ArrayList<Boolean> = arrayListOf(true, false, false, false),
-    val proMode: Boolean = true,
+    var proMode: Boolean = true,
 
     //Entradas de texto
     val messageSend: String = "",

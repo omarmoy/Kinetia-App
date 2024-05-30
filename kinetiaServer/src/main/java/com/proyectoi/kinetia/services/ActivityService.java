@@ -9,6 +9,7 @@ import com.proyectoi.kinetia.repositories.IUserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,9 +78,18 @@ public class ActivityService {
 
     public Boolean deleteActivity(Long id) {
         try {
+            ActivityModel activity = activityRepository.findById(id).orElseThrow();
+            activity.getReservations().clear();
+            for(UserModel user : activity.getUsersWhoFav()){
+                user.deleteFav(activity);
+                userRepository.save(user);
+            }
+            activity.getUsersWhoFav().clear();
+            activityRepository.save(activity);
             activityRepository.deleteById(id);
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }

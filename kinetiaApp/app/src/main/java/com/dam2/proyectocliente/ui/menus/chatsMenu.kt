@@ -164,7 +164,7 @@ fun Chats(
 fun Contact(c: Chat, navController: NavHostController, vm: AppViewModel) {
     Card(
         onClick = {
-            vm.selectContacto(c)
+            vm.selectContact(c)
             vm.ocultarPanelNavegacion()
             navController.navigate(Screens.chat.name)
         },

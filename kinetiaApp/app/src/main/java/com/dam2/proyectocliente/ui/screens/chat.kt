@@ -217,7 +217,7 @@ fun TextInput(vm: AppViewModel, uiState: UiState, chat: Chat) {
 
             OutlinedTextField(
                 value = uiState.messageSend,
-                onValueChange = { vm.setMensaje(it) },
+                onValueChange = { vm.setMessage(it) },
                 singleLine = false,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,

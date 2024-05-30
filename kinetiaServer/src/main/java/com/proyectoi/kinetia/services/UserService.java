@@ -94,7 +94,7 @@ public class UserService {
         return false;
     }
 
-    //TODO: EN ELLO
+
     public Boolean deleteUser(Long id) {
         try {
             UserModel user = userRepository.findById(id).orElseThrow();

@@ -6,7 +6,7 @@ import java.time.Instant
 
 @Serializable
 data class Advertisement(
-    val id: Long? = null,
+    var id: Long? = null,
     val userId: Long,
     val userName: String,
     val userPhoto: String,

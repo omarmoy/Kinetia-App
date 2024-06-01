@@ -86,7 +86,7 @@ fun ConfirmarRegistro(navController: NavHostController) {
 
                 Button(
                     onClick = {
-                        navController.navigate(Screens.login.name)
+                        navController.navigate(Screens.inicio.name)
                     },
                     colors = ButtonDefaults.buttonColors(AzulAguaOscuro),
                     modifier = Modifier.fillMaxWidth()

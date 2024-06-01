@@ -46,8 +46,7 @@ class AppViewModel : ViewModel() {
     var userUiState: UserUiState by mutableStateOf(UserUiState.Loading)
         private set
 
-    var userPass: String by mutableStateOf("")
-        private set
+    private var userPass: String by mutableStateOf("")
 
     var login: Boolean by mutableStateOf(false)
 
@@ -220,7 +219,7 @@ class AppViewModel : ViewModel() {
         _uiState.update { e -> e.copy(activitySearched = actividad) }
     }
 
-    fun resultadoBusquedaActividad(tituloBuscar: String = uiState.value.activitySearched): ArrayList<Activity> {
+    private fun resultadoBusquedaActividad(tituloBuscar: String = uiState.value.activitySearched): ArrayList<Activity> {
         return buscarActividad(uiState.value.activities, tituloBuscar)
     }
 
@@ -228,10 +227,10 @@ class AppViewModel : ViewModel() {
     fun cargarActividadesUsuario(lista: ArrayList<Activity>): ArrayList<Activity> {
         val actividadBuscada = uiState.value.activityUserSearched
 
-        if (actividadBuscada == "") {
-            return lista
+        return if (actividadBuscada == "") {
+            lista
         } else {
-            return buscarActividad(lista, actividadBuscada)
+            buscarActividad(lista, actividadBuscada)
         }
     }
 
@@ -453,7 +452,7 @@ class AppViewModel : ViewModel() {
         _uiState.update { e -> e.copy(contactSearched = contacto) }
     }
 
-    fun resultadoBusquedaContacto(contactoBuscar: String = uiState.value.contactSearched): ArrayList<Chat> {
+    private fun resultadoBusquedaContacto(contactoBuscar: String = uiState.value.contactSearched): ArrayList<Chat> {
         return buscarContacto(uiState.value.user!!.chats, contactoBuscar)
     }
 
@@ -530,7 +529,7 @@ class AppViewModel : ViewModel() {
     fun newAdvertisement(title: String, location: String, description: String) {
         val advertisement =
             Advertisement(
-                id = 100, //TODO API ID
+                id = 100,
                 userPhoto = _uiState.value.user!!.profilePicture,
                 title = title,
                 description = description,
@@ -546,19 +545,18 @@ class AppViewModel : ViewModel() {
         _uiState.update { e -> e.copy(modAdvertisement = advertisement) }
     }
 
-    fun resetNuevoAnuncio() {
+//    fun resetNuevoAnuncio() {
 //        _uiState.update { e -> e.copy(nuevoAnuncio = null) }
-        //TODO peta cuando llama a esta función
-    }
+//    }
 
     fun postAdvertisement() {
         val advertisement = _uiState.value.newAdvertisement
         _uiState.value.user!!.addAnuncio(advertisement!!)
         viewModelScope.launch {
-            advertisement.id == adRepository.post(advertisement)
+            advertisement.id = adRepository.post(advertisement)
 
         }
-        resetNuevoAnuncio()
+//        resetNuevoAnuncio()
     }
 
     fun editAdvertisement(

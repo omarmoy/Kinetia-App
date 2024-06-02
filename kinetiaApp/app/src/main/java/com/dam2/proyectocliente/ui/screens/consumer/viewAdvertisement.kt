@@ -252,7 +252,7 @@ fun BottomBarPreview(
             }
 
             TextButton(onClick = {
-                vm.resetNuevoAnuncio()
+//                vm.resetNuevoAnuncio()
                 vm.mostrarPanelNavegacion()
                 navController.navigate(Screens.menuUsuario.name)
             }) {

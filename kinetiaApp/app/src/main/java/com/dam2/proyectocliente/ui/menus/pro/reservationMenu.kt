@@ -191,7 +191,7 @@ fun Reservation(
             .background(Gris2)
             .padding(1.dp),
         onClick = {
-            vm.selectActivity(activity)
+            vm.selectActivityWithReservation(activity)
             vm.ocultarPanelNavegacion()
             navController.navigate(Screens.vistaReservasActividad.name)
         }) {

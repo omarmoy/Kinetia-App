@@ -1,9 +1,6 @@
 package com.proyectoi.kinetia.services;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import com.proyectoi.kinetia.api.request.SignUpRequest;
 import com.proyectoi.kinetia.domain.Reservation;
@@ -108,8 +105,10 @@ public class UserService {
             }
 
             //cancel activities reserved
-            for (ActivityModel activityReserved : user.getActivitiesReserved()) {
-                for (UserModel u : activityReserved.getReservations()) {
+            for (ActivityModel activity : user.getActivitiesReserved()) {
+                ActivityModel activityReserved = activityRepository.findById(activity.getId()).orElseThrow();
+                List<UserModel> reservationsCopy = new ArrayList<>(activityReserved.getReservations());
+                for (UserModel u : reservationsCopy) {
                     activityReserved.cancelReservation(u);
                 }
                 activityRepository.save(activityReserved);
@@ -129,6 +128,18 @@ public class UserService {
 
             //delete activities fav
             user.getActivitiesFav().clear();
+
+            //delete activities offered
+            for (ActivityModel activity : user.getActivitiesOffered()) {
+                activity.getReservations().clear();
+                for(UserModel u : activity.getUsersWhoFav()){
+                    u.deleteFav(activity);
+                    userRepository.save(u);
+                }
+                activity.getUsersWhoFav().clear();
+                activityRepository.save(activity);
+                activityRepository.deleteById(activity.getId());
+            }
 
             userRepository.delete(user);
             return true;

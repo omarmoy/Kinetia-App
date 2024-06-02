@@ -1,0 +1,7 @@
+
+usuario : contraseña
+
+oscar@correo.es : oscar
+pablo@correo.es : pablo
+empresa@correo.es : empresa
+consumidor@correo.es : consumidor

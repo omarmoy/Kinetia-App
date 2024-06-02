@@ -65,6 +65,7 @@ class AppViewModel : ViewModel() {
                     setAdvertisements(loginRepository.getAdvertisements(user.id))
                     if (user.company != null || user.company != "")
                         setIsCompany(true)
+                    selectActivityWithReservation(null)
                 } else
                     consumerMode()
                 setActivities(loginRepository.getActivities(user!!.id))
@@ -180,6 +181,12 @@ class AppViewModel : ViewModel() {
 
     fun selectActivity(a: Activity) {
         _uiState.update { e -> e.copy(selectedActivity = a) }
+//            _uiState.value = _uiState.value.copy(selectedActivity = a)
+//        _uiState.value.selectedActivity = a
+
+    }
+    fun selectActivityWithReservation(a: Activity?) {
+        _uiState.update { e -> e.copy(selectedActivityWithReservation = a) }
 //            _uiState.value = _uiState.value.copy(selectedActivity = a)
 //        _uiState.value.selectedActivity = a
 

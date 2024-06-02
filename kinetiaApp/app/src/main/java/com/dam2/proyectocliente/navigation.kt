@@ -289,7 +289,7 @@ fun Host(
             ReservationMenu(navController, vm, uiState)
         }
         composable(route = Screens.vistaReservasActividad.name) {
-            ActivityReserves(navController, vm, uiState.selectedActivity!!)
+            ActivityReserves(navController, vm, uiState.selectedActivityWithReservation!!)
         }
 
         //Selectors Pictures

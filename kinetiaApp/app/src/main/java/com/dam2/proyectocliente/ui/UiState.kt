@@ -57,8 +57,9 @@ data class UiState(
     val indiceCategoria: Int = 0,
 
     //Variables de Estado IU
-    var selectedActivity: Activity? = null
-    ,
+    var selectedActivity: Activity? = null,
+    var selectedActivityWithReservation: Activity? = null,
+
     val advertisementSeleccionado: Advertisement = Advertisement(
         id = 0,
         userPhoto = "R.drawable.nofoto",

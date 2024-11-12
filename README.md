@@ -1,5 +1,8 @@
 # KinetiaApp: Aplicación de Contacto entre Ofertantes y Consumidores de Actividades
 
+![ofertante](app_images/ofertante.PNG)
+![buscador](app_images/buscador.PNG)
+
 *[Contenido en español]*
 
 Este repositorio contiene tanto el **cliente** (aplicación móvil desarrollada en Kotlin con Jetpack Compose y Retrofit) como el **servidor** (API REST creada con Spring Boot en Java) de una aplicación cuyo propósito es conectar **ofertantes** y **consumidores** de actividades de ocio, entretenimiento, deporte, aventura y más.
